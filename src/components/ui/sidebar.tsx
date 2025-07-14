@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -166,7 +166,7 @@ const Sidebar = React.forwardRef<
   (
     {
       side = "left",
-      collapsible = "offcanvas",
+      collapsible = "icon",
       className,
       children,
       ...props
@@ -177,16 +177,16 @@ const Sidebar = React.forwardRef<
 
     if (collapsible === "none") {
       return (
-        <div
+        <aside
           className={cn(
-            "flex h-full w-[--sidebar-width] flex-col bg-card text-card-foreground border-r",
+            "fixed inset-y-0 z-40 hidden h-full w-[--sidebar-width] flex-col bg-card text-card-foreground border-r md:flex",
             className
           )}
           ref={ref}
           {...props}
         >
           {children}
-        </div>
+        </aside>
       )
     }
 
@@ -211,10 +211,10 @@ const Sidebar = React.forwardRef<
     }
 
     return (
-      <div
+      <aside
         ref={ref}
         className={cn(
-            "group hidden md:flex flex-col h-svh bg-card text-card-foreground border-r transition-[width] duration-200 ease-in-out",
+            "group fixed inset-y-0 z-40 hidden h-svh flex-col bg-card text-card-foreground border-r transition-[width] duration-200 ease-in-out md:flex",
             open ? "w-[--sidebar-width]" : "w-[--sidebar-width-icon]",
             className
         )}
@@ -224,7 +224,7 @@ const Sidebar = React.forwardRef<
         {...props}
       >
         {children}
-      </div>
+      </aside>
     )
   }
 )
@@ -234,7 +234,7 @@ const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, open } = useSidebar()
 
   return (
     <Button
@@ -249,7 +249,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <PanelLeft />
+      {open ? <PanelLeftClose /> : <PanelLeftOpen />}
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
@@ -293,7 +293,7 @@ const SidebarInset = React.forwardRef<
     <main
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background",
+        "relative flex min-h-svh flex-1 flex-col bg-background transition-[margin-left] duration-200 ease-in-out md:ml-[var(--sidebar-width-icon)] group-data-[state=expanded]/sidebar-wrapper:md:ml-[var(--sidebar-width)]",
         className
       )}
       {...props}
