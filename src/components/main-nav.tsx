@@ -2,7 +2,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
 import { Home, Book, BarChart3, Wrench, Sprout } from "lucide-react";
 import Link from 'next/link';
 
@@ -15,6 +15,11 @@ const navItems = [
 
 export function MainNav() {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    setOpenMobile(false);
+  };
 
   return (
     <SidebarMenu>
@@ -25,6 +30,7 @@ export function MainNav() {
                 isActive={pathname === item.href}
                 tooltip={item.label}
                 className="w-full justify-start"
+                onClick={handleLinkClick}
             >
                 <Link href={item.href}>
                     <item.icon className="h-5 w-5" />
