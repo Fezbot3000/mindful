@@ -65,7 +65,7 @@ export function LogSummary({ logs, loading, view }: LogSummaryProps) {
              <div className="p-3 bg-primary/10 rounded-lg">
                 <BarChart className="h-6 w-6 text-primary" />
             </div>
-            <div>
+            <div className="overflow-hidden">
                 <p className="text-sm text-muted-foreground">Top Trigger</p>
                 {loading ? <Skeleton className="h-6 w-32 mt-1" /> : <p className="text-2xl font-bold truncate">{summary.mostFrequent}</p>}
             </div>
