@@ -4,5 +4,5 @@ export default function InsightsLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <>{children}</>;
+    return <div className="container mx-auto py-6">{children}</div>;
 }
