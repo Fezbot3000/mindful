@@ -129,7 +129,9 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
     setLoading(true);
     try {
       const { newLog } = await addJournalEntry(data);
-      addLogToState(newLog); // Update the global log state for dashboard/insights
+      if (newLog) {
+        addLogToState(newLog); // Update the global log state for dashboard/insights
+      }
       toast({ title: "Well done reflecting!", description: "You're building awareness. Your journal entry has been saved." });
       onEntryAdded();
       form.reset();
@@ -154,56 +156,23 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
         <ScrollArea className="overflow-y-auto pr-6">
             <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 pl-6 pb-6">
               <div className="space-y-2">
-                  <Label htmlFor="title">Title</Label>
-                  <Input id="title" {...form.register("title")} />
+                  <Label htmlFor="title">Give this entry a title</Label>
+                  <Input id="title" {...form.register("title")} placeholder="e.g., That feeling in my chest" />
                   {form.formState.errors.title && <p className="text-sm text-destructive">{form.formState.errors.title.message}</p>}
               </div>
               <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                      <Label htmlFor="content">Content</Label>
+                      <Label htmlFor="content">Let it out...</Label>
                       <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="h-7 w-7">
                           {isListening ? <MicOff className="text-destructive" /> : <Mic />}
                           <span className="sr-only">Toggle voice recognition for content</span>
                       </Button>
                   </div>
-                  <Textarea id="content" rows={6} placeholder="What's on your mind?" {...form.register("content")} />
+                  <Textarea id="content" rows={6} placeholder="What's on your mind? What are you feeling right now?" {...form.register("content")} />
                   {form.formState.errors.content && <p className="text-sm text-destructive">{form.formState.errors.content.message}</p>}
               </div>
-              
-              <Accordion type="multiple" className="w-full">
-                  <AccordionItem value="cbt-prompts">
-                  <AccordionTrigger className="text-sm">Optional CBT & Schema Prompts</AccordionTrigger>
-                  <AccordionContent className="space-y-4 pt-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="trigger">What triggered this?</Label>
-                        <Input id="trigger" placeholder="e.g., A physical sensation, a memory..." {...form.register("trigger")} />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {triggerChips.map(chip => (
-                            <Badge key={chip} variant="secondary" className="cursor-pointer" onClick={() => handleChipClick(chip)}>{chip}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="evidenceFor">Evidence FOR this thought/fear?</Label>
-                        <Textarea id="evidenceFor" rows={2} {...form.register("evidenceFor")} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="evidenceAgainst">Evidence AGAINST this thought/fear?</Label>
-                        <Textarea id="evidenceAgainst" rows={2} {...form.register("evidenceAgainst")} />
-                      </div>
-                       <div className="space-y-2">
-                        <Label htmlFor="alternativeView">A more balanced/alternative view?</Label>
-                        <Textarea id="alternativeView" rows={2} {...form.register("alternativeView")} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="schemaLink">How does this link to a schema?</Label>
-                        <Input id="schemaLink" placeholder="e.g., Feeling unsafe, self-blame, needing control..." {...form.register("schemaLink")} />
-                      </div>
-                  </AccordionContent>
-                  </AccordionItem>
-              </Accordion>
 
-              <div className="space-y-3 pt-2">
+               <div className="space-y-3 pt-2">
                 <Label htmlFor="intensity">How intense is this feeling? ({watchedIntensity})</Label>
                 <Controller
                   name="intensity"
@@ -225,6 +194,39 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
                     ))}
                 </div>
               </div>
+              
+              <Accordion type="multiple" className="w-full">
+                  <AccordionItem value="cbt-prompts">
+                  <AccordionTrigger className="text-sm">Optional Deeper Reflection</AccordionTrigger>
+                  <AccordionContent className="space-y-4 pt-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="trigger">What might have triggered this feeling?</Label>
+                        <Input id="trigger" placeholder="e.g., A physical sensation, a memory..." {...form.register("trigger")} />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {triggerChips.map(chip => (
+                            <Badge key={chip} variant="secondary" className="cursor-pointer" onClick={() => handleChipClick(chip)}>{chip}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="evidenceFor">What's supporting this feeling?</Label>
+                        <Textarea id="evidenceFor" rows={2} placeholder="List the facts, thoughts, or memories that make it feel true." {...form.register("evidenceFor")} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="evidenceAgainst">Is there another side to the story?</Label>
+                        <Textarea id="evidenceAgainst" rows={2} placeholder="What facts, thoughts, or past experiences might challenge this feeling?" {...form.register("evidenceAgainst")} />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="alternativeView">What's a more balanced or helpful way to see this?</Label>
+                        <Textarea id="alternativeView" rows={2} placeholder="Considering both sides, what's a more neutral perspective?" {...form.register("alternativeView")} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="schemaLink">Does this connect to a recurring pattern?</Label>
+                        <Input id="schemaLink" placeholder="e.g., Feeling unsafe, fearing abandonment, self-blame..." {...form.register("schemaLink")} />
+                      </div>
+                  </AccordionContent>
+                  </AccordionItem>
+              </Accordion>
             </form>
         </ScrollArea>
         <DialogFooter className="p-6 pt-4 border-t">
