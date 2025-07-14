@@ -8,7 +8,6 @@ import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -16,16 +15,25 @@ import { addLog } from "@/lib/data";
 import { LogCategory } from "@/types";
 import { Loader2 } from "lucide-react";
 import { useLogs } from "@/hooks/use-logs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 
 const logSchema = z.object({
-  category: z.enum(["Intrusive Thought", "Fear", "Compulsion", "Hyper-Fixation"]),
+  category: z.enum(["Anxious", "Avoided", "Accomplished", "Ruminating"]),
   intensity: z.number().min(1).max(10),
   description: z.string().optional(),
 });
 
 type LogFormValues = z.infer<typeof logSchema>;
 
-const categories: LogCategory[] = ["Intrusive Thought", "Fear", "Compulsion", "Hyper-Fixation"];
+const categories: LogCategory[] = ["Anxious", "Avoided", "Accomplished", "Ruminating"];
+
+const categoryPrompts: Record<LogCategory, string> = {
+    Anxious: "e.g., Felt worried about the upcoming meeting.",
+    Avoided: "e.g., Skipped going to the grocery store.",
+    Accomplished: "e.g., Finished a project I was procrastinating on.",
+    Ruminating: "e.g., Couldn't stop thinking about a past mistake.",
+};
 
 export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -36,11 +44,13 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const form = useForm<LogFormValues>({
     resolver: zodResolver(logSchema),
     defaultValues: {
-      category: "Intrusive Thought",
+      category: "Anxious",
       intensity: 5,
       description: "",
     },
   });
+
+  const watchedCategory = form.watch("category");
 
   const onSubmit = async (data: LogFormValues) => {
     setLoading(true);
@@ -74,16 +84,26 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Select onValueChange={(value) => form.setValue("category", value as LogCategory)} defaultValue={form.getValues("category")}>
-              <SelectTrigger id="category">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <RadioGroup
+              defaultValue={form.getValues("category")}
+              onValueChange={(value) => form.setValue("category", value as LogCategory)}
+              className="grid grid-cols-2 gap-2"
+            >
+              {categories.map((cat) => (
+                <div key={cat}>
+                    <RadioGroupItem value={cat} id={cat} className="sr-only" />
+                    <Label
+                        htmlFor={cat}
+                        className={cn(
+                            "flex items-center justify-center rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer",
+                            watchedCategory === cat && "border-primary"
+                        )}
+                    >
+                        {cat}
+                    </Label>
+                </div>
+              ))}
+            </RadioGroup>
           </div>
           <div className="space-y-2">
             <Label htmlFor="intensity">Intensity ({form.watch('intensity')})</Label>
@@ -102,10 +122,14 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Optional Description</Label>
-            <Textarea id="description" placeholder="e.g., Worried about a health symptom..." {...form.register("description")} />
+            <Textarea 
+                id="description" 
+                placeholder={categoryPrompts[watchedCategory]} 
+                {...form.register("description")} 
+            />
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="w-full">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Log
             </Button>

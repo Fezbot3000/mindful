@@ -1,5 +1,5 @@
 
-export type LogCategory = "Intrusive Thought" | "Fear" | "Compulsion" | "Hyper-Fixation";
+export type LogCategory = "Anxious" | "Avoided" | "Accomplished" | "Ruminating";
 
 export interface Log {
   id: number;
