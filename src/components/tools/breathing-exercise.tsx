@@ -42,6 +42,14 @@ export function BreathingExercise() {
   const stage = stages[stageIndex];
 
   useEffect(() => {
+    // Initialize audio only on the client
+    if (!audioRef.current) {
+        audioRef.current = new Audio(MUSIC_URL);
+        audioRef.current.loop = true;
+    }
+  }, []);
+
+  useEffect(() => {
     if (isActive) {
       intervalRef.current = setInterval(() => {
         setCountdown((prev) => prev - 1);
@@ -78,6 +86,7 @@ export function BreathingExercise() {
       setStageIndex(nextStageIndex);
       setCountdown(stages[nextStageIndex].duration);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown, totalTime, isActive, stageIndex]);
 
 
@@ -94,6 +103,7 @@ export function BreathingExercise() {
     setCurrentPrompt("");
     if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.currentTime = 0;
     }
     setIsMusicPlaying(false);
 
@@ -112,11 +122,7 @@ export function BreathingExercise() {
   };
 
   const toggleMusic = () => {
-    if (!audioRef.current) {
-        // Create audio element if it doesn't exist
-        audioRef.current = new Audio(MUSIC_URL);
-        audioRef.current.loop = true;
-    }
+    if (!audioRef.current) return;
 
     if (isMusicPlaying) {
         audioRef.current.pause();
@@ -132,8 +138,6 @@ export function BreathingExercise() {
   
   return (
     <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 h-96 relative overflow-hidden">
-       <audio ref={audioRef} src={MUSIC_URL} loop />
-
        <div className="absolute top-4 right-4 z-20">
             <Button
                 variant="ghost"
