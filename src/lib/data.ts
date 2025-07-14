@@ -20,12 +20,10 @@ interface MindfulTrackDB extends DBSchema {
   };
 }
 
-let dbPromise: Promise<IDBPDatabase<MindfulTrackDB>> | null = null;
+let dbPromise: IDBPDatabase<MindfulTrackDB> | null = null;
 
 const getDb = (): Promise<IDBPDatabase<MindfulTrackDB>> => {
     if (typeof window === 'undefined') {
-        // This will prevent the function from being called on the server side.
-        // It returns a promise that will never resolve, which is fine because this should only be called client-side.
         return new Promise(() => {});
     }
     if (!dbPromise) {
@@ -53,7 +51,7 @@ const getDb = (): Promise<IDBPDatabase<MindfulTrackDB>> => {
             },
         });
     }
-    return dbPromise;
+    return Promise.resolve(dbPromise);
 };
 
 
@@ -77,6 +75,12 @@ export const getLogs = async (): Promise<Log[]> => {
     return [];
   }
 };
+
+export const deleteLog = async (id: number): Promise<void> => {
+  const db = await getDb();
+  await db.delete(LOGS_STORE, id);
+};
+
 
 export const getRecentLogs = async (logLimit: number = 5): Promise<Log[]> => {
   const allLogs = await getLogs();
