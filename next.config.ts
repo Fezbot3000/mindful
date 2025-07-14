@@ -1,7 +1,16 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* Performance optimizations */
+  // GitHub Pages configuration
+  output: 'export',
+  trailingSlash: true,
+  distDir: 'out',
+  
+  // Base path for GitHub Pages (will be set via environment variable)
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  
+  // Basic configuration
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -9,42 +18,14 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Performance optimizations
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-  },
-  
-  // Image optimization
+  // Image optimization for static export
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-    formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 31536000, // 1 year
+    unoptimized: true,
   },
   
   // Compression and minification
   compress: true,
   poweredByHeader: false,
-  
-  // Bundle optimization
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-    }
-    
-    return config;
-  },
 };
 
 export default nextConfig;

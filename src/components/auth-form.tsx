@@ -22,6 +22,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
+import { sanitizeInput, sanitizeErrorMessage, authRateLimiter, secureLog } from "@/lib/security";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -57,21 +58,53 @@ export function AuthForm({ mode }: AuthFormProps) {
         toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly. Check your .env.local file." });
         return;
     }
+
+    // Rate limiting check
+    const userIdentifier = data.email || 'anonymous';
+    if (!authRateLimiter.isAllowed(userIdentifier)) {
+      const remainingAttempts = authRateLimiter.getRemainingAttempts(userIdentifier);
+      toast({ 
+        variant: "destructive", 
+        title: "Too Many Attempts", 
+        description: `Too many failed attempts. Please try again later. (${remainingAttempts} attempts remaining)` 
+      });
+      return;
+    }
+
+    // Sanitize inputs
+    const sanitizedData = {
+      email: sanitizeInput(data.email),
+      password: data.password, // Don't sanitize password as it may contain special characters
+      consent: data.consent
+    };
+
     setLoading(true);
     try {
       if (mode === "signup") {
-        if (!data.consent) {
+        if (!sanitizedData.consent) {
             toast({ variant: "destructive", title: "Consent Required", description: "You must agree to the terms to sign up." });
             setLoading(false);
             return;
         }
-        await createUserWithEmailAndPassword(auth, data.email, data.password);
+        await createUserWithEmailAndPassword(auth, sanitizedData.email, sanitizedData.password);
+        secureLog('info', 'User signup successful', { email: sanitizedData.email });
       } else {
-        await signInWithEmailAndPassword(auth, data.email, data.password);
+        await signInWithEmailAndPassword(auth, sanitizedData.email, sanitizedData.password);
+        secureLog('info', 'User login successful', { email: sanitizedData.email });
       }
-      router.push("/dashboard");
+      
+      // Reset rate limiter on successful auth
+      authRateLimiter.reset(userIdentifier);
+      router.push("/dashboard/");
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Authentication Error", description: error.message });
+      secureLog('error', 'Authentication failed', { 
+        email: sanitizedData.email, 
+        mode,
+        error: error.code || error.message 
+      });
+      
+      const friendlyMessage = sanitizeErrorMessage(error);
+      toast({ variant: "destructive", title: "Authentication Error", description: friendlyMessage });
     } finally {
       setLoading(false);
     }
@@ -82,13 +115,37 @@ export function AuthForm({ mode }: AuthFormProps) {
         toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly. Check your .env.local file." });
         return;
     }
+
+    // Rate limiting check for Google sign-in
+    const userIdentifier = 'google_signin';
+    if (!authRateLimiter.isAllowed(userIdentifier)) {
+      const remainingAttempts = authRateLimiter.getRemainingAttempts(userIdentifier);
+      toast({ 
+        variant: "destructive", 
+        title: "Too Many Attempts", 
+        description: `Too many failed attempts. Please try again later. (${remainingAttempts} attempts remaining)` 
+      });
+      return;
+    }
+
     setGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      router.push("/dashboard");
+      const result = await signInWithPopup(auth, provider);
+      secureLog('info', 'Google sign-in successful', { 
+        email: result.user?.email || 'unknown' 
+      });
+      
+      // Reset rate limiter on successful auth
+      authRateLimiter.reset(userIdentifier);
+      router.push("/dashboard/");
     } catch (error: any) {
-      toast({ variant: "destructive", title: "Google Sign-In Error", description: error.message });
+      secureLog('error', 'Google sign-in failed', { 
+        error: error.code || error.message 
+      });
+      
+      const friendlyMessage = sanitizeErrorMessage(error);
+      toast({ variant: "destructive", title: "Google Sign-In Error", description: friendlyMessage });
     } finally {
       setGoogleLoading(false);
     }

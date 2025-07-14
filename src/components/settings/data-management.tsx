@@ -10,6 +10,7 @@ import { Download, Upload, AlertTriangle } from "lucide-react";
 import JSZip from "jszip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 import { useRouter } from "next/navigation";
+import { sanitizeErrorMessage, secureLog } from "@/lib/security";
 
 export function DataManagement() {
   const { toast } = useToast();
@@ -48,8 +49,9 @@ export function DataManagement() {
 
       toast({ title: "Export Successful", description: "Your data has been downloaded as a zip file." });
     } catch (error) {
-      console.error("Export failed:", error);
-      toast({ variant: "destructive", title: "Export Failed", description: "Could not export your data. Please try again." });
+      secureLog('error', 'Data export failed', { error });
+      const friendlyMessage = sanitizeErrorMessage(error);
+      toast({ variant: "destructive", title: "Export Failed", description: friendlyMessage });
     } finally {
       setIsExporting(false);
     }
@@ -97,8 +99,9 @@ export function DataManagement() {
       }, 2000);
 
     } catch (error: any) {
-      console.error("Import failed:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not import data from the selected file." });
+      secureLog('error', 'Data import failed', { error });
+      const friendlyMessage = sanitizeErrorMessage(error);
+      toast({ variant: "destructive", title: "Import Failed", description: friendlyMessage });
     } finally {
       setIsImporting(false);
       setFileToImport(null);

@@ -71,11 +71,19 @@ export const structuredData = {
 };
 
 export function StructuredData() {
+  // Sanitize the structured data to prevent XSS
+  const sanitizedData = JSON.stringify(structuredData)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/'/g, '\\u0027')
+    .replace(/"/g, '\\u0022');
+    
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(structuredData),
+        __html: sanitizedData,
       }}
     />
   );
