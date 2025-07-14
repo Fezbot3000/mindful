@@ -14,6 +14,7 @@ import { addJournalEntry } from "@/lib/data";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ScrollArea } from "../ui/scroll-area";
 
 const entrySchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -132,62 +133,63 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] grid-rows-[auto_1fr_auto] max-h-[90svh]">
         <DialogHeader>
           <DialogTitle>New Journal Entry</DialogTitle>
           <DialogDescription>
             A space for deeper reflection. Use the optional prompts to guide your thoughts.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" {...form.register("title")} />
-            {form.formState.errors.title && <p className="text-sm text-destructive">{form.formState.errors.title.message}</p>}
-          </div>
-          <div className="space-y-2">
-             <div className="flex justify-between items-center">
-                <Label htmlFor="content">Content</Label>
-                <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="h-7 w-7">
-                    {isListening ? <MicOff className="text-destructive" /> : <Mic />}
-                    <span className="sr-only">Toggle voice recognition</span>
-                </Button>
+        <ScrollArea className="pr-6 -mr-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 pt-4">
+            <div className="space-y-2">
+                <Label htmlFor="title">Title</Label>
+                <Input id="title" {...form.register("title")} />
+                {form.formState.errors.title && <p className="text-sm text-destructive">{form.formState.errors.title.message}</p>}
             </div>
-            <Textarea id="content" rows={8} {...form.register("content")} />
-            {form.formState.errors.content && <p className="text-sm text-destructive">{form.formState.errors.content.message}</p>}
-          </div>
-          
-          <Accordion type="multiple" className="w-full">
-            <AccordionItem value="cbt-prompts">
-              <AccordionTrigger className="text-sm">Optional CBT Prompts</AccordionTrigger>
-              <AccordionContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="trigger">What triggered this?</Label>
-                  <Input id="trigger" placeholder="e.g., A physical sensation, a memory, a conversation..." {...form.register("trigger")} />
+            <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                    <Label htmlFor="content">Content</Label>
+                    <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="h-7 w-7">
+                        {isListening ? <MicOff className="text-destructive" /> : <Mic />}
+                        <span className="sr-only">Toggle voice recognition</span>
+                    </Button>
                 </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="evidenceFor">Evidence FOR this thought/fear?</Label>
-                  <Textarea id="evidenceFor" rows={2} {...form.register("evidenceFor")} />
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="evidenceAgainst">Evidence AGAINST it / Alternative view?</Label>
-                  <Textarea id="evidenceAgainst" rows={2} {...form.register("evidenceAgainst")} />
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="schemaLink">How does this connect to a core feeling?</Label>
-                  <Input id="schemaLink" placeholder="e.g., Feeling unsafe, feeling like a failure, feeling unlovable..." {...form.register("schemaLink")} />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <DialogFooter>
-            <Button type="submit" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save Entry
+                <Textarea id="content" rows={8} {...form.register("content")} />
+                {form.formState.errors.content && <p className="text-sm text-destructive">{form.formState.errors.content.message}</p>}
+            </div>
+            
+            <Accordion type="multiple" className="w-full">
+                <AccordionItem value="cbt-prompts">
+                <AccordionTrigger className="text-sm">Optional CBT Prompts</AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                    <div className="space-y-2">
+                    <Label htmlFor="trigger">What triggered this?</Label>
+                    <Input id="trigger" placeholder="e.g., A physical sensation, a memory, a conversation..." {...form.register("trigger")} />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="evidenceFor">Evidence FOR this thought/fear?</Label>
+                    <Textarea id="evidenceFor" rows={2} {...form.register("evidenceFor")} />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="evidenceAgainst">Evidence AGAINST it / Alternative view?</Label>
+                    <Textarea id="evidenceAgainst" rows={2} {...form.register("evidenceAgainst")} />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="schemaLink">How does this connect to a core feeling?</Label>
+                    <Input id="schemaLink" placeholder="e.g., Feeling unsafe, feeling like a failure, feeling unlovable..." {...form.register("schemaLink")} />
+                    </div>
+                </AccordionContent>
+                </AccordionItem>
+            </Accordion>
+            </form>
+        </ScrollArea>
+        <DialogFooter>
+            <Button type="submit" form="journal-form" disabled={loading}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Entry
             </Button>
-          </DialogFooter>
-        </form>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
