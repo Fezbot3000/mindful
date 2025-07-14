@@ -13,7 +13,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <LogsProvider>
       <SidebarProvider>
-        <Sidebar>
+        <Sidebar className="fixed inset-y-0 left-0 z-40 hidden md:flex">
           <SidebarHeader className="p-4">
             <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
               <Image src="/logo.svg" alt="Mindful Track Logo" width={24} height={24} />
@@ -29,9 +29,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
              </div>
           </SidebarFooter>
         </Sidebar>
-        <SidebarInset>
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-              <SidebarTrigger className="sm:hidden" />
+        <div className="md:pl-[var(--sidebar-width-icon)] group-data-[state=expanded]:md:pl-[var(--sidebar-width)] transition-[padding-left] duration-200 ease-in-out">
+            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
+              <SidebarTrigger />
               <div className="flex items-center gap-4 ml-auto">
                 <ThemeToggle />
               </div>
@@ -48,7 +48,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               </QuickLogDialog>
             </main>
-        </SidebarInset>
+        </div>
       </SidebarProvider>
     </LogsProvider>
   );
