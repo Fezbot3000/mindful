@@ -22,9 +22,11 @@ interface MindfulTrackDB extends DBSchema {
 
 let dbPromise: Promise<IDBPDatabase<MindfulTrackDB>> | null = null;
 
-const getDb = () => {
+const getDb = (): Promise<IDBPDatabase<MindfulTrackDB>> => {
     if (typeof window === 'undefined') {
-        return Promise.reject(new Error("IndexedDB can only be accessed in the browser."));
+        // This will prevent the function from being called on the server side.
+        // It returns a promise that will never resolve, which is fine because this should only be called client-side.
+        return new Promise(() => {});
     }
     if (!dbPromise) {
         dbPromise = openDB<MindfulTrackDB>(DB_NAME, DB_VERSION, {
