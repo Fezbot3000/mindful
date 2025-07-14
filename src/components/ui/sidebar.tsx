@@ -142,7 +142,7 @@ const SidebarProvider = React.forwardRef<
               } as React.CSSProperties
             }
             className={cn(
-              "group flex min-h-svh w-full",
+              "group min-h-svh w-full",
               className
             )}
             data-state={state}
@@ -162,7 +162,7 @@ const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
     side?: "left" | "right"
-    collapsible?: "offcanvas" | "icon" | "none"
+    collapsible?: "icon" | "none"
   }
 >(
   (
@@ -175,42 +175,7 @@ const Sidebar = React.forwardRef<
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile, open } = useSidebar()
-
-    if (collapsible === "none") {
-      return (
-        <aside
-          className={cn(
-            "fixed inset-y-0 z-40 hidden h-full w-[--sidebar-width] flex-col bg-card text-card-foreground border-r md:flex",
-            className
-          )}
-          ref={ref}
-          {...props}
-        >
-          {children}
-        </aside>
-      )
-    }
-
-    if (isMobile) {
-      return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-          <SheetContent
-            data-sidebar="sidebar"
-            data-mobile="true"
-            className="w-[--sidebar-width] bg-card p-0 text-card-foreground [&>button]:hidden"
-            style={
-              {
-                "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-              } as React.CSSProperties
-            }
-            side={side}
-          >
-            <div className="flex h-full w-full flex-col">{children}</div>
-          </SheetContent>
-        </Sheet>
-      )
-    }
+    const { state, open } = useSidebar()
 
     return (
       <aside
