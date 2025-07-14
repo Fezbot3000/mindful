@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/lib/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseApp } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,10 @@ import { useRouter } from "next/navigation";
 export function AuthButton() {
   const { user } = useAuth();
   const router = useRouter();
+  const { auth } = getFirebaseApp();
 
   const handleSignOut = async () => {
+    if (!auth) return;
     await signOut(auth);
     router.push("/");
   };

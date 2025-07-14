@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getFirebaseApp } from '@/lib/firebase';
 import { Loader2 } from 'lucide-react';
 
 interface AuthContextType {
@@ -17,12 +17,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    const { auth } = getFirebaseApp();
+    if (auth) {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+            setLoading(false);
+        });
+        return () => unsubscribe();
+    } else {
+        // If firebase is not configured, we are not in a loading state.
+        // The user is simply not logged in.
+        setLoading(false);
+    }
   }, []);
 
   return (

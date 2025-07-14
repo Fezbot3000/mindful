@@ -12,37 +12,44 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// This check is important. It will throw a build-time error if the environment variables are missing.
-if (!firebaseConfig.projectId) {
-    throw new Error("Missing Firebase project ID. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your .env.local file.");
-}
+let app: FirebaseApp | undefined;
+let auth: ReturnType<typeof getAuth> | undefined;
+let db: Firestore | undefined;
+let functions: ReturnType<typeof getFunctions> | undefined;
 
-let app: FirebaseApp;
-let db: Firestore;
+function getFirebaseApp() {
+    if (typeof window === "undefined") {
+        return { app: undefined, auth: undefined, db: undefined, functions: undefined };
+    }
 
-// Initialize Firebase
-if (getApps().length === 0) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApp();
-}
+    if (app) {
+        return { app, auth, db, functions };
+    }
 
-// Initialize Firestore with persistence
-try {
-    if (typeof window !== "undefined") {
+    if (!firebaseConfig.projectId) {
+        console.error("Firebase project ID is missing. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your .env.local file.");
+        return { app: undefined, auth: undefined, db: undefined, functions: undefined };
+    }
+    
+    if (getApps().length === 0) {
+        app = initializeApp(firebaseConfig);
+    } else {
+        app = getApp();
+    }
+
+    try {
         db = initializeFirestore(app, {
             localCache: persistentLocalCache({})
         });
-    } else {
+    } catch (error) {
+        console.error("Firestore initialization error:", error);
         db = getFirestore(app);
     }
-} catch (error) {
-    console.error("Firestore initialization error:", error);
-    db = getFirestore(app); // Fallback to default firestore instance
+
+    auth = getAuth(app);
+    functions = getFunctions(app);
+
+    return { app, auth, db, functions };
 }
 
-
-const auth = getAuth(app);
-const functions = getFunctions(app);
-
-export { app, auth, db, functions };
+export { getFirebaseApp };

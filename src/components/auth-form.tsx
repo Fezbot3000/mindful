@@ -10,7 +10,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseApp } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { auth } = getFirebaseApp();
 
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(formSchema),
@@ -50,6 +51,10 @@ export function AuthForm({ mode }: AuthFormProps) {
   });
 
   const onSubmit = async (data: AuthFormValues) => {
+    if (!auth) {
+        toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly." });
+        return;
+    }
     setLoading(true);
     try {
       if (mode === "signup") {
@@ -71,6 +76,10 @@ export function AuthForm({ mode }: AuthFormProps) {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!auth) {
+        toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly." });
+        return;
+    }
     setGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
@@ -113,7 +122,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                         </div>
                     </div>
                 )}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading || !auth}>
                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {mode === 'login' ? 'Log In' : 'Sign Up'}
                 </Button>
@@ -126,7 +135,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                     <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
                 </div>
             </div>
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading || !auth}>
                 {googleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 
                 <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-72.2 72.2C322 108.9 287.6 96 248 96c-88.8 0-160.1 71.9-160.1 160.1s71.3 160.1 160.1 160.1c98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
                 }
