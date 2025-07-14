@@ -42,7 +42,7 @@ export function ExportCard() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5 text-primary" />
+          <FileText className="icon-md text-primary" />
           Export Data
         </CardTitle>
         <CardDescription>

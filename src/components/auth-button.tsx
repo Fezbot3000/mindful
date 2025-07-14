@@ -38,8 +38,8 @@ export function AuthButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="relative component-sm rounded-full">
+          <Avatar className="component-sm">
             <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
             <AvatarFallback>{userInitial}</AvatarFallback>
           </Avatar>
@@ -56,7 +56,7 @@ export function AuthButton() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 icon-sm" />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

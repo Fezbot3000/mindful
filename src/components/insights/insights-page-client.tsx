@@ -86,11 +86,11 @@ export function InsightsPageClient() {
         </ToggleGroup>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={handlePrev}>
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="icon-sm" />
           </Button>
-          <span className="text-lg font-semibold w-48 text-center">{title}</span>
+          <span className="font-semibold text-center" style={{ fontSize: 'var(--text-lg)', width: 'var(--layout-xs)' }}>{title}</span>
           <Button variant="outline" size="icon" onClick={handleNext}>
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="icon-sm" />
           </Button>
         </div>
       </div>

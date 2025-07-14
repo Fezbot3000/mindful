@@ -117,7 +117,7 @@ export function DataManagement() {
         </CardHeader>
         <CardContent>
             <div className="flex flex-col items-center justify-center rounded-md border border-dashed p-8 text-center">
-                <Download className="h-12 w-12 text-muted-foreground" />
+                <Download className="icon-2xl text-muted-foreground" />
                 <p className="mt-4 text-sm text-muted-foreground">Creates a `mindful-track-backup.zip` file.</p>
             </div>
         </CardContent>
@@ -138,7 +138,7 @@ export function DataManagement() {
         </CardHeader>
         <CardContent>
              <div className="flex flex-col items-center justify-center rounded-md border border-dashed p-8 text-center">
-                <Upload className="h-12 w-12 text-muted-foreground" />
+                <Upload className="icon-2xl text-muted-foreground" />
                 <p className="mt-4 text-sm text-muted-foreground">Select a `mindful-track-backup.zip` file.</p>
             </div>
         </CardContent>

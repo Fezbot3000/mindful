@@ -143,7 +143,7 @@ export function BreathingExercise() {
   const stageProgress = ((stage.duration - countdown + 1) / stage.duration) * 100;
   
   return (
-    <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 h-96 relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 relative overflow-hidden" style={{ height: 'var(--layout-sm)' }}>
        <div className="absolute top-4 right-4 z-20">
             <Button
                 variant="ghost"
@@ -164,14 +164,15 @@ export function BreathingExercise() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ ease: "easeInOut", duration: 0.5 }}
-                className="absolute top-8 p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20 max-w-[90%]"
+                className="absolute p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20 max-w-[90%]"
+                style={{ top: 'var(--space-8)' }}
             >
                 {currentPrompt}
             </motion.div>
         )}
        </AnimatePresence>
 
-      <div className="relative w-48 h-48 flex items-center justify-center">
+      <div className="relative flex items-center justify-center" style={{ width: 'var(--layout-xs)', height: 'var(--layout-xs)' }}>
         <div 
              className="absolute inset-0 rounded-full bg-primary/20 transition-transform duration-1000 ease-linear"
              style={{
@@ -186,13 +187,13 @@ export function BreathingExercise() {
                 transform: `scaleY(${isActive ? stageProgress / 100 : 0})`
              }} 
         />
-        <div className="relative rounded-full bg-primary/60 flex items-center justify-center w-40 h-40">
+        <div className="relative rounded-full bg-primary/60 flex items-center justify-center" style={{ width: 'var(--layout-xs)', height: 'var(--layout-xs)' }}>
             <div className="text-center text-primary-foreground">
-                <p className="text-2xl font-bold">
+                <p className="font-bold" style={{ fontSize: 'var(--text-2xl)' }}>
                     {isActive ? stage.name : "Start"}
                 </p>
                 {isActive && (
-                    <p className="text-5xl font-mono mt-2">{countdown}</p>
+                    <p className="font-mono mt-2" style={{ fontSize: 'var(--text-5xl)' }}>{countdown}</p>
                 )}
             </div>
         </div>

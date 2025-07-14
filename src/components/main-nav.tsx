@@ -40,7 +40,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
                             isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
                         )}
                     >
-                        <item.icon className="h-6 w-6" />
+                        <item.icon className="icon-lg" />
                         <span className="text-xs">{item.label}</span>
                     </Link>
                 )
@@ -61,7 +61,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
                     "group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0"
                 )}
             >
-                <item.icon className="h-5 w-5" />
+                <item.icon className="icon-md" />
                 <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
             </Link>
         </li>

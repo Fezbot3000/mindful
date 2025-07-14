@@ -146,7 +146,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-2xl grid-rows-[auto,1fr,auto] max-h-[90svh] p-0">
+      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)', maxHeight: '90svh' }}>
         <DialogHeader className="p-6 pb-4">
           <DialogTitle>New Journal Entry</DialogTitle>
           <DialogDescription>
@@ -163,7 +163,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
               <div className="space-y-2">
                   <div className="flex justify-between items-center">
                       <Label htmlFor="content">Your thoughts and feelings...</Label>
-                      <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="h-7 w-7">
+                      <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="component-xs">
                           {isListening ? <MicOff className="text-destructive" /> : <Mic />}
                           <span className="sr-only">Toggle voice recognition for content</span>
                       </Button>
@@ -231,7 +231,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
         </ScrollArea>
         <DialogFooter className="p-6 pt-4 border-t">
             <Button type="submit" form="journal-form" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                          {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
             Save Entry
             </Button>
         </DialogFooter>

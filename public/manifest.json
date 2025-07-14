@@ -1,0 +1,85 @@
+{
+  "name": "Mindful Track - Mental Health & Wellness Tracker",
+  "short_name": "Mindful Track",
+  "description": "A personal tool to track thoughts, build self-awareness, and improve mental wellness through journaling, mood tracking, and mindfulness exercises.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E3F2FD",
+  "theme_color": "#64B5F6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["health", "wellness", "productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile dashboard view"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop dashboard view"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Log",
+      "short_name": "Log",
+      "description": "Add a quick mood or trigger log",
+      "url": "/dashboard?quick-log=true",
+      "icons": [
+        {
+          "src": "/logo.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Journal Entry",
+      "short_name": "Journal",
+      "description": "Write a new journal entry",
+      "url": "/journal",
+      "icons": [
+        {
+          "src": "/logo.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Breathing Exercise",
+      "short_name": "Breathe",
+      "description": "Start a guided breathing exercise",
+      "url": "/tools",
+      "icons": [
+        {
+          "src": "/logo.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+} 

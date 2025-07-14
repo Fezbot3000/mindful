@@ -73,7 +73,7 @@ export function WeeklyView({ logs, dateRange, loading }: WeeklyViewProps) {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-             <div className="text-center py-12 h-[350px] flex items-center justify-center">
+             <div className="text-center py-12 flex items-center justify-center" style={{ height: '350px' }}>
                 <p className="text-muted-foreground">No logs recorded for this week.</p>
             </div>
         )}

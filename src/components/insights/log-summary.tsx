@@ -45,29 +45,29 @@ export function LogSummary({ logs, loading, view }: LogSummaryProps) {
       <CardContent className="grid gap-4 md:grid-cols-3">
         <div className="flex items-start gap-4">
             <div className="p-3 bg-primary/10 rounded-lg">
-                <CalendarDays className="h-6 w-6 text-primary" />
+                <CalendarDays className="icon-lg text-primary" />
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Total Logs</p>
-                {loading ? <Skeleton className="h-6 w-12 mt-1" /> : <p className="text-2xl font-bold">{summary.totalLogs}</p>}
+                {loading ? <Skeleton className="h-6 w-12 mt-1" /> : <p className="font-bold" style={{ fontSize: 'var(--text-2xl)' }}>{summary.totalLogs}</p>}
             </div>
         </div>
         <div className="flex items-start gap-4">
             <div className="p-3 bg-primary/10 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-primary" />
+                <TrendingUp className="icon-lg text-primary" />
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Avg. Intensity</p>
-                {loading ? <Skeleton className="h-6 w-12 mt-1" /> : <p className="text-2xl font-bold">{summary.avgIntensity}</p>}
+                {loading ? <Skeleton className="h-6 w-12 mt-1" /> : <p className="font-bold" style={{ fontSize: 'var(--text-2xl)' }}>{summary.avgIntensity}</p>}
             </div>
         </div>
         <div className="flex items-start gap-4">
              <div className="p-3 bg-primary/10 rounded-lg">
-                <BarChart className="h-6 w-6 text-primary" />
+                <BarChart className="icon-lg text-primary" />
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Top Trigger</p>
-                {loading ? <Skeleton className="h-6 w-32 mt-1" /> : <p className="text-2xl font-bold">{summary.mostFrequent}</p>}
+                {loading ? <Skeleton className="h-6 w-32 mt-1" /> : <p className="font-bold" style={{ fontSize: 'var(--text-2xl)' }}>{summary.mostFrequent}</p>}
             </div>
         </div>
       </CardContent>

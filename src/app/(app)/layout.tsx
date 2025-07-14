@@ -1,20 +1,32 @@
 
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider } from "@/components/ui/sidebar";
 import { MainNav } from "@/components/main-nav";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { QuickLogDialog } from "@/components/quick-log-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import { LogsProvider } from "@/hooks/use-logs";
-import { AuthButton } from "@/components/auth-button";
 import { AuthProvider } from "@/lib/auth";
-import { MobileNav } from "@/components/mobile-nav";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// Lazy load heavy components
+const QuickLogDialog = dynamic(() => import("@/components/quick-log-dialog").then(mod => ({ default: mod.QuickLogDialog })), {
+  loading: () => <Button className="fixed bottom-20 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg" size="icon" disabled><Plus className="h-8 w-8" /></Button>,
+});
+
+const AuthButton = dynamic(() => import("@/components/auth-button").then(mod => ({ default: mod.AuthButton })), {
+  loading: () => <Skeleton className="h-8 w-8 rounded-full" />,
+});
+
+const MobileNav = dynamic(() => import("@/components/mobile-nav").then(mod => ({ default: mod.MobileNav })), {
+  loading: () => null,
+});
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -43,7 +55,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <div className="flex-1">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
                   <div className="flex items-center gap-4 ml-auto">
-                    <AuthButton />
+                    <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
+                      <AuthButton />
+                    </Suspense>
                     <ThemeToggle />
                   </div>
                 </header>
@@ -53,16 +67,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </div>
-          <MobileNav />
-          <QuickLogDialog>
-            <Button
-              aria-label="Log Now"
-              className="fixed bottom-20 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg"
-              size="icon"
-            >
-              <Plus className="h-8 w-8" />
-            </Button>
-          </QuickLogDialog>
+          <Suspense fallback={null}>
+            <MobileNav />
+          </Suspense>
+          <Suspense fallback={<Button className="fixed bottom-20 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg" size="icon" disabled><Plus className="h-8 w-8" /></Button>}>
+            <QuickLogDialog>
+              <Button
+                aria-label="Log Now"
+                className="fixed bottom-20 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg"
+                size="icon"
+              >
+                <Plus className="h-8 w-8" />
+              </Button>
+            </QuickLogDialog>
+          </Suspense>
         </SidebarProvider>
       </LogsProvider>
     </AuthProvider>

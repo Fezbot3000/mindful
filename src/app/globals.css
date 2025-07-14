@@ -5,55 +5,113 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* Blueprint-compliant colors for calm, ADHD-friendly design */
+    --background: 210 40% 98%;      /* Very light blue (#E3F2FD) */
     --foreground: 222.2 84% 4.9%;
-    --card: 240 4.8% 95.9%;
+    --card: 210 40% 97%;            /* Slightly darker than background */
     --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
+    --popover: 210 40% 98%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 207 82% 67%;
+    --primary: 207 82% 67%;         /* Soft blue (#64B5F6) */
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 210 40% 9.8%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 207 82% 67%;
+    --accent: 260 60% 85%;          /* Soft lavender (#C8B5E8) */
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 207 82% 67%;
+    --ring: 207 82% 67%;            /* Focus rings use primary */
     --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
+    --chart-1: 207 82% 67%;         /* Primary blue for charts */
+    --chart-2: 260 60% 85%;         /* Accent lavender for charts */
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    /* Design System Tokens - Mathematical Spacing Scale */
+    --space-0: 0;
+    --space-1: 0.25rem;    /* 4px */
+    --space-2: 0.5rem;     /* 8px */
+    --space-3: 0.75rem;    /* 12px */
+    --space-4: 1rem;       /* 16px */
+    --space-5: 1.25rem;    /* 20px */
+    --space-6: 1.5rem;     /* 24px */
+    --space-8: 2rem;       /* 32px */
+    --space-10: 2.5rem;    /* 40px */
+    --space-12: 3rem;      /* 48px */
+    --space-16: 4rem;      /* 64px */
+    --space-20: 5rem;      /* 80px */
+    --space-24: 6rem;      /* 96px */
+    
+    /* Icon Sizes */
+    --icon-xs: 0.75rem;    /* 12px */
+    --icon-sm: 1rem;       /* 16px */
+    --icon-md: 1.25rem;    /* 20px */
+    --icon-lg: 1.5rem;     /* 24px */
+    --icon-xl: 2rem;       /* 32px */
+    --icon-2xl: 3rem;      /* 48px */
+    
+    /* Typography Scale */
+    --text-xs: 0.75rem;    /* 12px */
+    --text-sm: 0.875rem;   /* 14px */
+    --text-base: 1rem;     /* 16px */
+    --text-lg: 1.125rem;   /* 18px */
+    --text-xl: 1.25rem;    /* 20px */
+    --text-2xl: 1.5rem;    /* 24px */
+    --text-3xl: 1.875rem;  /* 30px */
+    --text-4xl: 2.25rem;   /* 36px */
+    --text-5xl: 3rem;      /* 48px */
+    
+    /* Component Sizes */
+    --component-xs: 1.5rem;  /* 24px */
+    --component-sm: 2rem;    /* 32px */
+    --component-md: 2.5rem;  /* 40px */
+    --component-lg: 3rem;    /* 48px */
+    --component-xl: 4rem;    /* 64px */
+    
+    /* Layout Sizes */
+    --layout-xs: 20rem;     /* 320px */
+    --layout-sm: 24rem;     /* 384px */
+    --layout-md: 28rem;     /* 448px */
+    --layout-lg: 32rem;     /* 512px */
+    --layout-xl: 36rem;     /* 576px */
+    --layout-2xl: 42rem;    /* 672px */
+    
+    /* Radius Scale */
+    --radius-sm: 0.25rem;   /* 4px */
+    --radius-md: 0.5rem;    /* 8px */
+    --radius-lg: 0.75rem;   /* 12px */
+    --radius-xl: 1rem;      /* 16px */
+    --radius-full: 9999px;  /* Full rounded */
   }
  
   .dark {
-    --background: 224 71% 4%;
+    /* Dark theme maintaining blueprint calm colors */
+    --background: 224 71% 4%;       /* Dark blue background */
     --foreground: 213 31% 91%;
-    --card: 224 71% 4%;
+    --card: 224 71% 6%;             /* Slightly lighter than background */
     --card-foreground: 213 31% 91%;
     --popover: 224 71% 4%;
     --popover-foreground: 213 31% 91%;
-    --primary: 210 40% 98%;
+    --primary: 207 82% 75%;         /* Lighter soft blue for dark mode */
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 215 28% 17%;
     --secondary-foreground: 213 31% 91%;
     --muted: 215 28% 17%;
     --muted-foreground: 218 11% 65%;
-    --accent: 215 28% 17%;
+    --accent: 260 45% 70%;          /* Deeper lavender for dark mode (#B197D4) */
     --accent-foreground: 213 31% 91%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 213 31% 91%;
     --border: 215 28% 17%;
     --input: 215 28% 17%;
-    --ring: 216 34% 65%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
+    --ring: 207 82% 75%;            /* Focus rings use primary */
+    --chart-1: 207 82% 75%;         /* Primary blue for dark charts */
+    --chart-2: 260 45% 70%;         /* Accent lavender for dark charts */
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
@@ -67,5 +125,69 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Performance optimizations */
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Improve font rendering */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Reduce layout thrashing */
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Optimize animations */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Optimize scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer utilities {
+  /* Design System Spacing Utilities */
+  .space-token-0 { @apply space-y-0; }
+  .space-token-1 { @apply space-y-1; }
+  .space-token-2 { @apply space-y-2; }
+  .space-token-3 { @apply space-y-3; }
+  .space-token-4 { @apply space-y-4; }
+  .space-token-6 { @apply space-y-6; }
+  .space-token-8 { @apply space-y-8; }
+  
+  /* Icon Size Utilities */
+  .icon-xs { width: var(--icon-xs); height: var(--icon-xs); }
+  .icon-sm { width: var(--icon-sm); height: var(--icon-sm); }
+  .icon-md { width: var(--icon-md); height: var(--icon-md); }
+  .icon-lg { width: var(--icon-lg); height: var(--icon-lg); }
+  .icon-xl { width: var(--icon-xl); height: var(--icon-xl); }
+  .icon-2xl { width: var(--icon-2xl); height: var(--icon-2xl); }
+  
+  /* Component Size Utilities */
+  .component-xs { width: var(--component-xs); height: var(--component-xs); }
+  .component-sm { width: var(--component-sm); height: var(--component-sm); }
+  .component-md { width: var(--component-md); height: var(--component-md); }
+  .component-lg { width: var(--component-lg); height: var(--component-lg); }
+  .component-xl { width: var(--component-xl); height: var(--component-xl); }
 }
 

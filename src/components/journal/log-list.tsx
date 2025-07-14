@@ -57,7 +57,7 @@ export function LogList() {
          <Card className="flex flex-col items-center justify-center p-12 text-center border-dashed">
             <CardHeader>
                 <div className="mx-auto bg-primary/10 p-4 rounded-full">
-                    <Activity className="h-12 w-12 text-primary" />
+                    <Activity className="icon-2xl text-primary" />
                 </div>
                 <CardTitle className="mt-4">No Log Entries Yet</CardTitle>
                 <CardDescription>
@@ -91,7 +91,7 @@ export function LogList() {
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
-                      <Trash2 className="h-4 w-4" />
+                                              <Trash2 className="icon-sm" />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>

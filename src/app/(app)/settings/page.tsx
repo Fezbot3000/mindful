@@ -1,5 +1,12 @@
 import { PageHeader } from "@/components/page-header";
-import { DataManagement } from "@/components/settings/data-management";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import dynamic from "next/dynamic";
+
+// Lazy load the data management component
+const DataManagement = dynamic(() => import("@/components/settings/data-management").then(mod => ({ default: mod.DataManagement })), {
+  loading: () => <Skeleton className="h-[400px] w-full" />,
+});
 
 export default function SettingsPage() {
   return (
@@ -8,7 +15,9 @@ export default function SettingsPage() {
         title="Settings"
         description="Manage your application data and preferences."
       />
-      <DataManagement />
+      <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+        <DataManagement />
+      </Suspense>
     </div>
   );
 }
