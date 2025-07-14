@@ -1,5 +1,5 @@
 import React from "react";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { MainNav } from "@/components/main-nav";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -13,24 +13,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <LogsProvider>
       <SidebarProvider>
-        <div className="min-h-screen w-full">
-          <Sidebar>
-            <SidebarHeader className="p-4">
-              <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-                <Image src="/logo.svg" alt="Mindful Track Logo" width={24} height={24} />
-                <span className="group-data-[collapsible=icon]:hidden">Mindful Track</span>
-              </Link>
-            </SidebarHeader>
-            <SidebarContent>
-              <MainNav />
-            </SidebarContent>
-            <SidebarFooter className="group-data-[collapsible=icon]:hidden">
-               <div className="text-xs text-muted-foreground p-4">
-                © {new Date().getFullYear()} Mindful Track
-               </div>
-            </SidebarFooter>
-          </Sidebar>
-          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+        <Sidebar>
+          <SidebarHeader className="p-4">
+            <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
+              <Image src="/logo.svg" alt="Mindful Track Logo" width={24} height={24} />
+              <span className="group-data-[collapsible=icon]:hidden">Mindful Track</span>
+            </Link>
+          </SidebarHeader>
+          <SidebarContent>
+            <MainNav />
+          </SidebarContent>
+          <SidebarFooter className="group-data-[collapsible=icon]:hidden">
+             <div className="text-xs text-muted-foreground p-4">
+              © {new Date().getFullYear()} Mindful Track
+             </div>
+          </SidebarFooter>
+        </Sidebar>
+        <SidebarInset>
             <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
               <SidebarTrigger className="sm:hidden" />
               <div className="flex items-center gap-4 ml-auto">
@@ -49,8 +48,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               </QuickLogDialog>
             </main>
-          </div>
-        </div>
+        </SidebarInset>
       </SidebarProvider>
     </LogsProvider>
   );
