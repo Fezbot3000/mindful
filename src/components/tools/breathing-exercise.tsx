@@ -5,12 +5,19 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useLogs } from "@/hooks/use-logs";
 import { useToast } from "@/hooks/use-toast";
+import { AnimatePresence, motion } from "framer-motion";
 
 const stages = [
   { name: "Breathe In", duration: 4 },
   { name: "Hold", duration: 7 },
   { name: "Breathe Out", duration: 8 },
 ];
+
+const prompts: Record<string, string> = {
+    "Breathe In": "Breathe in calm—this activates relaxation, easing anxiety.",
+    "Hold": "Hold and notice—building focus, like training your mind for ADHD.",
+    "Breathe Out": "Breathe out worries—releasing tension, backed by stress science.",
+};
 
 const TOTAL_DURATION_MINUTES = 5;
 const TOTAL_DURATION_SECONDS = TOTAL_DURATION_MINUTES * 60;
@@ -20,13 +27,14 @@ export function BreathingExercise() {
   const [stageIndex, setStageIndex] = useState(0);
   const [countdown, setCountdown] = useState(stages[0].duration);
   const [totalTime, setTotalTime] = useState(0);
+  const [currentPrompt, setCurrentPrompt] = useState("");
 
   const { addLog } = useLogs();
   const { toast } = useToast();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const promptTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const stage = stages[stageIndex];
-  const stageDurationMs = stage.duration * 1000;
 
   useEffect(() => {
     if (isActive) {
@@ -43,9 +51,19 @@ export function BreathingExercise() {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
+      if (promptTimeoutRef.current) {
+          clearTimeout(promptTimeoutRef.current);
+      }
     };
   }, [isActive]);
 
+  const showPrompt = (promptText: string) => {
+    setCurrentPrompt(promptText);
+    if(promptTimeoutRef.current) clearTimeout(promptTimeoutRef.current);
+    promptTimeoutRef.current = setTimeout(() => {
+      setCurrentPrompt("");
+    }, 5000); // Auto-dismiss after 5 seconds
+  };
 
   useEffect(() => {
      if (!isActive) return;
@@ -59,6 +77,7 @@ export function BreathingExercise() {
       const nextStageIndex = (stageIndex + 1) % stages.length;
       setStageIndex(nextStageIndex);
       setCountdown(stages[nextStageIndex].duration);
+      showPrompt(prompts[stages[nextStageIndex].name]);
     }
   }, [countdown, totalTime, isActive, stageIndex]);
 
@@ -68,10 +87,12 @@ export function BreathingExercise() {
     setStageIndex(0);
     setCountdown(stages[0].duration);
     setTotalTime(0);
+    showPrompt(prompts[stages[0].name]);
   };
 
   const handleStop = async (completed = false) => {
     setIsActive(false);
+    setCurrentPrompt("");
     if (completed) {
       try {
         await addLog({
@@ -87,17 +108,41 @@ export function BreathingExercise() {
   };
 
   const progress = (totalTime / TOTAL_DURATION_SECONDS) * 100;
-
+  const stageProgress = ((stage.duration - countdown + 1) / stage.duration) * 100;
+  
   return (
-    <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 h-96">
-      <div className="relative w-48 h-48">
-        <div className={`absolute inset-0 rounded-full bg-primary/20`} 
+    <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 h-96 relative overflow-hidden">
+        
+       <AnimatePresence>
+        {currentPrompt && (
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ ease: "easeInOut", duration: 0.5 }}
+                className="absolute top-8 p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border"
+            >
+                {currentPrompt}
+            </motion.div>
+        )}
+       </AnimatePresence>
+
+      <div className="relative w-48 h-48 flex items-center justify-center">
+        <div 
+             className="absolute inset-0 rounded-full bg-primary/20 transition-transform duration-1000 ease-linear"
+             style={{
+                transform: `scale(${isActive ? 1 : 0.5})`,
+             }}
+        />
+        <div 
+             className={`absolute inset-0 rounded-full bg-primary/30 origin-bottom`}
              style={{ 
-                transition: `transform ${stageDurationMs}ms linear`, 
-                transform: isActive && (stage.name === "Breathe In" || stage.name === "Hold") ? 'scale(1)' : 'scale(0.5)'
+                clipPath: 'circle(50% at 50% 50%)',
+                transition: 'transform 1s linear',
+                transform: `scaleY(${isActive ? stageProgress / 100 : 0})`
              }} 
         />
-        <div className="absolute inset-4 rounded-full bg-primary/40 flex items-center justify-center">
+        <div className="relative rounded-full bg-primary/60 flex items-center justify-center w-40 h-40">
             <div className="text-center text-primary-foreground">
                 <p className="text-2xl font-bold">
                     {isActive ? stage.name : "Start"}
@@ -109,7 +154,7 @@ export function BreathingExercise() {
         </div>
       </div>
       
-       <div className="w-full max-w-sm space-y-2">
+       <div className="w-full max-w-sm space-y-2 z-10">
          <Button onClick={() => (isActive ? handleStop() : handleStart())} size="lg" className="w-full">
             {isActive ? "Stop" : "Start Exercise"}
          </Button>
@@ -119,8 +164,7 @@ export function BreathingExercise() {
          <p className="text-center text-sm text-muted-foreground">{TOTAL_DURATION_MINUTES} Minute Session</p>
       </div>
 
-
-      <div className="flex justify-center space-x-4">
+      <div className="flex justify-center space-x-4 z-10">
         <p className="text-sm text-muted-foreground">In: {stages[0].duration}s</p>
         <p className="text-sm text-muted-foreground">Hold: {stages[1].duration}s</p>
         <p className="text-sm text-muted-foreground">Out: {stages[2].duration}s</p>
@@ -128,4 +172,3 @@ export function BreathingExercise() {
     </div>
   );
 }
-
