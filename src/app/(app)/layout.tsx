@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider } from "@/components/ui/sidebar";
 import { MainNav } from "@/components/main-nav";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,8 @@ import Link from "next/link";
 import { LogsProvider } from "@/hooks/use-logs";
 import { AuthButton } from "@/components/auth-button";
 import { AuthProvider } from "@/lib/auth";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileNav } from "@/components/mobile-nav";
+import { cn } from "@/lib/utils";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -39,7 +39,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarFooter>
             </Sidebar>
 
-            <div className="flex-1">
+            <div className="flex-1 md:pl-[3.5rem]">
               <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
                 <div className="flex items-center gap-4 ml-auto">
                   <AuthButton />
