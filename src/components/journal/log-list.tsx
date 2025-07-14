@@ -85,7 +85,7 @@ export function LogList() {
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div>
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-xl">
                             <Icon className="h-5 w-5 text-primary" />
                             {log.category}
                         </CardTitle>
@@ -100,7 +100,7 @@ export function LogList() {
                 </div>
             </CardHeader>
             <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground line-clamp-3">
                 {log.description || "No description provided."}
                 </p>
             </CardContent>

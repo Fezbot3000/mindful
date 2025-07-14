@@ -84,7 +84,7 @@ export function JournalList() {
       {entries.map((entry) => (
         <Card key={entry.id} className="flex flex-col">
           <CardHeader>
-            <CardTitle className="truncate">{entry.title}</CardTitle>
+            <CardTitle className="truncate text-xl">{entry.title}</CardTitle>
             <CardDescription>
               {format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}
             </CardDescription>
@@ -94,7 +94,7 @@ export function JournalList() {
               {entry.content}
             </p>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-between items-center">
             <ViewJournalEntryDialog entry={entry}>
               <Button variant="outline" size="sm">
                 <BookOpen className="mr-2 h-4 w-4" />
