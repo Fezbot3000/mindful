@@ -82,51 +82,43 @@ export function LogList() {
         const Icon = categoryIcons[log.category] || Activity;
         return (
             <Card key={log.id} className="flex flex-col">
-            <CardHeader>
-                <div className="flex justify-between items-start">
-                    <div>
-                        <CardTitle className="flex items-center gap-2 text-xl">
-                            <Icon className="h-5 w-5 text-primary" />
-                            {log.category}
-                        </CardTitle>
-                        <CardDescription>
-                        {format(log.timestamp, "MMMM d, yyyy 'at' h:mm a")}
-                        </CardDescription>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                        <p className="font-bold text-lg text-primary">{log.intensity}/10</p>
-                        <p className="text-xs text-muted-foreground">Intensity</p>
-                    </div>
-                </div>
-            </CardHeader>
-            <CardContent className="flex-grow">
+              <CardHeader>
+                <CardTitle className="truncate text-xl flex items-center gap-2">
+                  <Icon className="h-5 w-5 text-primary flex-shrink-0" />
+                  <span>{log.category} ({log.intensity}/10)</span>
+                </CardTitle>
+                <CardDescription>
+                  {format(log.timestamp, "MMMM d, yyyy 'at' h:mm a")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow">
                 <p className="text-sm text-muted-foreground line-clamp-3">
-                {log.description || "No description provided."}
+                  {log.description || "No description provided."}
                 </p>
-            </CardContent>
-            <CardFooter className="flex justify-end">
+              </CardContent>
+              <CardFooter className="flex justify-end">
                 <AlertDialog>
-                <AlertDialogTrigger asChild>
+                  <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
-                    <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
                     <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
                         This action cannot be undone. This will permanently delete this log entry.
-                    </AlertDialogDescription>
+                      </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDelete(log.id)}>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(log.id)}>
                         Delete
-                    </AlertDialogAction>
+                      </AlertDialogAction>
                     </AlertDialogFooter>
-                </AlertDialogContent>
+                  </AlertDialogContent>
                 </AlertDialog>
-            </CardFooter>
+              </CardFooter>
             </Card>
         )
       })}
