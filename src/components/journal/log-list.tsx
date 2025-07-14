@@ -83,9 +83,8 @@ export function LogList() {
         return (
             <Card key={log.id} className="flex flex-col">
               <CardHeader>
-                <CardTitle className="truncate text-xl flex items-center gap-2">
-                  <Icon className="h-5 w-5 text-primary flex-shrink-0" />
-                  <span>{log.category} ({log.intensity}/10)</span>
+                <CardTitle className="truncate text-xl">
+                  {log.category} ({log.intensity}/10)
                 </CardTitle>
                 <CardDescription>
                   {format(log.timestamp, "MMMM d, yyyy 'at' h:mm a")}
