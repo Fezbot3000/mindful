@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster"
 export const metadata: Metadata = {
   title: 'Mindful Track',
   description: 'A personal tool to track thoughts and build self-awareness.',
-  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
