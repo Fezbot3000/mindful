@@ -162,13 +162,13 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
               </div>
               <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                      <Label htmlFor="content">Let it out...</Label>
+                      <Label htmlFor="content">Your thoughts and feelings...</Label>
                       <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="h-7 w-7">
                           {isListening ? <MicOff className="text-destructive" /> : <Mic />}
                           <span className="sr-only">Toggle voice recognition for content</span>
                       </Button>
                   </div>
-                  <Textarea id="content" rows={6} placeholder="What's on your mind? What are you feeling right now?" {...form.register("content")} />
+                  <Textarea id="content" rows={6} placeholder="Describe what's on your mind, the situation, or any feelings that are present." {...form.register("content")} />
                   {form.formState.errors.content && <p className="text-sm text-destructive">{form.formState.errors.content.message}</p>}
               </div>
 
