@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -141,9 +142,10 @@ const SidebarProvider = React.forwardRef<
               } as React.CSSProperties
             }
             className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full",
+              "group flex min-h-svh w-full",
               className
             )}
+            data-state={state}
             ref={ref}
             {...props}
           >
@@ -214,7 +216,7 @@ const Sidebar = React.forwardRef<
       <aside
         ref={ref}
         className={cn(
-            "group fixed inset-y-0 z-40 hidden h-svh flex-col bg-card text-card-foreground border-r transition-[width] duration-200 ease-in-out md:flex",
+            "group/sidebar fixed inset-y-0 z-40 hidden h-svh flex-col bg-card text-card-foreground border-r transition-[width] duration-200 ease-in-out md:flex",
             open ? "w-[--sidebar-width]" : "w-[--sidebar-width-icon]",
             className
         )}
@@ -293,7 +295,7 @@ const SidebarInset = React.forwardRef<
     <main
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background transition-[margin-left] duration-200 ease-in-out md:ml-[var(--sidebar-width-icon)] group-data-[state=expanded]/sidebar-wrapper:md:ml-[var(--sidebar-width)]",
+        "relative flex min-h-svh flex-1 flex-col bg-background transition-[margin-left] duration-200 ease-in-out md:ml-[var(--sidebar-width-icon)] group-data-[state=expanded]:md:ml-[var(--sidebar-width)]",
         className
       )}
       {...props}
