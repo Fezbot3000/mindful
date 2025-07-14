@@ -21,7 +21,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <AuthProvider>
       <LogsProvider>
         <SidebarProvider>
-          <div className="md:flex">
+          <div className="group md:flex">
             <Sidebar className="hidden md:flex">
               <SidebarHeader className="p-4">
                 <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
@@ -39,16 +39,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarFooter>
             </Sidebar>
 
-            <div className="flex-1 md:pl-[3.5rem]">
-              <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
-                <div className="flex items-center gap-4 ml-auto">
-                  <AuthButton />
-                  <ThemeToggle />
-                </div>
-              </header>
-              <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-24 md:pb-8">
-                {children}
-              </main>
+            <div className="transition-[margin-left] ease-in-out duration-300 md:ml-[3.5rem] group-data-[state=expanded]:md:ml-[16rem]">
+              <div className="flex-1">
+                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
+                  <div className="flex items-center gap-4 ml-auto">
+                    <AuthButton />
+                    <ThemeToggle />
+                  </div>
+                </header>
+                <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-24 md:pb-8">
+                  {children}
+                </main>
+              </div>
             </div>
           </div>
           <MobileNav />
