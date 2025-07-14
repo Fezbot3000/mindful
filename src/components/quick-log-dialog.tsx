@@ -1,12 +1,12 @@
+
 "use client";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { addLog } from "@/lib/data";
 import { LogCategory } from "@/types";
 import { Loader2 } from "lucide-react";
+import { useLogs } from "@/hooks/use-logs";
 
 const logSchema = z.object({
   category: z.enum(["Intrusive Thought", "Fear", "Compulsion", "Hyper-Fixation"]),
@@ -30,6 +31,8 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { addLog: addLogToState } = useLogs();
+  
   const form = useForm<LogFormValues>({
     resolver: zodResolver(logSchema),
     defaultValues: {
@@ -42,11 +45,12 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const onSubmit = async (data: LogFormValues) => {
     setLoading(true);
     try {
-      await addLog({
+      const newLog = await addLog({
         category: data.category as LogCategory,
         intensity: data.intensity,
         description: data.description,
       });
+      addLogToState(newLog);
       toast({ title: "Log Saved", description: "Your entry has been successfully saved." });
       form.reset();
       setOpen(false);

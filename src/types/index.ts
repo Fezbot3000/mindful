@@ -1,19 +1,16 @@
-import type { Timestamp } from "firebase/firestore";
 
 export type LogCategory = "Intrusive Thought" | "Fear" | "Compulsion" | "Hyper-Fixation";
 
 export interface Log {
-  id: string;
-  userId: string;
+  id: number;
   category: LogCategory;
   intensity: number;
   description?: string;
-  timestamp: Timestamp;
+  timestamp: Date;
 }
 
 export interface JournalEntry {
-  id: string;
-  userId: string;
+  id: number;
   title: string;
   content: string;
   prompts?: {
@@ -21,5 +18,5 @@ export interface JournalEntry {
     schemaLink?: string;
     evidence?: string;
   };
-  timestamp: Timestamp;
+  timestamp: Date;
 }

@@ -1,15 +1,16 @@
+
 "use client";
 
 import { PageHeader } from "@/components/page-header";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { getLogs, getRecentLogs } from "@/lib/data";
 import { Log } from "@/types";
-import { useAuth } from "@/lib/auth";
 import { differenceInCalendarDays, startOfToday } from "date-fns";
 import { BarChart, BookOpen, Repeat, TrendingUp } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
+import { useLogs } from "@/hooks/use-logs";
 
 const quotes = [
   "Tracking builds strength – you're in control.",
@@ -20,36 +21,37 @@ const quotes = [
 ];
 
 export function DashboardClientPage() {
-  const { user } = useAuth();
-  const [logs, setLogs] = useState<Log[]>([]);
+  const { logs, loading } = useLogs();
   const [recentLogs, setRecentLogs] = useState<Log[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [recentLoading, setRecentLoading] = useState(true);
   const [quote, setQuote] = useState("");
 
   useEffect(() => {
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-
-    const fetchData = async () => {
-      setLoading(true);
-      const [allLogsData, recentLogsData] = await Promise.all([getLogs(), getRecentLogs(5)]);
-      setLogs(allLogsData);
-      setRecentLogs(recentLogsData);
-      setLoading(false);
-    };
-    fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchRecent = async () => {
+      setRecentLoading(true);
+      const recentLogsData = await getRecentLogs(5);
+      setRecentLogs(recentLogsData);
+      setRecentLoading(false);
+    }
+    fetchRecent();
+  }, [logs]);
+
 
   const stats = useMemo(() => {
     const today = startOfToday();
-    const logsToday = logs.filter(log => differenceInCalendarDays(log.timestamp.toDate(), today) === 0).length;
+    const logsToday = logs.filter(log => differenceInCalendarDays(log.timestamp, today) === 0).length;
 
     let streak = 0;
     if (logs.length > 0) {
-      const uniqueLogDays = [...new Set(logs.map(log => log.timestamp.toDate().toDateString()))]
+      const uniqueLogDays = [...new Set(logs.map(log => new Date(log.timestamp).toDateString()))]
         .map(dateStr => new Date(dateStr))
         .sort((a, b) => b.getTime() - a.getTime());
 
-      if (differenceInCalendarDays(today, uniqueLogDays[0]) <= 1) {
+      if (uniqueLogDays.length > 0 && differenceInCalendarDays(today, uniqueLogDays[0]) <= 1) {
         streak = 1;
         for (let i = 0; i < uniqueLogDays.length - 1; i++) {
           if (differenceInCalendarDays(uniqueLogDays[i], uniqueLogDays[i+1]) === 1) {
@@ -64,10 +66,12 @@ export function DashboardClientPage() {
     return { logsToday, streak };
   }, [logs]);
 
+  const isLoading = loading || recentLoading;
+
   return (
     <div className="space-y-6">
       <PageHeader
-        title={`Welcome, ${user?.displayName || 'User'}`}
+        title="Welcome Back"
         description={quote}
       />
 
@@ -78,7 +82,7 @@ export function DashboardClientPage() {
             <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.logsToday}</div>}
+            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.logsToday}</div>}
           </CardContent>
         </Card>
         <Card>
@@ -87,7 +91,7 @@ export function DashboardClientPage() {
             <Repeat className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.streak} days</div>}
+            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.streak} days</div>}
           </CardContent>
         </Card>
          <Card>
@@ -96,7 +100,7 @@ export function DashboardClientPage() {
             <BarChart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{logs.length}</div>}
+            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{logs.length}</div>}
           </CardContent>
         </Card>
         <Card>
@@ -105,7 +109,7 @@ export function DashboardClientPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {loading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{logs.length > 0 ? (logs.reduce((acc, log) => acc + log.intensity, 0) / logs.length).toFixed(1) : 'N/A'}</div>}
+            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{logs.length > 0 ? (logs.reduce((acc, log) => acc + log.intensity, 0) / logs.length).toFixed(1) : 'N/A'}</div>}
           </CardContent>
         </Card>
       </div>
@@ -116,7 +120,7 @@ export function DashboardClientPage() {
           <CardDescription>A quick look at your most recent entries.</CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
+          {isLoading ? (
              <div className="space-y-4">
                 {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
             </div>
@@ -130,7 +134,7 @@ export function DashboardClientPage() {
                   </div>
                   <div className="text-right">
                     <div className="font-bold text-primary">{log.intensity}/10</div>
-                    <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp.toDate(), { addSuffix: true })}</p>
+                    <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
                   </div>
                 </li>
               ))}

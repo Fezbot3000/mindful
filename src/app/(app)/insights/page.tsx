@@ -1,8 +1,8 @@
 import { PageHeader } from "@/components/page-header";
 import { LogCalendar } from "@/components/insights/log-calendar";
-import { GeminiInsightsCard } from "@/components/insights/gemini-insights-card";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ExportCard } from "@/components/insights/export-card";
 
 export default function InsightsPage() {
   return (
@@ -14,7 +14,7 @@ export default function InsightsPage() {
       <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
         <LogCalendar />
       </Suspense>
-      <GeminiInsightsCard />
+      <ExportCard />
     </div>
   );
 }

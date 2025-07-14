@@ -1,28 +1,16 @@
+
 "use client";
 
-import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getLogs } from "@/lib/data";
-import { Log } from "@/types";
 import { Skeleton } from "../ui/skeleton";
 import { DayPicker } from "react-day-picker";
+import { useLogs } from "@/hooks/use-logs";
 
 export function LogCalendar() {
-  const [logs, setLogs] = useState<Log[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { logs, loading } = useLogs();
 
-  useEffect(() => {
-    const fetchLogs = async () => {
-      setLoading(true);
-      const logsData = await getLogs();
-      setLogs(logsData);
-      setLoading(false);
-    };
-    fetchLogs();
-  }, []);
-
-  const logDays = logs.map((log) => log.timestamp.toDate());
+  const logDays = logs.map((log) => log.timestamp);
 
   if (loading) {
     return (
