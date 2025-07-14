@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useLogs } from "@/hooks/use-logs";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
-import { Music, MusicOff } from "lucide-react";
+import { Music, VolumeX } from "lucide-react";
 
 const stages = [
   { name: "Breathe In", duration: 4 },
@@ -112,14 +112,18 @@ export function BreathingExercise() {
   };
 
   const toggleMusic = () => {
-    if (audioRef.current) {
-        if (isMusicPlaying) {
-            audioRef.current.pause();
-        } else {
-            audioRef.current.play();
-        }
-        setIsMusicPlaying(!isMusicPlaying);
+    if (!audioRef.current) {
+        // Create audio element if it doesn't exist
+        audioRef.current = new Audio(MUSIC_URL);
+        audioRef.current.loop = true;
     }
+
+    if (isMusicPlaying) {
+        audioRef.current.pause();
+    } else {
+        audioRef.current.play();
+    }
+    setIsMusicPlaying(!isMusicPlaying);
   };
 
 
@@ -138,7 +142,7 @@ export function BreathingExercise() {
                 aria-label="Toggle Music"
                 className="text-muted-foreground"
             >
-                {isMusicPlaying ? <MusicOff /> : <Music />}
+                {isMusicPlaying ? <Music /> : <VolumeX />}
             </Button>
         </div>
         
