@@ -1,5 +1,5 @@
 import React from "react";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { MainNav } from "@/components/main-nav";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { QuickLogDialog } from "@/components/quick-log-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
-import { LogsProvider } from "@/hooks/use-logs.tsx";
+import { LogsProvider } from "@/hooks/use-logs";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,16 +30,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                </div>
             </SidebarFooter>
           </Sidebar>
-          <div className="flex flex-col flex-1">
-            <header className="flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6 sticky top-0 z-30">
-              <div className="md:hidden">
-                <SidebarTrigger />
-              </div>
+          <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+            <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+              <SidebarTrigger className="sm:hidden" />
               <div className="flex items-center gap-4 ml-auto">
                 <ThemeToggle />
               </div>
             </header>
-            <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
               {children}
               <QuickLogDialog>
                 <Button
