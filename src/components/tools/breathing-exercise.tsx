@@ -120,7 +120,7 @@ export function BreathingExercise() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ ease: "easeInOut", duration: 0.5 }}
-                className="absolute top-8 p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border"
+                className="absolute top-8 p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20"
             >
                 {currentPrompt}
             </motion.div>
