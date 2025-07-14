@@ -1,5 +1,5 @@
 
-export type LogCategory = "Health Fear" | "Intrusive Thought" | "Compulsion" | "Schema Trigger" | "Accomplished";
+export type LogCategory = "Health Fear" | "Intrusive Thought" | "Compulsion" | "Schema Trigger" | "Accomplished" | "Journal Reflection";
 
 export interface Log {
   id: number;

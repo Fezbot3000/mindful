@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 
 const logSchema = z.object({
-  category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished"]),
+  category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished", "Journal Reflection"]),
   intensity: z.number().min(1).max(10),
   description: z.string().optional(),
 });
@@ -32,6 +32,7 @@ const categories: { name: LogCategory, colorClass: string }[] = [
     { name: "Compulsion", colorClass: "border-yellow-500 focus-visible:ring-yellow-500" },
     { name: "Schema Trigger", colorClass: "border-purple-500 focus-visible:ring-purple-500" },
     { name: "Accomplished", colorClass: "border-green-500 focus-visible:ring-green-500" },
+    { name: "Journal Reflection", colorClass: "border-blue-500 focus-visible:ring-blue-500" },
 ];
 
 const categoryPrompts: Record<LogCategory, string> = {
@@ -40,6 +41,7 @@ const categoryPrompts: Record<LogCategory, string> = {
     "Compulsion": "e.g., Felt the need to check the locks multiple times.",
     "Schema Trigger": "e.g., A comment from my boss made me feel like a complete failure.",
     "Accomplished": "e.g., Resisted a compulsion or went to an appointment I was anxious about.",
+    "Journal Reflection": "A summary of a deeper reflection you just wrote.",
 };
 
 const intensityLabels: { [key: number]: string } = {

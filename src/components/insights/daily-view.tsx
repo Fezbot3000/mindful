@@ -4,7 +4,7 @@
 import { Log, LogCategory } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { format } from "date-fns";
-import { HeartPulse, Repeat, TrendingUp, Sparkles, Activity } from "lucide-react";
+import { HeartPulse, Repeat, TrendingUp, Sparkles, Activity, BookText } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 
 const categoryIcons: Record<LogCategory, React.ElementType> = {
@@ -13,6 +13,7 @@ const categoryIcons: Record<LogCategory, React.ElementType> = {
   "Compulsion": Repeat,
   "Schema Trigger": TrendingUp,
   "Accomplished": Sparkles,
+  "Journal Reflection": BookText,
 };
 
 interface DailyViewProps {

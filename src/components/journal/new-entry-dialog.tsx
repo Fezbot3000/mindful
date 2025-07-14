@@ -17,6 +17,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ScrollArea } from "../ui/scroll-area";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "../ui/badge";
+import { useLogs } from "@/hooks/use-logs";
 
 const entrySchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -45,6 +46,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { addLog: addLogToState } = useLogs();
   
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -126,7 +128,8 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   const onSubmit = async (data: EntryFormValues) => {
     setLoading(true);
     try {
-      await addJournalEntry(data);
+      const { newLog } = await addJournalEntry(data);
+      addLogToState(newLog); // Update the global log state for dashboard/insights
       toast({ title: "Well done reflecting!", description: "You're building awareness. Your journal entry has been saved." });
       onEntryAdded();
       form.reset();
@@ -148,8 +151,8 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
             A space for deeper reflection. Use the optional prompts to guide your thoughts.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="overflow-y-auto">
-            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 px-6 pb-6">
+        <ScrollArea className="overflow-y-auto pr-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 pl-6 pb-6">
               <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>
                   <Input id="title" {...form.register("title")} />

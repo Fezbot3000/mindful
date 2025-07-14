@@ -91,14 +91,25 @@ export const getLogsForDateRange = async (startDate: Date, endDate: Date): Promi
 };
 
 // Journal Entry Functions
-export const addJournalEntry = async (entryData: Omit<JournalEntry, 'id' | 'timestamp'>): Promise<JournalEntry> => {
+export const addJournalEntry = async (entryData: Omit<JournalEntry, 'id' | 'timestamp'>): Promise<{newEntry: JournalEntry, newLog: Log}> => {
   const db = await getDb();
-  const newEntry = {
+  const timestamp = new Date();
+  const newEntryData = {
     ...entryData,
-    timestamp: new Date(),
+    timestamp,
   };
-  const id = await db.add(JOURNAL_STORE, newEntry as any);
-  return { id, ...newEntry };
+  const entryId = await db.add(JOURNAL_STORE, newEntryData as any);
+  const newEntry = { id: entryId, ...newEntryData };
+
+  // Also create a corresponding log entry
+  const newLogData = {
+      category: "Journal Reflection" as LogCategory,
+      intensity: entryData.intensity || 5,
+      description: entryData.title,
+  };
+  const newLog = await addLog(newLogData);
+
+  return { newEntry, newLog };
 };
 
 export const getJournalEntries = async (): Promise<JournalEntry[]> => {

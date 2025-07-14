@@ -7,7 +7,7 @@ import { useEffect, useState, useMemo } from "react";
 import { getRecentLogs } from "@/lib/data";
 import { Log, LogCategory } from "@/types";
 import { differenceInCalendarDays, startOfToday } from "date-fns";
-import { HeartPulse, Repeat, TrendingUp, Sparkles } from "lucide-react";
+import { HeartPulse, Repeat, TrendingUp, Sparkles, BookText } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { useLogs } from "@/hooks/use-logs";
@@ -26,6 +26,7 @@ const categoryIcons: Record<LogCategory, React.ElementType> = {
     "Compulsion": Repeat,
     "Schema Trigger": TrendingUp,
     "Accomplished": Sparkles, // Using Sparkles for positive as well
+    "Journal Reflection": BookText,
 };
 
 
