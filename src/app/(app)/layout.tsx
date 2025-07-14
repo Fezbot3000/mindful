@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { QuickLogDialog } from "@/components/quick-log-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
-import { LogsProvider } from "@/hooks/use-logs";
+import { LogsProvider } from "@/hooks/use-logs.tsx";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,7 +30,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                </div>
             </SidebarFooter>
           </Sidebar>
-          <SidebarInset>
+          <div className="flex flex-col flex-1">
             <header className="flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6 sticky top-0 z-30">
               <div className="md:hidden">
                 <SidebarTrigger />
@@ -51,7 +51,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               </QuickLogDialog>
             </main>
-          </SidebarInset>
+          </div>
         </div>
       </SidebarProvider>
     </LogsProvider>

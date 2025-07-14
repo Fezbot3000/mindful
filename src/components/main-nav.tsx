@@ -27,7 +27,7 @@ export function MainNav() {
                 className="w-full justify-start"
             >
                 <Link href={item.href}>
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className="h-5 w-5" />
                     <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                 </Link>
             </SidebarMenuButton>
