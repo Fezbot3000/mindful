@@ -34,9 +34,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <LogsProvider>
         <SidebarProvider>
           <div className="group md:flex">
-            <Sidebar className="hidden md:flex">
+            <Sidebar className="hidden md:flex" role="navigation" aria-label="Main navigation">
               <SidebarHeader className="p-4">
-                <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
+                <Link href="/dashboard" className="flex items-center gap-2 font-semibold" aria-label="Mindful Track - Go to dashboard">
                   <Image src="/logo.svg" alt="Mindful Track Logo" width={24} height={24} />
                   <span className="group-data-[collapsible=icon]:hidden">Mindful Track</span>
                 </Link>
@@ -53,7 +53,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
             <div className="flex-1 transition-[margin-left] ease-in-out duration-300 md:ml-[3.5rem] group-data-[state=expanded]:md:ml-[16rem]">
               <div className="flex-1">
-                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
+                <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6" role="banner">
                   <div className="flex items-center gap-4 ml-auto">
                     <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
                       <AuthButton />
@@ -61,7 +61,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <ThemeToggle />
                   </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-24 md:pb-8">
+                <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-24 md:pb-8" role="main" id="main-content">
                   {children}
                 </main>
               </div>

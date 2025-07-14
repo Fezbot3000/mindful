@@ -24,7 +24,85 @@ const minutePrompts = [
 
 const TOTAL_DURATION_MINUTES = 5;
 const TOTAL_DURATION_SECONDS = TOTAL_DURATION_MINUTES * 60;
-const MUSIC_URL = "https://storage.googleapis.com/assets.mindful-track.com/ambient-music.mp3";
+
+// Generate a calming melody using Web Audio API
+const createCalmingMelody = async () => {
+  if (typeof window === 'undefined') return null;
+  
+  try {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Resume audio context if it's suspended (required by many browsers)
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+    
+    // Create oscillator and gain node for melody
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    // Connect nodes
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    // Use a soft sine wave
+    oscillator.type = 'sine';
+    
+    // Set volume
+    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+    
+    // Define a simple, calming melody (frequencies in Hz)
+    // Based on C major pentatonic scale for a peaceful sound
+    const melody = [
+      261.63, // C4
+      293.66, // D4
+      329.63, // E4
+      392.00, // G4
+      440.00, // A4
+      392.00, // G4
+      329.63, // E4
+      293.66, // D4
+    ];
+    
+    // Note duration (in seconds)
+    const noteDuration = 1.5;
+    const totalMelodyDuration = melody.length * noteDuration;
+    
+    // Schedule the melody to play and repeat
+    const scheduleNote = (frequency: number, startTime: number) => {
+      oscillator.frequency.setValueAtTime(frequency, startTime);
+      
+      // Add a gentle fade in/out for each note
+      gainNode.gain.setValueAtTime(0.1, startTime);
+      gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.1);
+      gainNode.gain.linearRampToValueAtTime(0.1, startTime + noteDuration - 0.1);
+    };
+    
+    // Schedule the initial melody
+    let currentTime = audioContext.currentTime;
+    melody.forEach((frequency, index) => {
+      scheduleNote(frequency, currentTime + (index * noteDuration));
+    });
+    
+    // Create a function to reschedule the melody for looping
+    const rescheduleInterval = setInterval(() => {
+      currentTime += totalMelodyDuration;
+      melody.forEach((frequency, index) => {
+        scheduleNote(frequency, currentTime + (index * noteDuration));
+      });
+    }, totalMelodyDuration * 1000);
+    
+    return { 
+      audioContext, 
+      oscillators: [oscillator], 
+      gainNode,
+      rescheduleInterval
+    };
+  } catch (error) {
+    console.error('Error creating audio context:', error);
+    return null;
+  }
+};
 
 export function BreathingExercise() {
   const [isActive, setIsActive] = useState(false);
@@ -37,16 +115,30 @@ export function BreathingExercise() {
   const { addLog } = useLogs();
   const { toast } = useToast();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<{
+    audioContext: AudioContext;
+    oscillators: OscillatorNode[];
+    gainNode: GainNode;
+    rescheduleInterval?: NodeJS.Timeout;
+  } | null>(null);
   
   const stage = stages[stageIndex];
 
   useEffect(() => {
-    // Initialize audio only on the client
-    if (typeof window !== 'undefined' && !audioRef.current) {
-        audioRef.current = new Audio(MUSIC_URL);
-        audioRef.current.loop = true;
-    }
+    // Cleanup audio context on unmount
+    return () => {
+      if (audioContextRef.current) {
+        try {
+          if (audioContextRef.current.rescheduleInterval) {
+            clearInterval(audioContextRef.current.rescheduleInterval);
+          }
+          audioContextRef.current.oscillators.forEach((osc: OscillatorNode) => osc.stop());
+          audioContextRef.current.audioContext.close();
+        } catch (e) {
+          // Ignore errors during cleanup
+        }
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -101,9 +193,19 @@ export function BreathingExercise() {
   const handleStop = async (completed = false) => {
     setIsActive(false);
     setCurrentPrompt("");
-    if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
+    
+    // Stop audio if playing
+    if (audioContextRef.current) {
+      try {
+        if (audioContextRef.current.rescheduleInterval) {
+          clearInterval(audioContextRef.current.rescheduleInterval);
+        }
+        audioContextRef.current.oscillators.forEach((osc: OscillatorNode) => osc.stop());
+        audioContextRef.current.audioContext.close();
+        audioContextRef.current = null;
+      } catch (e) {
+        console.error("Error stopping audio:", e);
+      }
     }
     setIsMusicPlaying(false);
 
@@ -121,20 +223,46 @@ export function BreathingExercise() {
     }
   };
 
-  const toggleMusic = () => {
-    if (!audioRef.current) return;
-
+  const toggleMusic = async () => {
     if (isMusicPlaying) {
-      audioRef.current.pause();
+      // Stop the current audio
+      if (audioContextRef.current) {
+        try {
+          if (audioContextRef.current.rescheduleInterval) {
+            clearInterval(audioContextRef.current.rescheduleInterval);
+          }
+          audioContextRef.current.oscillators.forEach((osc: OscillatorNode) => osc.stop());
+          audioContextRef.current.audioContext.close();
+          audioContextRef.current = null;
+        } catch (e) {
+          console.error("Error stopping audio:", e);
+        }
+      }
       setIsMusicPlaying(false);
     } else {
-      audioRef.current.play().then(() => {
-        setIsMusicPlaying(true);
-      }).catch(e => {
+      // Start new audio
+      try {
+        const audioSetup = await createCalmingMelody();
+        if (audioSetup) {
+          audioContextRef.current = audioSetup;
+          audioSetup.oscillators.forEach((osc: OscillatorNode) => osc.start());
+          setIsMusicPlaying(true);
+          toast({ 
+            title: "Calming Melody Started", 
+            description: "A peaceful melody is now playing. Adjust your device volume if needed." 
+          });
+        } else {
+          throw new Error("Could not create audio context");
+        }
+      } catch (e: any) {
         console.error("Audio play failed:", e);
-        toast({ variant: "destructive", title: "Audio Error", description: "Could not play audio. Please try again." });
+        toast({ 
+          variant: "destructive", 
+          title: "Audio Error", 
+          description: "Could not play calming melody. This may be due to browser restrictions." 
+        });
         setIsMusicPlaying(false);
-      });
+      }
     }
   };
 
@@ -143,7 +271,7 @@ export function BreathingExercise() {
   const stageProgress = ((stage.duration - countdown + 1) / stage.duration) * 100;
   
   return (
-    <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 relative overflow-hidden" style={{ height: 'var(--layout-sm)' }}>
+    <div className="flex flex-col items-center justify-center p-4 space-y-6 md:space-y-8 rounded-lg bg-accent/20 relative overflow-hidden min-h-[400px] max-h-[80vh]">
        <div className="absolute top-4 right-4 z-20">
             <Button
                 variant="ghost"
@@ -164,15 +292,14 @@ export function BreathingExercise() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ ease: "easeInOut", duration: 0.5 }}
-                className="absolute p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20 max-w-[90%]"
-                style={{ top: 'var(--space-8)' }}
+                className="absolute p-2 text-center text-xs md:text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20 max-w-[90%] top-4 md:top-8"
             >
                 {currentPrompt}
             </motion.div>
         )}
        </AnimatePresence>
 
-      <div className="relative flex items-center justify-center" style={{ width: 'var(--layout-xs)', height: 'var(--layout-xs)' }}>
+      <div className="relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80 max-w-[min(80vw,80vh)] max-h-[min(80vw,80vh)]">
         <div 
              className="absolute inset-0 rounded-full bg-primary/20 transition-transform duration-1000 ease-linear"
              style={{
@@ -187,13 +314,13 @@ export function BreathingExercise() {
                 transform: `scaleY(${isActive ? stageProgress / 100 : 0})`
              }} 
         />
-        <div className="relative rounded-full bg-primary/60 flex items-center justify-center" style={{ width: 'var(--layout-xs)', height: 'var(--layout-xs)' }}>
+        <div className="relative rounded-full bg-primary/60 flex items-center justify-center w-full h-full">
             <div className="text-center text-primary-foreground">
-                <p className="font-bold" style={{ fontSize: 'var(--text-2xl)' }}>
+                <p className="font-bold text-lg md:text-2xl">
                     {isActive ? stage.name : "Start"}
                 </p>
                 {isActive && (
-                    <p className="font-mono mt-2" style={{ fontSize: 'var(--text-5xl)' }}>{countdown}</p>
+                    <p className="font-mono mt-2 text-4xl md:text-5xl">{countdown}</p>
                 )}
             </div>
         </div>
@@ -209,10 +336,10 @@ export function BreathingExercise() {
          <p className="text-center text-sm text-muted-foreground">{TOTAL_DURATION_MINUTES} Minute Session</p>
       </div>
 
-      <div className="flex justify-center space-x-4 z-10">
-        <p className="text-sm text-muted-foreground">In: {stages[0].duration}s</p>
-        <p className="text-sm text-muted-foreground">Hold: {stages[1].duration}s</p>
-        <p className="text-sm text-muted-foreground">Out: {stages[2].duration}s</p>
+      <div className="flex justify-center space-x-2 md:space-x-4 z-10">
+        <p className="text-xs md:text-sm text-muted-foreground">In: {stages[0].duration}s</p>
+        <p className="text-xs md:text-sm text-muted-foreground">Hold: {stages[1].duration}s</p>
+        <p className="text-xs md:text-sm text-muted-foreground">Out: {stages[2].duration}s</p>
       </div>
     </div>
   );

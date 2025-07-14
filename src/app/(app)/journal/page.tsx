@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
+import { generatePageStructuredData } from "@/components/structured-data";
 
 // Lazy load heavy components
 const NewJournalEntryDialog = dynamic(() => import("@/components/journal/new-entry-dialog").then(mod => ({ default: mod.NewJournalEntryDialog })), {

@@ -153,8 +153,8 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
             A space for deeper reflection. Use the optional prompts to guide your thoughts.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="overflow-y-auto pr-6">
-            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 pl-6 pb-6">
+        <ScrollArea className="overflow-y-auto">
+            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 px-6 pb-6">
               <div className="space-y-2">
                   <Label htmlFor="title">Give this entry a title</Label>
                   <Input id="title" {...form.register("title")} placeholder="e.g., That feeling in my chest" />

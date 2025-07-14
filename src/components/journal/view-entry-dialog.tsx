@@ -38,8 +38,8 @@ export function ViewJournalEntryDialog({ children, entry }: ViewJournalEntryDial
             )}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow pr-6">
-            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-sans space-y-4">
+        <ScrollArea className="flex-grow">
+            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-sans space-y-4 px-6">
                 <p>{entry.content}</p>
 
                 {hasCbtFields && (
