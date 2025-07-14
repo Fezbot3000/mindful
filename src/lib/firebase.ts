@@ -1,7 +1,8 @@
+
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, initializeFirestore, persistentLocalCache, Firestore } from "firebase/firestore";
-import { getFunctions } from "firebase/functions";
+import { getFunctions, Functions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -12,31 +13,32 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-let app: FirebaseApp | undefined;
-let auth: ReturnType<typeof getAuth> | undefined;
-let db: Firestore | undefined;
-let functions: ReturnType<typeof getFunctions> | undefined;
+interface FirebaseServices {
+    app: FirebaseApp;
+    auth: Auth;
+    db: Firestore;
+    functions: Functions;
+}
 
-function getFirebaseApp() {
+let services: FirebaseServices | undefined;
+
+function getFirebaseApp(): FirebaseServices | undefined {
     if (typeof window === "undefined") {
-        return { app: undefined, auth: undefined, db: undefined, functions: undefined };
+        return undefined;
     }
 
-    if (app) {
-        return { app, auth, db, functions };
+    if (services) {
+        return services;
     }
 
     if (!firebaseConfig.projectId) {
         console.error("Firebase project ID is missing. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your .env.local file.");
-        return { app: undefined, auth: undefined, db: undefined, functions: undefined };
+        return undefined;
     }
     
-    if (getApps().length === 0) {
-        app = initializeApp(firebaseConfig);
-    } else {
-        app = getApp();
-    }
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
+    let db: Firestore;
     try {
         db = initializeFirestore(app, {
             localCache: persistentLocalCache({})
@@ -46,10 +48,11 @@ function getFirebaseApp() {
         db = getFirestore(app);
     }
 
-    auth = getAuth(app);
-    functions = getFunctions(app);
+    const auth = getAuth(app);
+    const functions = getFunctions(app);
 
-    return { app, auth, db, functions };
+    services = { app, auth, db, functions };
+    return services;
 }
 
 export { getFirebaseApp };
