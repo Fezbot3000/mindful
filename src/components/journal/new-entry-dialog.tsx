@@ -141,15 +141,15 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-2xl grid-rows-[auto_1fr_auto] max-h-[90svh] flex flex-col p-0">
+      <DialogContent className="sm:max-w-2xl grid-rows-[auto,1fr,auto] max-h-[90svh] p-0">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle>New Journal Entry</DialogTitle>
           <DialogDescription>
             A space for deeper reflection. Use the optional prompts to guide your thoughts.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow">
-            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 px-6">
+        <ScrollArea className="overflow-y-auto">
+            <form onSubmit={form.handleSubmit(onSubmit)} id="journal-form" className="space-y-4 px-6 pb-6">
               <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>
                   <Input id="title" {...form.register("title")} />
