@@ -67,7 +67,7 @@ export function LogSummary({ logs, loading, view }: LogSummaryProps) {
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Top Trigger</p>
-                {loading ? <Skeleton className="h-6 w-32 mt-1" /> : <p className="text-2xl font-bold truncate">{summary.mostFrequent}</p>}
+                {loading ? <Skeleton className="h-6 w-32 mt-1" /> : <p className="text-2xl font-bold">{summary.mostFrequent}</p>}
             </div>
         </div>
       </CardContent>
