@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/journal", label: "Journal", icon: Book },
+  { href: "/journal", label: "Entries", icon: Book },
   { href: "/insights", label: "Insights", icon: BarChart3 },
   { href: "/tools", label: "Tools", icon: Wrench },
 ];
