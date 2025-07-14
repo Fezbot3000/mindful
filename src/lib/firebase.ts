@@ -12,39 +12,33 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// This check is important for client-side rendering where process.env is available.
-if (typeof window !== "undefined" && !firebaseConfig.projectId) {
-    throw new Error("Missing Firebase project ID. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your environment variables.");
+// This check is important. It will throw a build-time error if the environment variables are missing.
+if (!firebaseConfig.projectId) {
+    throw new Error("Missing Firebase project ID. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your .env.local file.");
 }
 
 let app: FirebaseApp;
 let db: Firestore;
 
-try {
-    if (getApps().length === 0) {
-      app = initializeApp(firebaseConfig);
-    } else {
-      app = getApp();
-    }
+// Initialize Firebase
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
+}
 
+// Initialize Firestore with persistence
+try {
     if (typeof window !== "undefined") {
-        try {
-            db = initializeFirestore(app, {
-                localCache: persistentLocalCache({})
-            });
-        } catch (e) {
-            console.error("Failed to initialize Firestore with persistence, falling back.", e);
-            db = getFirestore(app);
-        }
+        db = initializeFirestore(app, {
+            localCache: persistentLocalCache({})
+        });
     } else {
         db = getFirestore(app);
     }
 } catch (error) {
-    console.error("Firebase initialization error:", error);
-    // Provide dummy objects to prevent the app from crashing entirely
-    // if Firebase fails to initialize. This is safer for SSR/build time.
-    app = {} as FirebaseApp;
-    db = {} as Firestore;
+    console.error("Firestore initialization error:", error);
+    db = getFirestore(app); // Fallback to default firestore instance
 }
 
 
