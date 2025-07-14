@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 // This check is important for client-side rendering where process.env is available.
 if (typeof window !== "undefined" && !firebaseConfig.projectId) {
-    console.error("Firebase project ID is missing. Check your .env.local file.");
+    throw new Error("Missing Firebase project ID. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your environment variables.");
 }
 
 let app: FirebaseApp;
