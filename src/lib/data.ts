@@ -38,7 +38,7 @@ export const addLog = async (logData: { category: LogCategory; intensity: number
     ...logData,
     timestamp: new Date(),
   };
-  const id = await db.add(LOGS_STORE, newLog as any); // 'as any' because id is not in the input
+  const id = await db.add(LOGS_STORE, newLog as any);
   return { id, ...newLog };
 };
 
@@ -58,4 +58,26 @@ export const getLogsForDateRange = async (startDate: Date, endDate: Date): Promi
     const range = IDBKeyRange.bound(startDate, endDate);
     const logs = await db.getAllFromIndex(LOGS_STORE, 'timestamp', range);
     return logs.reverse();
+};
+
+// Journal Entry Functions
+export const addJournalEntry = async (entryData: { title: string; content: string }): Promise<JournalEntry> => {
+  const db = await dbPromise;
+  const newEntry = {
+    ...entryData,
+    timestamp: new Date(),
+  };
+  const id = await db.add(JOURNAL_STORE, newEntry as any);
+  return { id, ...newEntry };
+};
+
+export const getJournalEntries = async (): Promise<JournalEntry[]> => {
+  const db = await dbPromise;
+  const entries = await db.getAllFromIndex(JOURNAL_STORE, 'timestamp');
+  return entries.reverse(); // Most recent first
+};
+
+export const deleteJournalEntry = async (id: number): Promise<void> => {
+  const db = await dbPromise;
+  await db.delete(JOURNAL_STORE, id);
 };
