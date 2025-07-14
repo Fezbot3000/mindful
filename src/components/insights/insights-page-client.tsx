@@ -64,6 +64,10 @@ export function InsightsPageClient() {
     setView('daily');
   }
 
+  const handleMonthChange = (month: Date) => {
+    setCurrentDate(month);
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -93,7 +97,7 @@ export function InsightsPageClient() {
       <div>
         {view === 'daily' && <DailyView logs={visibleLogs} loading={loading} />}
         {view === 'weekly' && <WeeklyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
-        {view === 'monthly' && <MonthlyView onDateSelect={handleDateSelect} currentDate={currentDate} />}
+        {view === 'monthly' && <MonthlyView onDateSelect={handleDateSelect} currentDate={currentDate} onMonthChange={handleMonthChange} />}
       </div>
     </div>
   );
