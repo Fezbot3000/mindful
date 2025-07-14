@@ -2,7 +2,6 @@ import { PageHeader } from "@/components/page-header";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InsightsPageClient } from "@/components/insights/insights-page-client";
-import { ExportCard } from "@/components/insights/export-card";
 
 export default function InsightsPage() {
   return (
@@ -10,7 +9,6 @@ export default function InsightsPage() {
       <Suspense fallback={<Skeleton className="h-[600px] w-full" />}>
         <InsightsPageClient />
       </Suspense>
-      <ExportCard />
     </div>
   );
 }

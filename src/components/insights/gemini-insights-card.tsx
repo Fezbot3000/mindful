@@ -8,8 +8,13 @@ import { generateInsights } from "@/ai/flows/insights-summarizer";
 import { Loader2, Sparkles, Terminal, FileText } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { Log } from "@/types";
 
-export function GeminiInsightsCard() {
+interface GeminiInsightsCardProps {
+  visibleLogs: Log[];
+}
+
+export function GeminiInsightsCard({ visibleLogs }: GeminiInsightsCardProps) {
   const [insights, setInsights] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -20,13 +25,12 @@ export function GeminiInsightsCard() {
     setError("");
     setInsights("");
     try {
-      const logs = await getLogs();
-      if (logs.length < 5) {
-        setError("You need at least 5 logs to generate insights.");
+      if (visibleLogs.length < 3) {
+        setError("You need at least 3 logs in this period to generate insights.");
         setLoading(false);
         return;
       }
-      const logsJson = JSON.stringify(logs.map(log => ({ ...log, timestamp: log.timestamp.toDate().toISOString() })));
+      const logsJson = JSON.stringify(visibleLogs.map(log => ({ ...log, timestamp: log.timestamp.toISOString() })));
       const result = await generateInsights({ logs: logsJson });
       setInsights(result.insights);
     } catch (e) {
@@ -38,16 +42,16 @@ export function GeminiInsightsCard() {
 
   const handleExport = async () => {
     toast({ title: "Exporting...", description: "Preparing your data for download." });
-    const logs = await getLogs();
-    if (logs.length === 0) {
+    const allLogs = await getLogs();
+    if (allLogs.length === 0) {
       toast({ variant: "destructive", title: "No Data", description: "There are no logs to export." });
       return;
     }
 
     const headers = ["ID", "Timestamp", "Category", "Intensity", "Description"];
-    const rows = logs.map(log => [
+    const rows = allLogs.map(log => [
       log.id,
-      log.timestamp.toDate().toISOString(),
+      log.timestamp.toISOString(),
       log.category,
       log.intensity,
       `"${log.description?.replace(/"/g, '""') || ""}"`
@@ -72,7 +76,7 @@ export function GeminiInsightsCard() {
           AI-Powered Insights & Export
         </CardTitle>
         <CardDescription>
-          Generate a summary of your logs or export them for your records.
+          Generate a summary of the logs in the current view or export all data.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -98,8 +102,8 @@ export function GeminiInsightsCard() {
          {!insights && !loading && (
              <div className="flex flex-col items-center justify-center rounded-md border border-dashed p-8 text-center">
                 <Sparkles className="h-10 w-10 text-muted-foreground" />
-                <p className="mt-4 text-sm text-muted-foreground">Click "Generate Insights" to see an AI-powered summary of your logs.</p>
-                <p className="text-xs text-muted-foreground/80 mt-1">(Requires at least 5 logs)</p>
+                <p className="mt-4 text-sm text-muted-foreground">Click "Generate Insights" for an AI summary of the logs in this view.</p>
+                <p className="text-xs text-muted-foreground/80 mt-1">(Requires at least 3 logs in the period)</p>
             </div>
          )}
       </CardContent>
@@ -116,7 +120,7 @@ export function GeminiInsightsCard() {
         </Button>
         <Button variant="outline" onClick={handleExport}>
             <FileText className="mr-2 h-4 w-4" />
-            Export as CSV
+            Export All as CSV
         </Button>
       </CardFooter>
     </Card>

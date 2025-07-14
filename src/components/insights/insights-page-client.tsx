@@ -13,6 +13,7 @@ import { DailyView } from "./daily-view";
 import { WeeklyView } from "./weekly-view";
 import { MonthlyView } from "./monthly-view";
 import { PageHeader } from "../page-header";
+import { GeminiInsightsCard } from "./gemini-insights-card";
 
 type View = "daily" | "weekly" | "monthly";
 
@@ -24,7 +25,7 @@ export function InsightsPageClient() {
   const { dateRange, visibleLogs, title } = useMemo(() => {
     let start, end, title;
     if (view === "daily") {
-      start = startOfToday();
+      start = startOfDay(currentDate);
       end = endOfDay(currentDate);
       title = format(currentDate, "MMMM d, yyyy");
     } else if (view === "weekly") {
@@ -99,6 +100,8 @@ export function InsightsPageClient() {
         {view === 'weekly' && <WeeklyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
         {view === 'monthly' && <MonthlyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
       </div>
+      
+      <GeminiInsightsCard visibleLogs={visibleLogs} />
     </div>
   );
 }

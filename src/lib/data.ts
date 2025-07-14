@@ -24,6 +24,7 @@ let dbPromise: IDBPDatabase<MindfulTrackDB> | null = null;
 
 const getDb = (): Promise<IDBPDatabase<MindfulTrackDB>> => {
     if (typeof window === 'undefined') {
+        // Return a promise that never resolves on the server.
         return new Promise(() => {});
     }
     if (!dbPromise) {
@@ -36,16 +37,20 @@ const getDb = (): Promise<IDBPDatabase<MindfulTrackDB>> => {
                     }
                 }
                 if (oldVersion < 2) {
-                    if (db.objectStoreNames.contains(JOURNAL_STORE)) {
-                         db.deleteObjectStore(JOURNAL_STORE);
-                    }
-                    const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
-                    store.createIndex('timestamp', 'timestamp');
-                }
-                if (oldVersion < 3) {
                      if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
                         const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
                         store.createIndex('timestamp', 'timestamp');
+                    }
+                }
+                if (oldVersion < 3) {
+                     // This version was for a bug fix, ensure stores exist.
+                     if (!db.objectStoreNames.contains(LOGS_STORE)) {
+                        const logStore = db.createObjectStore(LOGS_STORE, { keyPath: 'id', autoIncrement: true });
+                        logStore.createIndex('timestamp', 'timestamp');
+                    }
+                     if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
+                        const journalStore = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
+                        journalStore.createIndex('timestamp', 'timestamp');
                     }
                 }
             },
@@ -61,7 +66,8 @@ export const addLog = async (logData: { category: LogCategory; intensity: number
     ...logData,
     timestamp: new Date(),
   };
-  const id = await db.add(LOGS_STORE, newLog as any);
+  // The 'as any' is a temporary workaround for a type inference issue with IDB and auto-incrementing keys.
+  const id = await db.add(LOGS_STORE, newLog as any); 
   return { id, ...newLog };
 };
 
@@ -69,7 +75,9 @@ export const getLogs = async (): Promise<Log[]> => {
   try {
     const db = await getDb();
     const logs = await db.getAllFromIndex(LOGS_STORE, 'timestamp');
-    return logs.reverse(); // Most recent first
+    // Convert plain objects back to logs with Date objects
+    const logsWithDates = logs.map(l => ({...l, timestamp: new Date(l.timestamp)}));
+    return logsWithDates.reverse(); // Most recent first
   } catch (error) {
     console.error("Failed to get logs, returning empty array:", error);
     return [];
@@ -91,7 +99,8 @@ export const getLogsForDateRange = async (startDate: Date, endDate: Date): Promi
     const db = await getDb();
     const range = IDBKeyRange.bound(startDate, endDate);
     const logs = await db.getAllFromIndex(LOGS_STORE, 'timestamp', range);
-    return logs.reverse();
+    const logsWithDates = logs.map(l => ({...l, timestamp: new Date(l.timestamp)}));
+    return logsWithDates.reverse();
 };
 
 // Journal Entry Functions
@@ -120,7 +129,8 @@ export const getJournalEntries = async (): Promise<JournalEntry[]> => {
   try {
     const db = await getDb();
     const entries = await db.getAllFromIndex(JOURNAL_STORE, 'timestamp');
-    return entries.reverse(); // Most recent first
+    const entriesWithDates = entries.map(e => ({...e, timestamp: new Date(e.timestamp)}));
+    return entriesWithDates.reverse(); // Most recent first
   } catch (error) {
      console.error("Failed to get journal entries, returning empty array:", error);
     return [];
