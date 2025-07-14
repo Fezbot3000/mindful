@@ -12,20 +12,33 @@ interface ViewJournalEntryDialogProps {
     entry: JournalEntry;
 }
 
+function CbtField({ label, value }: { label: string, value?: string }) {
+    if (!value) return null;
+    return (
+        <div>
+            <h4 className="font-semibold text-xs uppercase text-muted-foreground">{label}</h4>
+            <p className="text-sm text-foreground whitespace-pre-wrap">{value}</p>
+        </div>
+    );
+}
+
 export function ViewJournalEntryDialog({ children, entry }: ViewJournalEntryDialogProps) {
-  const hasCbtFields = entry.trigger || entry.evidenceFor || entry.evidenceAgainst || entry.schemaLink;
+  const hasCbtFields = entry.trigger || entry.evidenceFor || entry.evidenceAgainst || entry.alternativeView || entry.schemaLink;
 
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-2xl max-h-[90svh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{entry.title}</DialogTitle>
-          <DialogDescription>
-            {format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}
+          <DialogDescription className="flex justify-between items-center">
+            <span>{format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}</span>
+            {entry.intensity !== undefined && (
+                <span className="font-bold text-sm text-primary">Intensity: {entry.intensity}/10</span>
+            )}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-96 pr-6">
+        <ScrollArea className="flex-grow pr-6">
             <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-sans space-y-4">
                 <p>{entry.content}</p>
 
@@ -33,30 +46,11 @@ export function ViewJournalEntryDialog({ children, entry }: ViewJournalEntryDial
                     <>
                         <Separator />
                         <div className="space-y-4 not-prose">
-                            {entry.trigger && (
-                                <div>
-                                    <h4 className="font-semibold text-xs uppercase text-muted-foreground">Trigger</h4>
-                                    <p className="text-sm text-foreground">{entry.trigger}</p>
-                                </div>
-                            )}
-                            {entry.evidenceFor && (
-                                <div>
-                                    <h4 className="font-semibold text-xs uppercase text-muted-foreground">Evidence For</h4>
-                                    <p className="text-sm text-foreground whitespace-pre-wrap">{entry.evidenceFor}</p>
-                                </div>
-                            )}
-                            {entry.evidenceAgainst && (
-                                <div>
-                                    <h4 className="font-semibold text-xs uppercase text-muted-foreground">Evidence Against / Alternative View</h4>
-                                    <p className="text-sm text-foreground whitespace-pre-wrap">{entry.evidenceAgainst}</p>
-                                </div>
-                            )}
-                             {entry.schemaLink && (
-                                <div>
-                                    <h4 className="font-semibold text-xs uppercase text-muted-foreground">Schema Link</h4>
-                                    <p className="text-sm text-foreground">{entry.schemaLink}</p>
-                                </div>
-                            )}
+                           <CbtField label="Trigger" value={entry.trigger} />
+                           <CbtField label="Evidence For" value={entry.evidenceFor} />
+                           <CbtField label="Evidence Against" value={entry.evidenceAgainst} />
+                           <CbtField label="Alternative/Balanced View" value={entry.alternativeView} />
+                           <CbtField label="Schema Link" value={entry.schemaLink} />
                         </div>
                     </>
                 )}

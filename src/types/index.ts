@@ -14,8 +14,10 @@ export interface JournalEntry {
   title: string;
   content: string;
   timestamp: Date;
+  intensity?: number;
   trigger?: string;
   evidenceFor?: string;
   evidenceAgainst?: string;
+  alternativeView?: string;
   schemaLink?: string;
 }

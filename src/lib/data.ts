@@ -1,8 +1,9 @@
+
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import type { Log, LogCategory, JournalEntry } from '@/types';
 
 const DB_NAME = 'MindfulTrackDB';
-const DB_VERSION = 2; 
+const DB_VERSION = 3; 
 const LOGS_STORE = 'logs';
 const JOURNAL_STORE = 'journal';
 
@@ -23,9 +24,6 @@ let dbPromise: Promise<IDBPDatabase<MindfulTrackDB>> | null = null;
 
 const getDb = () => {
     if (typeof window === 'undefined') {
-        // This is a server-side context, so we can't use IndexedDB.
-        // Return a dummy object or throw an error, depending on desired behavior.
-        // For this app, we'll rely on client-side execution.
         return Promise.reject(new Error("IndexedDB can only be accessed in the browser."));
     }
     if (!dbPromise) {
@@ -36,17 +34,19 @@ const getDb = () => {
                         const store = db.createObjectStore(LOGS_STORE, { keyPath: 'id', autoIncrement: true });
                         store.createIndex('timestamp', 'timestamp');
                     }
-                    if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
-                        const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
-                        store.createIndex('timestamp', 'timestamp');
-                    }
                 }
                 if (oldVersion < 2) {
                     if (db.objectStoreNames.contains(JOURNAL_STORE)) {
-                        db.deleteObjectStore(JOURNAL_STORE);
+                         db.deleteObjectStore(JOURNAL_STORE);
                     }
                     const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
                     store.createIndex('timestamp', 'timestamp');
+                }
+                if (oldVersion < 3) {
+                     if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
+                        const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
+                        store.createIndex('timestamp', 'timestamp');
+                    }
                 }
             },
         });
@@ -66,9 +66,14 @@ export const addLog = async (logData: { category: LogCategory; intensity: number
 };
 
 export const getLogs = async (): Promise<Log[]> => {
-  const db = await getDb();
-  const logs = await db.getAllFromIndex(LOGS_STORE, 'timestamp');
-  return logs.reverse(); // Most recent first
+  try {
+    const db = await getDb();
+    const logs = await db.getAllFromIndex(LOGS_STORE, 'timestamp');
+    return logs.reverse(); // Most recent first
+  } catch (error) {
+    console.error("Failed to get logs, returning empty array:", error);
+    return [];
+  }
 };
 
 export const getRecentLogs = async (logLimit: number = 5): Promise<Log[]> => {
@@ -95,9 +100,14 @@ export const addJournalEntry = async (entryData: Omit<JournalEntry, 'id' | 'time
 };
 
 export const getJournalEntries = async (): Promise<JournalEntry[]> => {
-  const db = await getDb();
-  const entries = await db.getAllFromIndex(JOURNAL_STORE, 'timestamp');
-  return entries.reverse(); // Most recent first
+  try {
+    const db = await getDb();
+    const entries = await db.getAllFromIndex(JOURNAL_STORE, 'timestamp');
+    return entries.reverse(); // Most recent first
+  } catch (error) {
+     console.error("Failed to get journal entries, returning empty array:", error);
+    return [];
+  }
 };
 
 export const deleteJournalEntry = async (id: number): Promise<void> => {
