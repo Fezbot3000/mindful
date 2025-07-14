@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useLogs } from "@/hooks/use-logs";
 import { useToast } from "@/hooks/use-toast";
 import { AnimatePresence, motion } from "framer-motion";
+import { Music, MusicOff } from "lucide-react";
 
 const stages = [
   { name: "Breathe In", duration: 4 },
@@ -21,9 +22,9 @@ const minutePrompts = [
     "Finishing strong. Carry this calm with you."
 ];
 
-
 const TOTAL_DURATION_MINUTES = 5;
 const TOTAL_DURATION_SECONDS = TOTAL_DURATION_MINUTES * 60;
+const MUSIC_URL = "https://storage.googleapis.com/assets.mindful-track.com/ambient-music.mp3";
 
 export function BreathingExercise() {
   const [isActive, setIsActive] = useState(false);
@@ -31,10 +32,12 @@ export function BreathingExercise() {
   const [countdown, setCountdown] = useState(stages[0].duration);
   const [totalTime, setTotalTime] = useState(0);
   const [currentPrompt, setCurrentPrompt] = useState("");
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
   const { addLog } = useLogs();
   const { toast } = useToast();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   
   const stage = stages[stageIndex];
 
@@ -65,11 +68,9 @@ export function BreathingExercise() {
     }
     
     // Update prompt every minute
-    if (totalTime % 60 === 0) {
-        const promptIndex = totalTime / 60;
-        if (promptIndex < minutePrompts.length) {
-            setCurrentPrompt(minutePrompts[promptIndex]);
-        }
+    const minute = Math.floor(totalTime / 60);
+    if (totalTime % 60 === 0 && minute < minutePrompts.length) {
+        setCurrentPrompt(minutePrompts[minute]);
     }
 
     if (countdown <= 0) {
@@ -91,6 +92,11 @@ export function BreathingExercise() {
   const handleStop = async (completed = false) => {
     setIsActive(false);
     setCurrentPrompt("");
+    if (audioRef.current) {
+        audioRef.current.pause();
+    }
+    setIsMusicPlaying(false);
+
     if (completed) {
       try {
         await addLog({
@@ -105,11 +111,36 @@ export function BreathingExercise() {
     }
   };
 
+  const toggleMusic = () => {
+    if (audioRef.current) {
+        if (isMusicPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play();
+        }
+        setIsMusicPlaying(!isMusicPlaying);
+    }
+  };
+
+
   const progress = (totalTime / TOTAL_DURATION_SECONDS) * 100;
   const stageProgress = ((stage.duration - countdown + 1) / stage.duration) * 100;
   
   return (
     <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 h-96 relative overflow-hidden">
+       <audio ref={audioRef} src={MUSIC_URL} loop />
+
+       <div className="absolute top-4 right-4 z-20">
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleMusic}
+                aria-label="Toggle Music"
+                className="text-muted-foreground"
+            >
+                {isMusicPlaying ? <MusicOff /> : <Music />}
+            </Button>
+        </div>
         
        <AnimatePresence>
         {isActive && currentPrompt && (
@@ -119,7 +150,7 @@ export function BreathingExercise() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ ease: "easeInOut", duration: 0.5 }}
-                className="absolute top-8 p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20"
+                className="absolute top-8 p-2 text-center text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20 max-w-[90%]"
             >
                 {currentPrompt}
             </motion.div>
