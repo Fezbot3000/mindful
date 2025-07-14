@@ -93,7 +93,7 @@ export function InsightsPageClient() {
       <div>
         {view === 'daily' && <DailyView logs={visibleLogs} loading={loading} />}
         {view === 'weekly' && <WeeklyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
-        {view === 'monthly' && <MonthlyView onDateSelect={handleDateSelect} selectedDate={currentDate} />}
+        {view === 'monthly' && <MonthlyView onDateSelect={handleDateSelect} currentDate={currentDate} />}
       </div>
     </div>
   );

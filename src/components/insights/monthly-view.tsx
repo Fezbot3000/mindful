@@ -6,10 +6,10 @@ import { LogCalendar } from "./log-calendar";
 
 interface MonthlyViewProps {
   onDateSelect: (date: Date) => void;
-  selectedDate: Date;
+  currentDate: Date;
 }
 
-export function MonthlyView({ onDateSelect, selectedDate }: MonthlyViewProps) {
+export function MonthlyView({ onDateSelect, currentDate }: MonthlyViewProps) {
   return (
     <Card>
       <CardHeader>
@@ -17,7 +17,7 @@ export function MonthlyView({ onDateSelect, selectedDate }: MonthlyViewProps) {
         <CardDescription>Days with logs are marked. Click a day to see details.</CardDescription>
       </CardHeader>
       <CardContent>
-        <LogCalendar onDateSelect={onDateSelect} selectedDate={selectedDate} />
+        <LogCalendar onDateSelect={onDateSelect} selectedDate={currentDate} month={currentDate} />
       </CardContent>
     </Card>
   );

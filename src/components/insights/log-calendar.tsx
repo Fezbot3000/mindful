@@ -5,7 +5,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useLogs } from "@/hooks/use-logs";
 import { DayProps } from "react-day-picker";
 
-export function LogCalendar({ onDateSelect, selectedDate }: { onDateSelect: (date: Date) => void, selectedDate: Date }) {
+export function LogCalendar({ onDateSelect, selectedDate, month }: { onDateSelect: (date: Date) => void, selectedDate: Date, month: Date }) {
   const { logs, loading } = useLogs();
 
   const logDays = logs.map((log) => log.timestamp);
@@ -34,6 +34,8 @@ export function LogCalendar({ onDateSelect, selectedDate }: { onDateSelect: (dat
           mode="single"
           selected={selectedDate}
           onSelect={(day) => day && onDateSelect(day)}
+          month={month}
+          onMonthChange={onDateSelect}
           showOutsideDays
           className="p-0"
           components={{
