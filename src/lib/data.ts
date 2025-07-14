@@ -141,3 +141,29 @@ export const deleteJournalEntry = async (id: number): Promise<void> => {
   const db = await getDb();
   await db.delete(JOURNAL_STORE, id);
 };
+
+// Data Management Functions
+export const importData = async (data: { logs: Omit<Log, 'id'>[], journal: Omit<JournalEntry, 'id'>[] }): Promise<void> => {
+    const db = await getDb();
+    const tx = db.transaction([LOGS_STORE, JOURNAL_STORE], 'readwrite');
+    const logStore = tx.objectStore(LOGS_STORE);
+    const journalStore = tx.objectStore(JOURNAL_STORE);
+  
+    // We don't clear existing data, we merge.
+    // A more robust solution might check for duplicates based on content and timestamp.
+    // For now, we'll just add all imported items.
+    
+    const logPromises = data.logs.map(log => {
+      // Ensure timestamp is a Date object
+      const logWithDate = { ...log, timestamp: new Date(log.timestamp) };
+      return logStore.add(logWithDate as any);
+    });
+  
+    const journalPromises = data.journal.map(entry => {
+       // Ensure timestamp is a Date object
+      const entryWithDate = { ...entry, timestamp: new Date(entry.timestamp) };
+      return journalStore.add(entryWithDate as any);
+    });
+  
+    await Promise.all([...logPromises, ...journalPromises, tx.done]);
+};

@@ -3,7 +3,7 @@
 
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/components/ui/sidebar";
-import { Home, Book, BarChart3, Wrench } from "lucide-react";
+import { Home, Book, BarChart3, Wrench, Settings } from "lucide-react";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,7 @@ export const navItems = [
   { href: "/journal", label: "Entries", icon: Book },
   { href: "/insights", label: "Insights", icon: BarChart3 },
   { href: "/tools", label: "Tools", icon: Wrench },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
@@ -26,7 +27,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
 
   if (isMobile) {
     return (
-        <nav className="flex w-full justify-around">
+        <nav className="grid grid-cols-5 w-full">
             {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
