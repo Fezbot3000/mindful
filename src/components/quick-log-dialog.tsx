@@ -19,20 +19,31 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 
 const logSchema = z.object({
-  category: z.enum(["Anxious", "Avoided", "Accomplished", "Ruminating"]),
+  category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished"]),
   intensity: z.number().min(1).max(10),
   description: z.string().optional(),
 });
 
 type LogFormValues = z.infer<typeof logSchema>;
 
-const categories: LogCategory[] = ["Anxious", "Avoided", "Accomplished", "Ruminating"];
+const categories: { name: LogCategory, colorClass: string }[] = [
+    { name: "Health Fear", colorClass: "border-destructive focus-visible:ring-destructive" },
+    { name: "Intrusive Thought", colorClass: "border-orange-500 focus-visible:ring-orange-500" },
+    { name: "Compulsion", colorClass: "border-yellow-500 focus-visible:ring-yellow-500" },
+    { name: "Schema Trigger", colorClass: "border-purple-500 focus-visible:ring-purple-500" },
+    { name: "Accomplished", colorClass: "border-green-500 focus-visible:ring-green-500" },
+];
 
 const categoryPrompts: Record<LogCategory, string> = {
-    Anxious: "e.g., Felt worried about the upcoming meeting.",
-    Avoided: "e.g., Skipped going to the grocery store.",
-    Accomplished: "e.g., Finished a project I was procrastinating on.",
-    Ruminating: "e.g., Couldn't stop thinking about a past mistake.",
+    "Health Fear": "e.g., Worried about a headache, thinking it's something serious.",
+    "Intrusive Thought": "e.g., Had an unwanted, distressing thought about harming someone.",
+    "Compulsion": "e.g., Felt the need to check the locks multiple times.",
+    "Schema Trigger": "e.g., A comment from my boss made me feel like a complete failure.",
+    "Accomplished": "e.g., Resisted a compulsion or went to an appointment I was anxious about.",
+};
+
+const intensityLabels: { [key: number]: string } = {
+    1: "Mild", 4: "Moderate", 7: "Intense", 10: "Overwhelming"
 };
 
 export function QuickLogDialog({ children }: { children: React.ReactNode }) {
@@ -44,13 +55,14 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const form = useForm<LogFormValues>({
     resolver: zodResolver(logSchema),
     defaultValues: {
-      category: "Anxious",
+      category: "Health Fear",
       intensity: 5,
       description: "",
     },
   });
 
   const watchedCategory = form.watch("category");
+  const watchedIntensity = form.watch("intensity");
 
   const onSubmit = async (data: LogFormValues) => {
     setLoading(true);
@@ -61,7 +73,7 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
         description: data.description,
       });
       addLogToState(newLog);
-      toast({ title: "Log Saved", description: "Your entry has been successfully saved." });
+      toast({ title: "Log Saved!", description: "Great tracking! You're building resilience." });
       form.reset();
       setOpen(false);
     } catch (error) {
@@ -83,41 +95,42 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
+            <Label>Category</Label>
             <RadioGroup
               defaultValue={form.getValues("category")}
               onValueChange={(value) => form.setValue("category", value as LogCategory)}
               className="grid grid-cols-2 gap-2"
             >
               {categories.map((cat) => (
-                <div key={cat}>
-                    <RadioGroupItem value={cat} id={cat} className="sr-only" />
+                <div key={cat.name}>
+                    <RadioGroupItem value={cat.name} id={cat.name} className="sr-only" />
                     <Label
-                        htmlFor={cat}
+                        htmlFor={cat.name}
                         className={cn(
-                            "flex items-center justify-center rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer",
-                            watchedCategory === cat && "border-primary"
+                            "flex items-center justify-center rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm font-medium",
+                            watchedCategory === cat.name && cat.colorClass
                         )}
                     >
-                        {cat}
+                        {cat.name}
                     </Label>
                 </div>
               ))}
             </RadioGroup>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="intensity">Intensity ({form.watch('intensity')})</Label>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">1</span>
-                <Slider
-                    id="intensity"
-                    min={1}
-                    max={10}
-                    step={1}
-                    defaultValue={[form.getValues("intensity")]}
-                    onValueChange={(value) => form.setValue("intensity", value[0])}
-                />
-              <span className="text-sm text-muted-foreground">10</span>
+          <div className="space-y-3">
+            <Label htmlFor="intensity">Intensity ({watchedIntensity})</Label>
+            <Slider
+                id="intensity"
+                min={1}
+                max={10}
+                step={1}
+                defaultValue={[form.getValues("intensity")]}
+                onValueChange={(value) => form.setValue("intensity", value[0])}
+            />
+            <div className="flex justify-between text-xs text-muted-foreground px-1">
+                {Object.entries(intensityLabels).map(([key, label]) => (
+                    <span key={key}>{label}</span>
+                ))}
             </div>
           </div>
           <div className="space-y-2">

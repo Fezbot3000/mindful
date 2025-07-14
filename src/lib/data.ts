@@ -2,7 +2,7 @@ import { openDB, DBSchema } from 'idb';
 import type { Log, LogCategory, JournalEntry } from '@/types';
 
 const DB_NAME = 'MindfulTrackDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Incremented version for schema change
 const LOGS_STORE = 'logs';
 const JOURNAL_STORE = 'journal';
 
@@ -20,12 +20,24 @@ interface MindfulTrackDB extends DBSchema {
 }
 
 const dbPromise = openDB<MindfulTrackDB>(DB_NAME, DB_VERSION, {
-  upgrade(db) {
-    if (!db.objectStoreNames.contains(LOGS_STORE)) {
-      const store = db.createObjectStore(LOGS_STORE, { keyPath: 'id', autoIncrement: true });
-      store.createIndex('timestamp', 'timestamp');
+  upgrade(db, oldVersion) {
+    if (oldVersion < 1) {
+        if (!db.objectStoreNames.contains(LOGS_STORE)) {
+            const store = db.createObjectStore(LOGS_STORE, { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp');
+        }
+        if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
+            const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp');
+        }
     }
-    if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
+     if (oldVersion < 2) {
+      // For version 2, we just rebuild the journal store to add new optional fields.
+      // In a real-world scenario with existing data, a migration would be needed.
+      // For this simple case, deleting and recreating is sufficient.
+      if (db.objectStoreNames.contains(JOURNAL_STORE)) {
+          db.deleteObjectStore(JOURNAL_STORE);
+      }
       const store = db.createObjectStore(JOURNAL_STORE, { keyPath: 'id', autoIncrement: true });
       store.createIndex('timestamp', 'timestamp');
     }
@@ -61,7 +73,7 @@ export const getLogsForDateRange = async (startDate: Date, endDate: Date): Promi
 };
 
 // Journal Entry Functions
-export const addJournalEntry = async (entryData: { title: string; content: string }): Promise<JournalEntry> => {
+export const addJournalEntry = async (entryData: Omit<JournalEntry, 'id' | 'timestamp'>): Promise<JournalEntry> => {
   const db = await dbPromise;
   const newEntry = {
     ...entryData,

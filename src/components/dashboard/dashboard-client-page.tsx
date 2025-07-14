@@ -3,11 +3,11 @@
 
 import { PageHeader } from "@/components/page-header";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getRecentLogs } from "@/lib/data";
-import { Log } from "@/types";
+import { Log, LogCategory } from "@/types";
 import { differenceInCalendarDays, startOfToday } from "date-fns";
-import { BarChart, BookOpen, Repeat, TrendingUp } from "lucide-react";
+import { HeartPulse, Repeat, TrendingUp, Sparkles } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { useLogs } from "@/hooks/use-logs";
@@ -19,6 +19,15 @@ const quotes = [
   "This feeling is temporary. It will pass.",
   "Breathe. You are safe right now."
 ];
+
+const categoryIcons: Record<LogCategory, React.ElementType> = {
+    "Health Fear": HeartPulse,
+    "Intrusive Thought": Sparkles,
+    "Compulsion": Repeat,
+    "Schema Trigger": TrendingUp,
+    "Accomplished": Sparkles, // Using Sparkles for positive as well
+};
+
 
 export function DashboardClientPage() {
   const { logs, loading } = useLogs();
@@ -63,7 +72,13 @@ export function DashboardClientPage() {
       }
     }
 
-    return { logsToday, streak };
+    const totalLogs = logs.length;
+    
+    const avgIntensity = totalLogs > 0 
+      ? (logs.reduce((acc, log) => acc + log.intensity, 0) / totalLogs).toFixed(1) 
+      : 'N/A';
+
+    return { logsToday, streak, totalLogs, avgIntensity };
   }, [logs]);
 
   const isLoading = loading || recentLoading;
@@ -79,7 +94,7 @@ export function DashboardClientPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Logs Today</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <Sparkles className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.logsToday}</div>}
@@ -97,10 +112,10 @@ export function DashboardClientPage() {
          <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Logs</CardTitle>
-            <BarChart className="h-4 w-4 text-muted-foreground" />
+            <HeartPulse className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{logs.length}</div>}
+            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.totalLogs}</div>}
           </CardContent>
         </Card>
         <Card>
@@ -109,7 +124,7 @@ export function DashboardClientPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{logs.length > 0 ? (logs.reduce((acc, log) => acc + log.intensity, 0) / logs.length).toFixed(1) : 'N/A'}</div>}
+            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.avgIntensity}</div>}
           </CardContent>
         </Card>
       </div>
@@ -126,18 +141,24 @@ export function DashboardClientPage() {
             </div>
           ) : recentLogs.length > 0 ? (
             <ul className="space-y-4">
-              {recentLogs.map(log => (
-                <li key={log.id} className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-accent/50">
-                  <div className="flex-1">
-                    <p className="font-semibold">{log.category}</p>
-                    <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-primary">{log.intensity}/10</div>
-                    <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
-                  </div>
-                </li>
-              ))}
+              {recentLogs.map(log => {
+                const Icon = categoryIcons[log.category] || Sparkles;
+                return (
+                  <li key={log.id} className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-accent/50">
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-5 w-5 text-muted-foreground" />
+                      <div className="flex-1">
+                          <p className="font-semibold">{log.category}</p>
+                          <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-primary">{log.intensity}/10</div>
+                      <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
+                    </div>
+                  </li>
+                )
+            })}
             </ul>
           ) : (
             <p className="text-center text-muted-foreground py-8">No recent logs. Use the '+' button to add your first one!</p>

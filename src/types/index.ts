@@ -1,5 +1,5 @@
 
-export type LogCategory = "Anxious" | "Avoided" | "Accomplished" | "Ruminating";
+export type LogCategory = "Health Fear" | "Intrusive Thought" | "Compulsion" | "Schema Trigger" | "Accomplished";
 
 export interface Log {
   id: number;
@@ -14,4 +14,8 @@ export interface JournalEntry {
   title: string;
   content: string;
   timestamp: Date;
+  trigger?: string;
+  evidenceFor?: string;
+  evidenceAgainst?: string;
+  schemaLink?: string;
 }
