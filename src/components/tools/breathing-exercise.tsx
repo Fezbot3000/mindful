@@ -43,7 +43,7 @@ export function BreathingExercise() {
 
   useEffect(() => {
     // Initialize audio only on the client
-    if (!audioRef.current) {
+    if (typeof window !== 'undefined' && !audioRef.current) {
         audioRef.current = new Audio(MUSIC_URL);
         audioRef.current.loop = true;
     }
@@ -123,11 +123,12 @@ export function BreathingExercise() {
 
   const toggleMusic = () => {
     if (!audioRef.current) return;
-
+  
     if (isMusicPlaying) {
-        audioRef.current.pause();
+      audioRef.current.pause();
     } else {
-        audioRef.current.play();
+      audioRef.current.load(); // Ensure the audio is loaded before playing
+      audioRef.current.play().catch(e => console.error("Audio play failed:", e));
     }
     setIsMusicPlaying(!isMusicPlaying);
   };
