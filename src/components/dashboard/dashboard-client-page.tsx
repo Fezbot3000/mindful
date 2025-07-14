@@ -4,7 +4,7 @@
 import { PageHeader } from "@/components/page-header";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { getLogs, getRecentLogs } from "@/lib/data";
+import { getRecentLogs } from "@/lib/data";
 import { Log } from "@/types";
 import { differenceInCalendarDays, startOfToday } from "date-fns";
 import { BarChart, BookOpen, Repeat, TrendingUp } from "lucide-react";
