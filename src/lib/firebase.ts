@@ -32,7 +32,8 @@ function getFirebaseApp(): FirebaseServices | undefined {
     }
 
     if (!firebaseConfig.projectId) {
-        console.error("Firebase project ID is missing. Please set NEXT_PUBLIC_FIREBASE_PROJECT_ID in your .env.local file.");
+        // Silently fail if the config is not provided.
+        // The UI will handle showing a "not configured" state.
         return undefined;
     }
     
@@ -44,7 +45,7 @@ function getFirebaseApp(): FirebaseServices | undefined {
             localCache: persistentLocalCache({})
         });
     } catch (error) {
-        console.error("Firestore initialization error:", error);
+        // This can happen with hot-reloading.
         db = getFirestore(app);
     }
 

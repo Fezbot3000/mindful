@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -39,7 +40,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { auth } = getFirebaseApp();
+  const { auth } = getFirebaseApp() || {};
 
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(formSchema),
@@ -52,7 +53,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   const onSubmit = async (data: AuthFormValues) => {
     if (!auth) {
-        toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly." });
+        toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly. Check your .env.local file." });
         return;
     }
     setLoading(true);
@@ -77,7 +78,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   const handleGoogleSignIn = async () => {
     if (!auth) {
-        toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly." });
+        toast({ variant: "destructive", title: "Configuration Error", description: "Firebase is not configured correctly. Check your .env.local file." });
         return;
     }
     setGoogleLoading(true);
@@ -148,6 +149,7 @@ export function AuthForm({ mode }: AuthFormProps) {
              ) : (
                 <p>Already have an account? <Link href="/login" className="underline">Log in</Link></p>
              )}
+             {!auth && <p className="text-destructive mt-2 text-xs">Firebase is not configured. Please check environment variables.</p>}
         </CardFooter>
     </Card>
   );
