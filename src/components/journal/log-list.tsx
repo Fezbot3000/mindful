@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { deleteLog } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, BookText, HeartPulse, Repeat, Sparkles, Trash2, TrendingUp } from "lucide-react";
+import { Activity, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import {
   AlertDialog,
@@ -22,14 +22,6 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { useLogs } from "@/hooks/use-logs";
 
-const categoryIcons: Record<LogCategory, React.ElementType> = {
-  "Health Fear": HeartPulse,
-  "Intrusive Thought": Sparkles,
-  "Compulsion": Repeat,
-  "Schema Trigger": TrendingUp,
-  "Accomplished": Sparkles,
-  "Journal Reflection": BookText,
-};
 
 export function LogList() {
   const { logs: allLogs, loading: logsLoading, setLogs } = useLogs();
@@ -79,12 +71,12 @@ export function LogList() {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {allLogs.map((log) => {
-        const Icon = categoryIcons[log.category] || Activity;
         return (
             <Card key={log.id} className="flex flex-col">
               <CardHeader>
-                <CardTitle className="truncate text-xl">
-                  {log.category} ({log.intensity}/10)
+                <CardTitle className="truncate text-xl flex flex-col">
+                  <span>{log.category}</span>
+                  <span className="text-sm font-normal text-muted-foreground">Intensity: {log.intensity}/10</span>
                 </CardTitle>
                 <CardDescription>
                   {format(log.timestamp, "MMMM d, yyyy 'at' h:mm a")}
