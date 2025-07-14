@@ -121,14 +121,21 @@ export function BreathingExercise() {
     }
   };
 
-  const toggleMusic = () => {
+  const toggleMusic = async () => {
     if (!audioRef.current) return;
   
     if (isMusicPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.load(); // Ensure the audio is loaded before playing
-      audioRef.current.play().catch(e => console.error("Audio play failed:", e));
+      try {
+        audioRef.current.load(); // Ensure the audio is loaded before playing
+        await audioRef.current.play();
+      } catch (e) {
+         console.error("Audio play failed:", e);
+         toast({ variant: "destructive", title: "Audio Error", description: "Could not play audio. Please try again." });
+         setIsMusicPlaying(false); // Make sure state is correct on failure
+         return; // Exit if play fails
+      }
     }
     setIsMusicPlaying(!isMusicPlaying);
   };
