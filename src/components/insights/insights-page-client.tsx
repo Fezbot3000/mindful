@@ -41,7 +41,8 @@ export function InsightsPageClient() {
 
     const visibleLogs = logs.filter(log => {
       const logDate = log.timestamp;
-      return logDate >= start && logDate <= end;
+      const logTime = logDate.getTime();
+      return logTime >= start.getTime() && logTime <= end.getTime();
     });
 
     return { dateRange: { start, end }, visibleLogs, title };
@@ -59,14 +60,13 @@ export function InsightsPageClient() {
     if (view === 'monthly') setCurrentDate(prev => addMonths(prev, 1));
   };
   
-  const handleDateSelect = (date: Date) => {
-    setCurrentDate(date);
-    setView('daily');
-  }
-
-  const handleMonthChange = (month: Date) => {
-    setCurrentDate(month);
-  }
+  const handleViewChange = (newView: View | null) => {
+    if (newView) {
+      setView(newView);
+      // When switching views, reset date to today to avoid confusion
+      setCurrentDate(startOfToday());
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -78,7 +78,7 @@ export function InsightsPageClient() {
       <LogSummary logs={visibleLogs} loading={loading} view={view} />
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <ToggleGroup type="single" value={view} onValueChange={(value: View) => value && setView(value)}>
+        <ToggleGroup type="single" value={view} onValueChange={handleViewChange}>
           <ToggleGroupItem value="daily" aria-label="Daily view">Daily</ToggleGroupItem>
           <ToggleGroupItem value="weekly" aria-label="Weekly view">Weekly</ToggleGroupItem>
           <ToggleGroupItem value="monthly" aria-label="Monthly view">Monthly</ToggleGroupItem>
@@ -97,7 +97,7 @@ export function InsightsPageClient() {
       <div>
         {view === 'daily' && <DailyView logs={visibleLogs} loading={loading} />}
         {view === 'weekly' && <WeeklyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
-        {view === 'monthly' && <MonthlyView onDateSelect={handleDateSelect} currentDate={currentDate} onMonthChange={handleMonthChange} />}
+        {view === 'monthly' && <MonthlyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
       </div>
     </div>
   );
