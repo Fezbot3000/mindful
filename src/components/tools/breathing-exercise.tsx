@@ -13,11 +13,14 @@ const stages = [
   { name: "Breathe Out", duration: 8 },
 ];
 
-const prompts: Record<string, string> = {
-    "Breathe In": "Breathe in calm—this activates relaxation, easing anxiety.",
-    "Hold": "Hold and notice—building focus, like training your mind for ADHD.",
-    "Breathe Out": "Breathe out worries—releasing tension, backed by stress science.",
-};
+const minutePrompts = [
+    "This simple exercise helps calm your nervous system.",
+    "You are training your focus, one breath at a time.",
+    "Let each exhale release a little more tension.",
+    "You are in control. This feeling is temporary.",
+    "Finishing strong. Carry this calm with you."
+];
+
 
 const TOTAL_DURATION_MINUTES = 5;
 const TOTAL_DURATION_SECONDS = TOTAL_DURATION_MINUTES * 60;
@@ -32,8 +35,7 @@ export function BreathingExercise() {
   const { addLog } = useLogs();
   const { toast } = useToast();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const promptTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  
   const stage = stages[stageIndex];
 
   useEffect(() => {
@@ -51,33 +53,29 @@ export function BreathingExercise() {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      if (promptTimeoutRef.current) {
-          clearTimeout(promptTimeoutRef.current);
-      }
     };
   }, [isActive]);
 
-  const showPrompt = (promptText: string) => {
-    setCurrentPrompt(promptText);
-    if(promptTimeoutRef.current) clearTimeout(promptTimeoutRef.current);
-    promptTimeoutRef.current = setTimeout(() => {
-      setCurrentPrompt("");
-    }, 5000); // Auto-dismiss after 5 seconds
-  };
-
   useEffect(() => {
-     if (!isActive) return;
+    if (!isActive) return;
 
     if (totalTime >= TOTAL_DURATION_SECONDS) {
         handleStop(true);
         return;
+    }
+    
+    // Update prompt every minute
+    if (totalTime % 60 === 0) {
+        const promptIndex = totalTime / 60;
+        if (promptIndex < minutePrompts.length) {
+            setCurrentPrompt(minutePrompts[promptIndex]);
+        }
     }
 
     if (countdown <= 0) {
       const nextStageIndex = (stageIndex + 1) % stages.length;
       setStageIndex(nextStageIndex);
       setCountdown(stages[nextStageIndex].duration);
-      showPrompt(prompts[stages[nextStageIndex].name]);
     }
   }, [countdown, totalTime, isActive, stageIndex]);
 
@@ -87,7 +85,7 @@ export function BreathingExercise() {
     setStageIndex(0);
     setCountdown(stages[0].duration);
     setTotalTime(0);
-    showPrompt(prompts[stages[0].name]);
+    setCurrentPrompt(minutePrompts[0]);
   };
 
   const handleStop = async (completed = false) => {
@@ -114,8 +112,9 @@ export function BreathingExercise() {
     <div className="flex flex-col items-center justify-center p-4 space-y-8 rounded-lg bg-accent/20 h-96 relative overflow-hidden">
         
        <AnimatePresence>
-        {currentPrompt && (
+        {isActive && currentPrompt && (
             <motion.div
+                key={currentPrompt}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
