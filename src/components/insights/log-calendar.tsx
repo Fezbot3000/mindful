@@ -4,7 +4,7 @@
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "../ui/skeleton";
-import { DayPicker } from "react-day-picker";
+import { DayProps } from "react-day-picker";
 import { useLogs } from "@/hooks/use-logs";
 
 export function LogCalendar() {
@@ -25,6 +25,24 @@ export function LogCalendar() {
     );
   }
 
+  const CustomDay = (props: DayProps) => {
+    const isSelected = logDays.some(logDate => 
+      logDate.getDate() === props.date.getDate() &&
+      logDate.getMonth() === props.date.getMonth() &&
+      logDate.getFullYear() === props.date.getFullYear()
+    );
+
+    return (
+      <div className="relative">
+        {props.children}
+        {isSelected && (
+          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-primary"></div>
+        )}
+      </div>
+    );
+  };
+
+
   return (
     <Card>
       <CardHeader>
@@ -37,22 +55,7 @@ export function LogCalendar() {
           showOutsideDays
           className="p-0"
           components={{
-            Day: ({ date, displayMonth }) => {
-              const isSelected = logDays.some(logDate => 
-                logDate.getDate() === date.getDate() &&
-                logDate.getMonth() === date.getMonth() &&
-                logDate.getFullYear() === date.getFullYear()
-              );
-
-              return (
-                <div className="relative">
-                  <DayPicker.Day date={date} displayMonth={displayMonth} />
-                  {isSelected && (
-                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-primary"></div>
-                  )}
-                </div>
-              );
-            },
+            Day: CustomDay,
           }}
         />
       </CardContent>
