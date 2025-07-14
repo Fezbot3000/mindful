@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfToday, subDays, addDays, subWeeks, addWeeks, subMonths, addMonths, format } from "date-fns";
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfToday, endOfDay, subDays, addDays, subWeeks, addWeeks, subMonths, addMonths, format } from "date-fns";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -24,8 +24,8 @@ export function InsightsPageClient() {
   const { dateRange, visibleLogs, title } = useMemo(() => {
     let start, end, title;
     if (view === "daily") {
-      start = currentDate;
-      end = currentDate;
+      start = startOfToday();
+      end = endOfDay(currentDate);
       title = format(currentDate, "MMMM d, yyyy");
     } else if (view === "weekly") {
       start = startOfWeek(currentDate);
