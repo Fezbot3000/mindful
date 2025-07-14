@@ -40,7 +40,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { auth } = getFirebaseApp() || {};
+  const firebaseServices = getFirebaseApp();
+  const auth = firebaseServices?.auth;
 
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(formSchema),

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAuth } from "@/lib/auth";
@@ -19,7 +20,8 @@ import { useRouter } from "next/navigation";
 export function AuthButton() {
   const { user } = useAuth();
   const router = useRouter();
-  const { auth } = getFirebaseApp();
+  const firebaseServices = getFirebaseApp();
+  const auth = firebaseServices?.auth;
 
   const handleSignOut = async () => {
     if (!auth) return;
@@ -27,7 +29,7 @@ export function AuthButton() {
     router.push("/");
   };
 
-  if (!user) {
+  if (!user || !auth) {
     return null;
   }
 
