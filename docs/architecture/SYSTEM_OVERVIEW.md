@@ -122,7 +122,6 @@ RootLayout
 
 ### **External Services**
 - **Firebase Authentication**: User management
-- **Google AI (Gemini)**: Insights generation
 - **Browser APIs**: 
   - Web Speech API (voice recognition)
   - Web Audio API (breathing exercise music)

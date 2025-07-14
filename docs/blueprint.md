@@ -7,7 +7,7 @@
 - Quick Log: Quick Log Button: A prominent button opens a modal to categorize the log with intensity and description fields. Timestamp auto-added.
 - Journal Entries: Journal Section: A dedicated page for deeper entries including timed 'worry sessions' and guided prompts to help the user express themself better.
 - Tracking & Insights: Tracking and Patterns: Generates simple reports to show log frequency and insights using a calendar view.
-- Gemini Insights: Insights Summarizer Tool: Auto-generate basic, non-diagnostic reports using Gemini integration, for example, pointing out time-related patterns for specific activities or feelings. Includes an export functionality to create CSV/PDF of user logs.
+- Data Export: Export functionality to create CSV files of user logs for backup or external analysis.
 - Mindfulness Toolkit: Reminders and Tools: Push notifications for check-ins and mindfulness reminders. Breathing exercise can be triggered through a dedicated button. Implements ADHD accommodations such as voice-to-text for logging and quick-tap icons.
 
 ## Style Guidelines:

@@ -13,7 +13,7 @@ import { DailyView } from "./daily-view";
 import { WeeklyView } from "./weekly-view";
 import { MonthlyView } from "./monthly-view";
 import { PageHeader } from "../page-header";
-import { GeminiInsightsCard } from "./gemini-insights-card";
+import { ExportCard } from "./gemini-insights-card";
 
 type View = "daily" | "weekly" | "monthly";
 
@@ -61,7 +61,8 @@ export function InsightsPageClient() {
     if (view === 'monthly') setCurrentDate(prev => addMonths(prev, 1));
   };
   
-  const handleViewChange = (newView: View | null) => {
+  const handleViewChange = (value: string) => {
+    const newView = value as View;
     if (newView) {
       setView(newView);
       // When switching views, reset date to today to avoid confusion
@@ -101,7 +102,7 @@ export function InsightsPageClient() {
         {view === 'monthly' && <MonthlyView logs={visibleLogs} dateRange={dateRange} loading={loading} />}
       </div>
       
-      <GeminiInsightsCard visibleLogs={visibleLogs} />
+      <ExportCard visibleLogs={visibleLogs} />
     </div>
   );
 }

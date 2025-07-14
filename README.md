@@ -9,7 +9,7 @@ Mindful Track is a personal mental health tracking application designed to help 
 - **📊 Dashboard**: Clean interface with motivational quotes and quick stats
 - **⚡ Quick Logging**: Prominent button for categorizing experiences with intensity ratings
 - **📝 Journal Entries**: Dedicated space for deeper reflection with guided prompts
-- **📈 Insights & Analytics**: Pattern recognition and AI-powered insights via Gemini
+- **📈 Insights & Analytics**: Pattern recognition and data visualization
 - **🧘 Mindfulness Tools**: Guided breathing exercises and wellness tools
 - **🌙 Accessibility**: Dark mode toggle and ADHD accommodations
 
@@ -18,7 +18,6 @@ Mindful Track is a personal mental health tracking application designed to help 
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **Authentication**: Firebase Auth
 - **Data Storage**: IndexedDB for offline-first functionality
-- **AI Integration**: Google Gemini for insights generation
 - **State Management**: React Context API
 
 ### 🚀 **Quick Start**
