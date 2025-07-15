@@ -30,19 +30,21 @@ export function JournalPageClient() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
           title="Journal & Logs"
           description="A space for reflection, from quick logs to deep dives."
         />
-        <Suspense fallback={<Button disabled><FilePlus className="mr-2" />Loading...</Button>}>
-          <NewJournalEntryDialog onEntryAdded={refreshEntries}>
-            <Button>
-              <FilePlus className="mr-2" />
-              New Journal Entry
-            </Button>
-          </NewJournalEntryDialog>
-        </Suspense>
+        <div className="flex-shrink-0">
+          <Suspense fallback={<Button disabled><FilePlus className="mr-2" />Loading...</Button>}>
+            <NewJournalEntryDialog onEntryAdded={refreshEntries}>
+              <Button className="w-full sm:w-auto">
+                <FilePlus className="mr-2" />
+                New Journal Entry
+              </Button>
+            </NewJournalEntryDialog>
+          </Suspense>
+        </div>
       </div>
 
       <Tabs defaultValue="journal" className="w-full">

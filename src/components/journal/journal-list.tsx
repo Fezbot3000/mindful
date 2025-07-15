@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ViewJournalEntryDialog } from "@/components/journal/view-entry-dialog";
 import { Skeleton } from "../ui/skeleton";
+import { EditJournalEntryDialog } from "./edit-entry-dialog";
 
 export function JournalList() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -83,17 +84,26 @@ export function JournalList() {
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {entries.map((entry) => (
         <Card key={entry.id} className="flex flex-col">
-          <CardHeader>
-            <CardTitle className="truncate text-xl">{entry.title}</CardTitle>
-            <CardDescription>
-              {format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-grow">
-            <p className="line-clamp-3 text-sm text-muted-foreground">
-              {entry.content}
-            </p>
-          </CardContent>
+          <EditJournalEntryDialog 
+            entry={entry} 
+            onEntryUpdated={(updatedEntry: JournalEntry) => {
+              setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
+            }}
+          >
+            <div className="cursor-pointer hover:bg-accent/50 transition-colors">
+              <CardHeader>
+                <CardTitle className="truncate text-xl">{entry.title}</CardTitle>
+                <CardDescription>
+                  {format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="line-clamp-3 text-sm text-muted-foreground">
+                  {entry.content}
+                </p>
+              </CardContent>
+            </div>
+          </EditJournalEntryDialog>
           <CardFooter className="flex justify-between items-center">
             <ViewJournalEntryDialog entry={entry}>
               <Button variant="outline" size="sm">

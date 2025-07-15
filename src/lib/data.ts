@@ -226,6 +226,49 @@ export const getJournalEntries = async (): Promise<JournalEntry[]> => {
   }
 };
 
+export const updateJournalEntry = async (id: number, entryData: Omit<JournalEntry, 'id' | 'timestamp'>): Promise<JournalEntry> => {
+  try {
+    const db = await getDb();
+    
+    // Get existing entry to preserve timestamp
+    const existingEntry = await db.get(JOURNAL_STORE, id);
+    if (!existingEntry) {
+      throw new Error('Journal entry not found');
+    }
+    
+    // Sanitize all input data
+    const sanitizedData = {
+      title: sanitizeInput(entryData.title),
+      content: sanitizeInput(entryData.content),
+      intensity: entryData.intensity ? Math.max(1, Math.min(10, Math.floor(entryData.intensity))) : undefined,
+      trigger: entryData.trigger ? sanitizeInput(entryData.trigger) : undefined,
+      evidenceFor: entryData.evidenceFor ? sanitizeInput(entryData.evidenceFor) : undefined,
+      evidenceAgainst: entryData.evidenceAgainst ? sanitizeInput(entryData.evidenceAgainst) : undefined,
+      alternativeView: entryData.alternativeView ? sanitizeInput(entryData.alternativeView) : undefined,
+      schemaLink: entryData.schemaLink ? sanitizeInput(entryData.schemaLink) : undefined,
+    };
+    
+    const updatedEntry = {
+      id,
+      ...sanitizedData,
+      timestamp: existingEntry.timestamp, // Preserve original timestamp
+    };
+    
+    await db.put(JOURNAL_STORE, updatedEntry);
+    
+    secureLog('info', 'Journal entry updated successfully', { 
+      id, 
+      title: sanitizedData.title,
+      intensity: sanitizedData.intensity 
+    });
+    
+    return updatedEntry;
+  } catch (error) {
+    secureLog('error', 'Failed to update journal entry', { error });
+    throw new Error('Failed to update journal entry');
+  }
+};
+
 export const deleteJournalEntry = async (id: number): Promise<void> => {
   const db = await getDb();
   await db.delete(JOURNAL_STORE, id);

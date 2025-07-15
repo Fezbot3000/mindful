@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "../ui/skeleton";
 import { useLogs } from "@/hooks/use-logs";
+import { EditLogDialog } from "@/components/edit-log-dialog";
 
 
 export function LogList() {
@@ -73,20 +74,29 @@ export function LogList() {
       {allLogs.map((log) => {
         return (
             <Card key={log.id} className="flex flex-col">
-              <CardHeader>
-                <CardTitle className="truncate text-xl flex flex-col">
-                  <span>{log.category}</span>
-                  <span className="text-sm font-normal text-muted-foreground">Intensity: {log.intensity}/10</span>
-                </CardTitle>
-                <CardDescription>
-                  {format(log.timestamp, "MMMM d, yyyy 'at' h:mm a")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground line-clamp-3">
-                  {log.description || "No description provided."}
-                </p>
-              </CardContent>
+              <EditLogDialog 
+                log={log} 
+                onLogUpdated={(updatedLog: Log) => {
+                  setLogs(prev => prev.map(l => l.id === log.id ? updatedLog : l));
+                }}
+              >
+                <div className="cursor-pointer hover:bg-accent/50 transition-colors">
+                  <CardHeader>
+                    <CardTitle className="truncate text-xl flex flex-col">
+                      <span>{log.category}</span>
+                      <span className="text-sm font-normal text-muted-foreground">Intensity: {log.intensity}/10</span>
+                    </CardTitle>
+                    <CardDescription>
+                      {format(log.timestamp, "MMMM d, yyyy 'at' h:mm a")}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <p className="text-sm text-muted-foreground line-clamp-3">
+                      {log.description || "No description provided."}
+                    </p>
+                  </CardContent>
+                </div>
+              </EditLogDialog>
               <CardFooter className="flex justify-end">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

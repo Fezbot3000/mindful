@@ -14,7 +14,7 @@ interface LogsContextType {
 
 const LogsContext = createContext<LogsContextType | undefined>(undefined);
 
-export const LogsProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const LogsProvider = ({ children }: { children: ReactNode }) => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
 

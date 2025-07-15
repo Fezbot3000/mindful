@@ -2,7 +2,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useSidebar } from "@/components/ui/sidebar";
 import { Home, Book, BarChart3, Wrench, Settings } from "lucide-react";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
@@ -17,13 +16,6 @@ export const navItems = [
 
 export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
-  const { setOpenMobile } = useSidebar();
-
-  const handleLinkClick = () => {
-    if (isMobile) {
-        setOpenMobile(false);
-    }
-  };
 
   if (isMobile) {
     return (
@@ -34,11 +26,10 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
                     <Link 
                         key={item.href}
                         href={item.href}
-                        onClick={handleLinkClick}
                         className={cn(
-                            "flex flex-col items-center gap-1 p-2 rounded-md text-sm font-medium transition-colors",
+                            "flex flex-col items-center gap-1 p-3 rounded-md text-sm font-medium transition-colors",
                             isActive 
-                                ? "text-primary bg-primary/10 border-t-2 border-primary" 
+                                ? "text-white bg-primary border-t-2 border-primary font-bold shadow-md" 
                                 : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                         )}
                     >
