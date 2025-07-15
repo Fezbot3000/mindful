@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, createContext, useContext, ReactNode, useCallback } from 'react';
+import React, { useState, useEffect, createContext, useContext, ReactNode, useCallback } from 'react';
 import { Log } from '@/types';
 import { getLogs as fetchLogs } from '@/lib/data';
 
@@ -14,7 +14,7 @@ interface LogsContextType {
 
 const LogsContext = createContext<LogsContextType | undefined>(undefined);
 
-export const LogsProvider = ({ children }: { children: ReactNode }) => {
+export const LogsProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
 

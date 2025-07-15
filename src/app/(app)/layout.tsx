@@ -61,7 +61,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <ThemeToggle />
                   </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-24 md:pb-8" role="main" id="main-content">
+                <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-32 md:pb-8 pt-safe-area-inset-top pl-safe-area-inset-left pr-safe-area-inset-right" role="main" id="main-content">
                   {children}
                 </main>
               </div>

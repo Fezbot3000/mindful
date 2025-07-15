@@ -3,7 +3,7 @@
   "short_name": "Mindful Track",
   "description": "A personal tool to track thoughts, build self-awareness, and improve mental wellness through journaling, mood tracking, and mindfulness exercises.",
   "start_url": "/",
-  "display": "standalone",
+  "display": "browser",
   "background_color": "#FFFFFF",
   "theme_color": "#77BEF0",
   "orientation": "portrait-primary",
