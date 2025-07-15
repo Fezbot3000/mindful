@@ -145,18 +145,30 @@ export function DataManagement() {
                 <p className="mt-4 text-sm text-muted-foreground">Select a `mindful-track-backup.zip` file.</p>
             </div>
         </CardContent>
-        <CardFooter>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" className="w-full" disabled={!fileToImport || isImporting} onClick={() => document.getElementById('file-upload')?.click()}>
-                  <Upload className="mr-2" />
-                  {fileToImport ? fileToImport.name : "Select File..."}
-                </Button>
-              </AlertDialogTrigger>
-                {fileToImport && (
+        <CardFooter className="flex flex-col gap-2">
+            <Button 
+                variant="outline" 
+                className="w-full" 
+                disabled={isImporting} 
+                onClick={() => document.getElementById('file-upload')?.click()}
+            >
+                <Upload className="mr-2" />
+                {fileToImport ? fileToImport.name : "Select File..."}
+            </Button>
+            
+            {fileToImport && (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button className="w-full" disabled={isImporting}>
+                            Import Data
+                        </Button>
+                    </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle className="flex items-center gap-2"><AlertTriangle className="text-destructive" />Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogTitle className="flex items-center gap-2">
+                                <AlertTriangle className="text-destructive" />
+                                Are you absolutely sure?
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
                                 This will import and merge all entries from the file <span className="font-bold">{fileToImport.name}</span>. 
                                 This action cannot be undone. It is recommended to take a fresh backup before importing.
@@ -169,8 +181,9 @@ export function DataManagement() {
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
-                )}
-            </AlertDialog>
+                </AlertDialog>
+            )}
+            
             <input
                 type="file"
                 id="file-upload"

@@ -51,8 +51,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarFooter>
             </Sidebar>
 
-            <div className="flex-1 transition-[margin-left] ease-in-out duration-300 md:ml-[3.5rem] group-data-[state=expanded]:md:ml-[16rem]">
-              <div className="flex-1">
+            <div className="flex-1 transition-[margin-left] ease-in-out duration-300 md:ml-[3.5rem] group-data-[state=expanded]:md:ml-[16rem] md:max-w-[calc(100vw-3.5rem)] group-data-[state=expanded]:md:max-w-[calc(100vw-16rem)] overflow-x-hidden">
+              <div className="flex-1 max-w-full overflow-x-hidden">
                 <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6" role="banner">
                   <div className="flex items-center gap-4 ml-auto">
                     <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
@@ -61,7 +61,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <ThemeToggle />
                   </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-6 md:gap-8 pb-32 md:pb-8 pt-safe-area-inset-top pl-safe-area-inset-left pr-safe-area-inset-right" role="main" id="main-content">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:px-6 sm:py-6 md:gap-8 pb-32 md:pb-8 pt-safe-area-inset-top pl-safe-area-inset-left pr-safe-area-inset-right max-w-full" role="main" id="main-content">
                   {children}
                 </main>
               </div>

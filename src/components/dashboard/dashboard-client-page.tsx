@@ -86,44 +86,44 @@ export function DashboardClientPage() {
   const isLoading = loading || recentLoading;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-hidden">
       <PageHeader
         title="Welcome Back"
         description={quote}
       />
 
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Card>
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 max-w-full overflow-hidden">
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Logs Today</CardTitle>
-            <Sparkles className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Logs Today</CardTitle>
+            <Sparkles className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent>
             {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.logsToday}</div>}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tracking Streak</CardTitle>
-            <Repeat className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Tracking Streak</CardTitle>
+            <Repeat className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent>
             {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.streak} days</div>}
           </CardContent>
         </Card>
-         <Card>
+         <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Logs</CardTitle>
-            <HeartPulse className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Total Logs</CardTitle>
+            <HeartPulse className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent>
             {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.totalLogs}</div>}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="min-w-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg. Intensity</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium truncate">Avg. Intensity</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent>
             {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.avgIntensity}</div>}
@@ -131,18 +131,18 @@ export function DashboardClientPage() {
         </Card>
       </div>
       
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
           <CardTitle>Recent Logs</CardTitle>
           <CardDescription>A quick look at your most recent entries.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-hidden">
           {isLoading ? (
              <div className="space-y-4">
                 {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
             </div>
           ) : recentLogs.length > 0 ? (
-            <ul className="space-y-4">
+            <ul className="space-y-4 max-w-full">
               {recentLogs.map(log => {
                 const Icon = categoryIcons[log.category] || Sparkles;
                 return (
@@ -153,19 +153,19 @@ export function DashboardClientPage() {
                       setRecentLogs(prev => prev.map(l => l.id === log.id ? updatedLog : l));
                     }}
                   >
-                    <li className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors">
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <li className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors min-w-0 max-w-full overflow-hidden">
+                      <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
                         <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                        <div className="min-w-0 flex-1">
-                            <p className="font-semibold truncate">{log.category}</p>
+                        <div className="min-w-0 flex-1 overflow-hidden">
+                          <p className="font-semibold truncate">{log.category}</p>
                           <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
+                        </div>
                       </div>
-                    </div>
-                      <div className="text-right flex-shrink-0">
-                      <div className="font-bold text-primary">{log.intensity}/10</div>
-                      <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
-                    </div>
-                  </li>
+                      <div className="text-right flex-shrink-0 min-w-0">
+                        <div className="font-bold text-primary whitespace-nowrap">{log.intensity}/10</div>
+                        <p className="text-xs text-muted-foreground whitespace-nowrap">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
+                      </div>
+                    </li>
                   </EditLogDialog>
                 )
             })}
