@@ -16,7 +16,7 @@ const groundingSteps = [
     icon: Eye,
     prompt: "Name 5 things you can see around you",
     description: "Look around and identify 5 objects in your environment",
-    color: "text-blue-500"
+    color: "text-primary"
   },
   {
     count: 4,
@@ -24,7 +24,7 @@ const groundingSteps = [
     icon: Hand,
     prompt: "Name 4 things you can touch",
     description: "Feel 4 different textures or surfaces near you",
-    color: "text-green-500"
+    color: "text-secondary"
   },
   {
     count: 3,
@@ -40,7 +40,7 @@ const groundingSteps = [
     icon: Wind,
     prompt: "Name 2 things you can smell",
     description: "Take a deep breath and notice 2 scents",
-    color: "text-orange-500"
+    color: "text-accent"
   },
   {
     count: 1,
@@ -48,7 +48,7 @@ const groundingSteps = [
     icon: Smile,
     prompt: "Name 1 thing you can taste",
     description: "Notice any taste in your mouth right now",
-    color: "text-red-500"
+    color: "text-destructive"
   }
 ];
 
@@ -243,7 +243,7 @@ export function GroundingExercise() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center space-y-4"
           >
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+            <CheckCircle className="h-16 w-16 text-secondary mx-auto" />
             <h3 className="text-xl font-semibold">Exercise Complete!</h3>
             <p className="text-muted-foreground">
               You've successfully grounded yourself using all five senses.

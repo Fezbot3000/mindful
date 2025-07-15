@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLogs } from "@/hooks/use-logs";
 import { useToast } from "@/hooks/use-toast";
+import { addLog } from "@/lib/data";
 import { AnimatePresence, motion } from "framer-motion";
 import { Zap, Play, Pause, RotateCcw, CheckCircle } from "lucide-react";
 
@@ -15,14 +16,14 @@ const muscleGroups = [
     instruction: "Make tight fists with both hands",
     release: "Let your hands open and relax completely",
     duration: 5,
-    color: "text-blue-500"
+    color: "text-primary"
   },
   {
     name: "Upper Arms",
     instruction: "Bend your elbows and tense your biceps",
     release: "Lower your arms and let them hang loosely",
     duration: 5,
-    color: "text-green-500"
+    color: "text-secondary"
   },
   {
     name: "Shoulders",
@@ -36,42 +37,42 @@ const muscleGroups = [
     instruction: "Scrunch your face and clench your jaw",
     release: "Let your face go completely slack",
     duration: 5,
-    color: "text-orange-500"
+    color: "text-accent"
   },
   {
     name: "Neck",
     instruction: "Gently press your head back",
     release: "Bring your head to a neutral position",
     duration: 5,
-    color: "text-red-500"
+    color: "text-destructive"
   },
   {
     name: "Chest",
     instruction: "Take a deep breath and hold it",
     release: "Exhale slowly and breathe naturally",
     duration: 5,
-    color: "text-cyan-500"
+    color: "text-primary"
   },
   {
     name: "Abdomen",
     instruction: "Tighten your stomach muscles",
     release: "Let your belly be soft and relaxed",
     duration: 5,
-    color: "text-yellow-500"
+    color: "text-secondary"
   },
   {
     name: "Upper Legs",
     instruction: "Tense your thigh muscles",
     release: "Let your thighs rest heavily",
     duration: 5,
-    color: "text-pink-500"
+    color: "text-accent"
   },
   {
     name: "Lower Legs",
     instruction: "Point your toes and tense your calves",
     release: "Let your feet rest naturally",
     duration: 5,
-    color: "text-indigo-500"
+    color: "text-destructive"
   }
 ];
 
@@ -87,7 +88,7 @@ export function MuscleRelaxation() {
   const [intensityAfter, setIntensityAfter] = useState(5);
   const [showRating, setShowRating] = useState(false);
 
-  const { addLog } = useLogs();
+  const { addLog: addLogToState } = useLogs();
   const { toast } = useToast();
 
   const currentMuscleGroup = muscleGroups[currentGroup];
@@ -149,11 +150,12 @@ export function MuscleRelaxation() {
   const handleRatingSubmit = async () => {
     try {
       const improvement = intensityBefore - intensityAfter;
-      await addLog({
+      const newLog = await addLog({
         category: "Accomplished",
         intensity: Math.max(1, intensityAfter),
         description: `Completed Progressive Muscle Relaxation. Tension reduced from ${intensityBefore}/10 to ${intensityAfter}/10.`
       });
+      addLogToState(newLog);
       toast({ 
         title: "Relaxation Complete!", 
         description: `Great job! Your tension level ${improvement > 0 ? 'decreased' : 'was recorded'}.` 
@@ -195,7 +197,7 @@ export function MuscleRelaxation() {
   const getPhaseColor = () => {
     switch (phase) {
       case 'instruction':
-        return "text-blue-500";
+        return "text-primary";
       case 'tense':
         return "text-red-500";
       case 'release':
@@ -283,16 +285,16 @@ export function MuscleRelaxation() {
                   )}
                   
                   {phase === 'tense' && (
-                    <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                      <p className="text-red-600 dark:text-red-400 font-medium">
+                            <div className="p-4 bg-destructive/10 dark:bg-destructive/20 rounded-lg">
+          <p className="text-destructive font-medium">
                         Hold the tension... breathe normally
                       </p>
                     </div>
                   )}
                   
                   {phase === 'release' && (
-                    <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                      <p className="text-green-600 dark:text-green-400 font-medium">
+                            <div className="p-4 bg-secondary/10 dark:bg-secondary/20 rounded-lg">
+          <p className="text-secondary font-medium">
                         Release and relax... feel the difference
                       </p>
                     </div>
@@ -323,7 +325,7 @@ export function MuscleRelaxation() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center space-y-4"
           >
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+            <CheckCircle className="h-16 w-16 text-secondary mx-auto" />
             <h3 className="text-xl font-semibold">Exercise Complete!</h3>
             <p className="text-muted-foreground">
               You've completed the full Progressive Muscle Relaxation sequence.
@@ -352,7 +354,7 @@ export function MuscleRelaxation() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center space-y-4"
           >
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+            <CheckCircle className="h-16 w-16 text-secondary mx-auto" />
             <h3 className="text-xl font-semibold">Results Saved!</h3>
             <p className="text-muted-foreground">
               Your relaxation session has been logged.

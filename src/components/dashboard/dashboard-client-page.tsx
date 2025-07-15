@@ -11,6 +11,7 @@ import { HeartPulse, Repeat, TrendingUp, Sparkles, BookText } from "lucide-react
 import { Skeleton } from "../ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { useLogs } from "@/hooks/use-logs";
+import { EditLogDialog } from "@/components/edit-log-dialog";
 
 const quotes = [
   "Tracking builds strength – you're in control.",
@@ -91,7 +92,7 @@ export function DashboardClientPage() {
         description={quote}
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Logs Today</CardTitle>
@@ -145,19 +146,27 @@ export function DashboardClientPage() {
               {recentLogs.map(log => {
                 const Icon = categoryIcons[log.category] || Sparkles;
                 return (
-                  <li key={log.id} className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-accent/50">
-                    <div className="flex items-center gap-3">
-                      <Icon className="h-5 w-5 text-muted-foreground" />
-                      <div className="flex-1">
-                          <p className="font-semibold">{log.category}</p>
-                          <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
+                  <EditLogDialog 
+                    key={log.id} 
+                    log={log} 
+                    onLogUpdated={(updatedLog) => {
+                      setRecentLogs(prev => prev.map(l => l.id === log.id ? updatedLog : l));
+                    }}
+                  >
+                    <li className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                        <div className="min-w-0 flex-1">
+                            <p className="font-semibold truncate">{log.category}</p>
+                            <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-primary">{log.intensity}/10</div>
-                      <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
-                    </div>
-                  </li>
+                      <div className="text-right flex-shrink-0">
+                        <div className="font-bold text-primary">{log.intensity}/10</div>
+                        <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
+                      </div>
+                    </li>
+                  </EditLogDialog>
                 )
             })}
             </ul>

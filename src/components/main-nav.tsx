@@ -29,7 +29,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
     return (
         <nav className="grid grid-cols-5 w-full">
             {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || (pathname === "/" && item.href === "/dashboard");
                 return (
                     <Link 
                         key={item.href}
@@ -37,7 +37,9 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
                         onClick={handleLinkClick}
                         className={cn(
                             "flex flex-col items-center gap-1 p-2 rounded-md text-sm font-medium transition-colors",
-                            isActive ? "text-primary" : "text-muted-foreground hover:text-primary"
+                            isActive 
+                                ? "text-primary bg-primary/10 border-t-2 border-primary" 
+                                : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                         )}
                     >
                         <item.icon className="icon-lg" />
@@ -57,7 +59,7 @@ export function MainNav({ isMobile = false }: { isMobile?: boolean }) {
                 href={item.href}
                 className={cn(
                     "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-ring transition-[width,height,padding] hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 active:bg-accent active:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 h-8",
-                    pathname === item.href && "bg-accent font-medium text-accent-foreground",
+                    (pathname === item.href || (pathname === "/" && item.href === "/dashboard")) && "bg-accent font-medium text-accent-foreground",
                     "group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0"
                 )}
             >

@@ -155,11 +155,11 @@ export function AffirmationGenerator() {
 
   const getCategoryColor = () => {
     const colors = {
-      safety: "text-blue-500",
-      selfWorth: "text-green-500",
+      safety: "text-primary",
+      selfWorth: "text-secondary",
       control: "text-purple-500",
-      presence: "text-orange-500",
-      healing: "text-pink-500"
+      presence: "text-accent",
+      healing: "text-destructive"
     };
     return colors[category];
   };
@@ -212,7 +212,7 @@ export function AffirmationGenerator() {
               transition={{ duration: 0.5 }}
               className="text-center space-y-4"
             >
-              <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
+              <div className="p-6 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 rounded-lg">
                 <p className={`text-xl font-medium ${getCategoryColor()}`}>
                   "{currentAffirmation}"
                 </p>
@@ -248,7 +248,7 @@ export function AffirmationGenerator() {
                       key={star}
                       onClick={() => rateAffirmation(star)}
                       className={`text-2xl transition-colors ${
-                        star <= rating ? "text-yellow-400" : "text-gray-300"
+                        star <= rating ? "text-secondary" : "text-gray-300"
                       }`}
                     >
                       ★

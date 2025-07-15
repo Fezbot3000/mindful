@@ -5,32 +5,32 @@
 
 @layer base {
   :root {
-    /* Blueprint-compliant colors for calm, ADHD-friendly design */
-    --background: 210 40% 98%;      /* Very light blue (#E3F2FD) */
+    /* User-specified color palette - Direct hex to HSL conversion */
+    --background: 0 0% 100%;        /* Pure white background */
     --foreground: 222.2 84% 4.9%;
-    --card: 210 40% 97%;            /* Slightly darker than background */
+    --card: 0 0% 100%;              /* Pure white cards */
     --card-foreground: 222.2 84% 4.9%;
-    --popover: 210 40% 98%;
+    --popover: 0 0% 98%;            /* Slightly off-white for better contrast */
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 207 82% 67%;         /* Soft blue (#64B5F6) */
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 210 40% 9.8%;
+    --primary: 208 82% 70%;         /* #77BEF0 - Light blue (exact conversion) */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 42 100% 69%;       /* #FFCB61 - Yellow (exact conversion) */
+    --secondary-foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 260 60% 85%;          /* Soft lavender (#C8B5E8) */
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 19 100% 65%;          /* #FF894F - Orange (exact conversion) */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 353 81% 64%;     /* #EA5B6F - Pink/Red (exact conversion) */
+    --destructive-foreground: 0 0% 100%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 207 82% 67%;            /* Focus rings use primary */
+    --ring: 208 82% 70%;            /* Focus rings use primary */
     --radius: 0.5rem;
-    --chart-1: 207 82% 67%;         /* Primary blue for charts */
-    --chart-2: 260 60% 85%;         /* Accent lavender for charts */
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 208 82% 70%;         /* #77BEF0 - Light blue for charts */
+    --chart-2: 42 100% 69%;         /* #FFCB61 - Yellow for charts */
+    --chart-3: 19 100% 65%;         /* #FF894F - Orange for charts */
+    --chart-4: 353 81% 64%;         /* #EA5B6F - Pink for charts */
+    --chart-5: 280 100% 70%;        /* Purple for charts */
     
     /* Design System Tokens - Mathematical Spacing Scale */
     --space-0: 0;
@@ -90,31 +90,31 @@
   }
  
   .dark {
-    /* Dark theme maintaining blueprint calm colors */
-    --background: 224 71% 4%;       /* Dark blue background */
-    --foreground: 213 31% 91%;
-    --card: 224 71% 6%;             /* Slightly lighter than background */
-    --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
-    --primary: 207 82% 75%;         /* Lighter soft blue for dark mode */
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 213 31% 91%;
-    --muted: 215 28% 17%;
-    --muted-foreground: 218 11% 65%;
-    --accent: 260 45% 70%;          /* Deeper lavender for dark mode (#B197D4) */
-    --accent-foreground: 213 31% 91%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 213 31% 91%;
-    --border: 215 28% 17%;
-    --input: 215 28% 17%;
-    --ring: 207 82% 75%;            /* Focus rings use primary */
-    --chart-1: 207 82% 75%;         /* Primary blue for dark charts */
-    --chart-2: 260 45% 70%;         /* Accent lavender for dark charts */
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Dark theme with user-specified colors */
+    --background: 220 13% 9%;       /* Dark gray background */
+    --foreground: 210 40% 95%;      /* Light text */
+    --card: 220 13% 11%;            /* Slightly lighter than background */
+    --card-foreground: 210 40% 95%;
+    --popover: 220 13% 9%;
+    --popover-foreground: 210 40% 95%;
+    --primary: 208 82% 75%;         /* #77BEF0 - Lighter for dark mode */
+    --primary-foreground: 220 13% 9%;
+    --secondary: 42 100% 75%;       /* #FFCB61 - Brighter for dark mode */
+    --secondary-foreground: 220 13% 9%;
+    --muted: 215 25% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 19 100% 70%;          /* #FF894F - Brighter for dark mode */
+    --accent-foreground: 220 13% 9%;
+    --destructive: 353 81% 70%;     /* #EA5B6F - Brighter for dark mode */
+    --destructive-foreground: 220 13% 9%;
+    --border: 215 25% 20%;
+    --input: 215 25% 20%;
+    --ring: 208 82% 75%;            /* Focus rings use primary */
+    --chart-1: 208 82% 75%;         /* #77BEF0 - Light blue for dark charts */
+    --chart-2: 42 100% 75%;         /* #FFCB61 - Yellow for dark charts */
+    --chart-3: 19 100% 70%;         /* #FF894F - Orange for dark charts */
+    --chart-4: 353 81% 70%;         /* #EA5B6F - Pink for dark charts */
+    --chart-5: 280 100% 70%;        /* Purple for dark charts */
   }
 }
  
@@ -124,6 +124,15 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  
+    /* Force primary color application */
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+  
+  .text-primary {
+    color: hsl(var(--primary));
   }
   
   /* Performance optimizations */
@@ -189,5 +198,11 @@
   .component-md { width: var(--component-md); height: var(--component-md); }
   .component-lg { width: var(--component-lg); height: var(--component-lg); }
   .component-xl { width: var(--component-xl); height: var(--component-xl); }
+  
+  /* iOS Safe Area Support */
+  .pb-safe-area-inset-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .pt-safe-area-inset-top { padding-top: env(safe-area-inset-top); }
+  .pl-safe-area-inset-left { padding-left: env(safe-area-inset-left); }
+  .pr-safe-area-inset-right { padding-right: env(safe-area-inset-right); }
 }
 

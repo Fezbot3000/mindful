@@ -12,7 +12,7 @@ export function MobileNav() {
     }
 
     return (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-50 flex items-center" style={{ height: 'var(--component-xl)' }}>
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-50 flex items-center pb-safe-area-inset-bottom" style={{ height: 'var(--component-xl)' }}>
             <MainNav isMobile={true} />
         </div>
     )

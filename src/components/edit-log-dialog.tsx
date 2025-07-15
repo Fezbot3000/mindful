@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -11,8 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { addLog } from "@/lib/data";
-import { LogCategory } from "@/types";
+import { updateLog } from "@/lib/data";
+import { LogCategory, Log } from "@/types";
 import { Loader2 } from "lucide-react";
 import { useLogs } from "@/hooks/use-logs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -48,18 +47,24 @@ const intensityLabels: { [key: number]: string } = {
     1: "Mild", 4: "Moderate", 7: "Intense", 10: "Overwhelming"
 };
 
-export function QuickLogDialog({ children }: { children: React.ReactNode }) {
+interface EditLogDialogProps {
+  children: React.ReactNode;
+  log: Log;
+  onLogUpdated: (updatedLog: Log) => void;
+}
+
+export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { addLog: addLogToState } = useLogs();
+  const { setLogs } = useLogs();
   
   const form = useForm<LogFormValues>({
     resolver: zodResolver(logSchema),
     defaultValues: {
-      category: "Health Fear",
-      intensity: 5,
-      description: "",
+      category: log.category,
+      intensity: log.intensity,
+      description: log.description || "",
     },
   });
 
@@ -69,17 +74,22 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const onSubmit = async (data: LogFormValues) => {
     setLoading(true);
     try {
-      const newLog = await addLog({
+      const updatedLog = await updateLog(log.id, {
         category: data.category as LogCategory,
         intensity: data.intensity,
         description: data.description,
       });
-      addLogToState(newLog);
-      toast({ title: "Log Saved!", description: "Great tracking! You're building resilience." });
-      form.reset();
+      
+      // Update the logs in the global state
+      setLogs(prevLogs => 
+        prevLogs.map(l => l.id === log.id ? updatedLog : l)
+      );
+      
+      onLogUpdated(updatedLog);
+      toast({ title: "Log Updated!", description: "Your log entry has been successfully updated." });
       setOpen(false);
     } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: "Failed to save log. Please try again." });
+      toast({ variant: "destructive", title: "Error", description: "Failed to update log. Please try again." });
     } finally {
       setLoading(false);
     }
@@ -90,16 +100,16 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Log Now</DialogTitle>
+          <DialogTitle>Edit Log Entry</DialogTitle>
           <DialogDescription>
-            Quickly capture what you're experiencing. It's okay to be brief.
+            Update your log entry. The original timestamp will be preserved.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
           <div className="space-y-2">
             <Label>Category</Label>
             <RadioGroup
-              defaultValue={form.getValues("category")}
+              value={form.getValues("category")}
               onValueChange={(value) => form.setValue("category", value as LogCategory)}
               className="grid grid-cols-2 gap-2"
             >
@@ -119,14 +129,15 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
               ))}
             </RadioGroup>
           </div>
-          <div className="space-y-3">
+          
+          <div className="space-y-2">
             <Label htmlFor="intensity">Intensity ({watchedIntensity})</Label>
             <Slider
                 id="intensity"
                 min={1}
                 max={10}
                 step={1}
-                defaultValue={[form.getValues("intensity")]}
+                value={[form.getValues("intensity")]}
                 onValueChange={(value) => form.setValue("intensity", value[0])}
             />
             <div className="flex justify-between text-xs text-muted-foreground px-1">
@@ -135,6 +146,7 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
                 ))}
             </div>
           </div>
+          
           <div className="space-y-2">
             <Label htmlFor="description">Optional Description</Label>
             <Textarea 
@@ -143,14 +155,15 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
                 {...form.register("description")} 
             />
           </div>
+          
           <DialogFooter>
             <Button type="submit" disabled={loading} className="w-full">
               {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
-              Save Log
+              Update Log
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
-}
+} 

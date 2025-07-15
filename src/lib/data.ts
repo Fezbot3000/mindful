@@ -110,6 +110,44 @@ export const getLogs = async (): Promise<Log[]> => {
   }
 };
 
+export const updateLog = async (id: number, logData: { category: LogCategory; intensity: number; description?: string }): Promise<Log> => {
+  try {
+    const db = await getDb();
+    
+    // Get existing log to preserve timestamp
+    const existingLog = await db.get(LOGS_STORE, id);
+    if (!existingLog) {
+      throw new Error('Log not found');
+    }
+    
+    // Sanitize input data
+    const sanitizedData = {
+      category: logData.category,
+      intensity: Math.max(1, Math.min(10, Math.floor(logData.intensity))),
+      description: logData.description ? sanitizeInput(logData.description) : undefined,
+    };
+    
+    const updatedLog = {
+      id,
+      ...sanitizedData,
+      timestamp: existingLog.timestamp, // Preserve original timestamp
+    };
+    
+    await db.put(LOGS_STORE, updatedLog);
+    
+    secureLog('info', 'Log updated successfully', { 
+      id, 
+      category: sanitizedData.category,
+      intensity: sanitizedData.intensity 
+    });
+    
+    return updatedLog;
+  } catch (error) {
+    secureLog('error', 'Failed to update log', { error });
+    throw new Error('Failed to update log entry');
+  }
+};
+
 export const deleteLog = async (id: number): Promise<void> => {
   const db = await getDb();
   await db.delete(LOGS_STORE, id);
