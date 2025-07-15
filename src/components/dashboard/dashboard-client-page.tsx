@@ -158,14 +158,14 @@ export function DashboardClientPage() {
                         <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                         <div className="min-w-0 flex-1">
                             <p className="font-semibold truncate">{log.category}</p>
-                            <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
-                        </div>
+                          <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
                       </div>
+                    </div>
                       <div className="text-right flex-shrink-0">
-                        <div className="font-bold text-primary">{log.intensity}/10</div>
-                        <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
-                      </div>
-                    </li>
+                      <div className="font-bold text-primary">{log.intensity}/10</div>
+                      <p className="text-xs text-muted-foreground">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
+                    </div>
+                  </li>
                   </EditLogDialog>
                 )
             })}

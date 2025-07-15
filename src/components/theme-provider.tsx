@@ -30,13 +30,13 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window === 'undefined') {
-      return "light"; // Force light mode for testing
+      return defaultTheme;
     }
     try {
-      return "light"; // Force light mode for testing
+      return (localStorage.getItem(storageKey) as Theme) || defaultTheme
     } catch (e) {
       console.error("Failed to access localStorage for theme", e)
-      return "light"; // Force light mode for testing
+      return defaultTheme
     }
   })
 
@@ -45,12 +45,12 @@ export function ThemeProvider({
 
     root.classList.remove("light", "dark")
 
-    let effectiveTheme = "light"; // Force light mode for testing
-    // if (theme === "system") {
-    //   effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-    //     ? "dark"
-    //     : "light"
-    // }
+    let effectiveTheme = theme;
+    if (theme === "system") {
+      effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light"
+    }
 
     root.classList.add(effectiveTheme)
   }, [theme])

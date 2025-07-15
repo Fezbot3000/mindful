@@ -16,15 +16,21 @@ Based on the blueprint requirements for calm, ADHD-friendly design:
 
 #### Primary Colors
 ```css
-/* Blueprint-compliant colors */
---primary: 207 82% 67%;        /* Soft blue (#64B5F6) */
---primary-foreground: 210 40% 98%;
+/* User-specified color palette */
+--primary: 208 82% 71%;        /* Light blue (#77BEF0) */
+--primary-foreground: 0 0% 100%;
 
---background: 210 40% 98%;      /* Very light blue (#E3F2FD) */
+--background: 0 0% 100%;       /* Pure white background */
 --foreground: 222.2 84% 4.9%;
 
---accent: 120 39% 75%;          /* Pale green (#A5D6A7) */
---accent-foreground: 222.2 47.4% 11.2%;
+--secondary: 42 100% 69%;      /* Yellow (#FFCB61) */
+--secondary-foreground: 222.2 84% 4.9%;
+
+--accent: 19 100% 65%;         /* Orange (#FF894F) */
+--accent-foreground: 0 0% 100%;
+
+--destructive: 353 81% 64%;    /* Pink/Red (#EA5B6F) */
+--destructive-foreground: 0 0% 100%;
 ```
 
 #### Semantic Colors
@@ -43,11 +49,13 @@ Based on the blueprint requirements for calm, ADHD-friendly design:
 
 #### Dark Mode Colors
 ```css
-/* Dark theme for ADHD accommodation */
---dark-background: 224 71% 4%;
---dark-foreground: 213 31% 91%;
---dark-primary: 210 40% 98%;
---dark-accent: 120 39% 75%;      /* Maintains pale green */
+/* Dark theme with user-specified colors */
+--background: 220 13% 9%;       /* Dark gray background */
+--foreground: 210 40% 95%;      /* Light text */
+--primary: 208 82% 76%;         /* Light blue - lighter for dark mode */
+--secondary: 42 100% 75%;       /* Yellow - brighter for dark mode */
+--accent: 19 100% 70%;          /* Orange - brighter for dark mode */
+--destructive: 353 81% 70%;     /* Pink/Red - brighter for dark mode */
 ```
 
 ### **Typography System**

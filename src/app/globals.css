@@ -5,32 +5,42 @@
 
 @layer base {
   :root {
-    /* User-specified color palette - Direct hex to HSL conversion */
-    --background: 0 0% 100%;        /* Pure white background */
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;              /* Pure white cards */
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 98%;            /* Slightly off-white for better contrast */
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 208 82% 70%;         /* #77BEF0 - Light blue (exact conversion) */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 42 100% 69%;       /* #FFCB61 - Yellow (exact conversion) */
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 19 100% 65%;          /* #FF894F - Orange (exact conversion) */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 353 81% 64%;     /* #EA5B6F - Pink/Red (exact conversion) */
-    --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 208 82% 70%;            /* Focus rings use primary */
+    /* Monochrome palette - black, grey, and white only */
+    --background: 0 0% 100%;        /* #FFFFFF - White background */
+    --foreground: 0 0% 0%;          /* #000000 - Black text */
+    --card: 0 0% 98%;               /* #FAFAFA - Very light grey cards */
+    --card-foreground: 0 0% 0%;     /* #000000 - Black text on cards */
+    --popover: 0 0% 100%;           /* #FFFFFF - White popover background */
+    --popover-foreground: 0 0% 0%;  /* #000000 - Black text on popovers */
+    --primary: 0 0% 20%;            /* #333333 - Dark grey */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
+    --secondary: 0 0% 90%;          /* #E6E6E6 - Light grey */
+    --secondary-foreground: 0 0% 0%; /* #000000 - Black text on secondary */
+    --muted: 0 0% 96%;              /* #F5F5F5 - Very light grey */
+    --muted-foreground: 0 0% 40%;   /* #666666 - Medium grey text */
+    --accent: 0 0% 90%;             /* #E6E6E6 - Light grey for accents */
+    --accent-foreground: 0 0% 0%;   /* #000000 - Black text on accent */
+    --destructive: 0 0% 30%;        /* #4D4D4D - Dark grey for destructive */
+    --destructive-foreground: 0 0% 100%; /* #FFFFFF - White text on destructive */
+    --border: 0 0% 90%;             /* #E6E6E6 - Light grey borders */
+    --input: 0 0% 96%;              /* #F5F5F5 - Very light grey inputs */
+    --ring: 0 0% 20%;               /* #333333 - Dark grey focus rings */
     --radius: 0.5rem;
-    --chart-1: 208 82% 70%;         /* #77BEF0 - Light blue for charts */
-    --chart-2: 42 100% 69%;         /* #FFCB61 - Yellow for charts */
-    --chart-3: 19 100% 65%;         /* #FF894F - Orange for charts */
-    --chart-4: 353 81% 64%;         /* #EA5B6F - Pink for charts */
-    --chart-5: 280 100% 70%;        /* Purple for charts */
+    --chart-1: 0 0% 20%;            /* #333333 - Dark grey */
+    --chart-2: 0 0% 40%;            /* #666666 - Medium grey */
+    --chart-3: 0 0% 60%;            /* #999999 - Medium-light grey */
+    --chart-4: 0 0% 80%;            /* #CCCCCC - Light grey */
+    --chart-5: 0 0% 90%;            /* #E6E6E6 - Very light grey */
+    
+    /* Sidebar Variables */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 0 0% 20%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 90%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 0 0% 20%;
     
     /* Design System Tokens - Mathematical Spacing Scale */
     --space-0: 0;
@@ -90,14 +100,14 @@
   }
  
   .dark {
-    /* Dark theme with user-specified colors */
+    /* Dark theme with user-specified colors - corrected */
     --background: 220 13% 9%;       /* Dark gray background */
     --foreground: 210 40% 95%;      /* Light text */
     --card: 220 13% 11%;            /* Slightly lighter than background */
     --card-foreground: 210 40% 95%;
     --popover: 220 13% 9%;
     --popover-foreground: 210 40% 95%;
-    --primary: 208 82% 75%;         /* #77BEF0 - Lighter for dark mode */
+    --primary: 208 82% 76%;         /* #77BEF0 - Lighter for dark mode (corrected) */
     --primary-foreground: 220 13% 9%;
     --secondary: 42 100% 75%;       /* #FFCB61 - Brighter for dark mode */
     --secondary-foreground: 220 13% 9%;
@@ -109,12 +119,22 @@
     --destructive-foreground: 220 13% 9%;
     --border: 215 25% 20%;
     --input: 215 25% 20%;
-    --ring: 208 82% 75%;            /* Focus rings use primary */
-    --chart-1: 208 82% 75%;         /* #77BEF0 - Light blue for dark charts */
+    --ring: 208 82% 76%;            /* Focus rings use primary (corrected) */
+    --chart-1: 208 82% 76%;         /* #77BEF0 - Light blue for dark charts (corrected) */
     --chart-2: 42 100% 75%;         /* #FFCB61 - Yellow for dark charts */
     --chart-3: 19 100% 70%;         /* #FF894F - Orange for dark charts */
     --chart-4: 353 81% 70%;         /* #EA5B6F - Pink for dark charts */
     --chart-5: 280 100% 70%;        /* Purple for dark charts */
+    
+    /* Sidebar Variables - Dark Mode */
+    --sidebar-background: 220 13% 11%;
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 208 82% 76%;
+    --sidebar-primary-foreground: 220 13% 9%;
+    --sidebar-accent: 19 100% 70%;
+    --sidebar-accent-foreground: 220 13% 9%;
+    --sidebar-border: 215 25% 20%;
+    --sidebar-ring: 208 82% 76%;
   }
 }
  
@@ -124,15 +144,6 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-  
-    /* Force primary color application */
-  .bg-primary {
-    background-color: hsl(var(--primary));
-  }
-  
-  .text-primary {
-    color: hsl(var(--primary));
   }
   
   /* Performance optimizations */
