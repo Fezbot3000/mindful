@@ -1,230 +1,192 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLogs } from "@/hooks/use-logs";
-import { useToast } from "@/hooks/use-toast";
-import { addLog } from "@/lib/data";
-import { AnimatePresence, motion } from "framer-motion";
-import { Zap, Play, Pause, RotateCcw, CheckCircle } from "lucide-react";
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Zap, CheckCircle } from 'lucide-react';
 
 const muscleGroups = [
   {
-    name: "Hands and Forearms",
-    instruction: "Make tight fists with both hands",
-    release: "Let your hands open and relax completely",
-    duration: 5,
-    color: "text-primary"
+    name: "Feet",
+    instruction: "Curl your toes tightly, feeling the tension in your feet",
+    release: "Relax your feet, letting your toes uncurl naturally"
   },
   {
-    name: "Upper Arms",
-    instruction: "Bend your elbows and tense your biceps",
-    release: "Lower your arms and let them hang loosely",
-    duration: 5,
-    color: "text-secondary"
+    name: "Calves",
+    instruction: "Point your toes toward your face, tensing your calf muscles",
+    release: "Let your legs rest comfortably, feeling the relaxation in your calves"
+  },
+  {
+    name: "Thighs",
+    instruction: "Squeeze your thigh muscles tightly, pressing your knees together",
+    release: "Release the tension, allowing your thighs to rest heavily"
+  },
+  {
+    name: "Hands",
+    instruction: "Make tight fists with both hands, feeling the tension in your fingers",
+    release: "Open your hands slowly, letting your fingers rest naturally"
+  },
+  {
+    name: "Arms",
+    instruction: "Bend your arms and tense your biceps, making them as hard as rocks",
+    release: "Lower your arms, feeling the heaviness and relaxation"
   },
   {
     name: "Shoulders",
-    instruction: "Raise your shoulders up toward your ears",
-    release: "Drop your shoulders down and back",
-    duration: 5,
-    color: "text-purple-500"
+    instruction: "Lift your shoulders up toward your ears, holding the tension",
+    release: "Drop your shoulders, feeling the weight melt away"
   },
   {
-    name: "Face and Jaw",
-    instruction: "Scrunch your face and clench your jaw",
-    release: "Let your face go completely slack",
-    duration: 5,
-    color: "text-accent"
-  },
-  {
-    name: "Neck",
-    instruction: "Gently press your head back",
-    release: "Bring your head to a neutral position",
-    duration: 5,
-    color: "text-destructive"
-  },
-  {
-    name: "Chest",
-    instruction: "Take a deep breath and hold it",
-    release: "Exhale slowly and breathe naturally",
-    duration: 5,
-    color: "text-primary"
-  },
-  {
-    name: "Abdomen",
-    instruction: "Tighten your stomach muscles",
-    release: "Let your belly be soft and relaxed",
-    duration: 5,
-    color: "text-secondary"
-  },
-  {
-    name: "Upper Legs",
-    instruction: "Tense your thigh muscles",
-    release: "Let your thighs rest heavily",
-    duration: 5,
-    color: "text-accent"
-  },
-  {
-    name: "Lower Legs",
-    instruction: "Point your toes and tense your calves",
-    release: "Let your feet rest naturally",
-    duration: 5,
-    color: "text-destructive"
+    name: "Face",
+    instruction: "Scrunch up your entire face - eyes, forehead, mouth, and jaw",
+    release: "Let your face completely relax, smoothing out all the muscles"
   }
 ];
 
-type Phase = 'instruction' | 'tense' | 'release' | 'rest';
+const PHASE_DURATIONS = {
+  instruction: 3000, // 3 seconds to read instruction
+  tense: 5000,       // 5 seconds of tension
+  release: 10000,    // 10 seconds of relaxation
+  rest: 2000         // 2 seconds of rest
+};
 
 export function MuscleRelaxation() {
   const [isActive, setIsActive] = useState(false);
-  const [currentGroup, setCurrentGroup] = useState(0);
-  const [phase, setPhase] = useState<Phase>('instruction');
-  const [timeLeft, setTimeLeft] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [currentGroupIndex, setCurrentGroupIndex] = useState(0);
+  const [phase, setPhase] = useState<'instruction' | 'tense' | 'release' | 'rest'>('instruction');
+  const [timeRemaining, setTimeRemaining] = useState(PHASE_DURATIONS.instruction);
   const [intensityBefore, setIntensityBefore] = useState(5);
   const [intensityAfter, setIntensityAfter] = useState(5);
-  const [showRating, setShowRating] = useState(false);
 
-  const { addLog: addLogToState } = useLogs();
-  const { toast } = useToast();
-
-  const currentMuscleGroup = muscleGroups[currentGroup];
-  const progress = ((currentGroup + (phase === 'rest' ? 1 : 0)) / muscleGroups.length) * 100;
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isActive && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft(prev => prev - 1);
-      }, 1000);
-    } else if (isActive && timeLeft === 0) {
-      handlePhaseComplete();
-    }
-    return () => clearInterval(interval);
-  }, [isActive, timeLeft]);
+  const progress = isComplete ? 100 : (currentGroupIndex / muscleGroups.length) * 100;
+  const currentGroup = muscleGroups[currentGroupIndex];
 
   const handleStart = () => {
     setIsActive(true);
-    setCurrentGroup(0);
-    setPhase('instruction');
     setIsComplete(false);
-    setTimeLeft(0);
-    setShowRating(false);
-  };
-
-  const handlePhaseComplete = () => {
-    switch (phase) {
-      case 'instruction':
-        setPhase('tense');
-        setTimeLeft(currentMuscleGroup.duration);
-        break;
-      case 'tense':
-        setPhase('release');
-        setTimeLeft(currentMuscleGroup.duration);
-        break;
-      case 'release':
-        setPhase('rest');
-        setTimeLeft(3); // 3 seconds rest
-        break;
-      case 'rest':
-        if (currentGroup + 1 < muscleGroups.length) {
-          setCurrentGroup(prev => prev + 1);
-          setPhase('instruction');
-          setTimeLeft(0);
-        } else {
-          handleComplete();
-        }
-        break;
-    }
-  };
-
-  const handleComplete = () => {
-    setIsActive(false);
-    setIsComplete(true);
-    setShowRating(true);
-  };
-
-  const handleRatingSubmit = async () => {
-    try {
-      const improvement = intensityBefore - intensityAfter;
-      const newLog = await addLog({
-        category: "Accomplished",
-        intensity: Math.max(1, intensityAfter),
-        description: `Completed Progressive Muscle Relaxation. Tension reduced from ${intensityBefore}/10 to ${intensityAfter}/10.`
-      });
-      addLogToState(newLog);
-      toast({ 
-        title: "Relaxation Complete!", 
-        description: `Great job! Your tension level ${improvement > 0 ? 'decreased' : 'was recorded'}.` 
-      });
-      setShowRating(false);
-    } catch (error) {
-      toast({ 
-        variant: "destructive", 
-        title: "Error", 
-        description: "Failed to save completion log." 
-      });
-    }
+    setCurrentGroupIndex(0);
+    setPhase('instruction');
+    setTimeRemaining(PHASE_DURATIONS.instruction);
   };
 
   const handleStop = () => {
     setIsActive(false);
-    setCurrentGroup(0);
-    setPhase('instruction');
     setIsComplete(false);
-    setTimeLeft(0);
-    setShowRating(false);
+    setCurrentGroupIndex(0);
+    setPhase('instruction');
   };
 
-  const getPhaseInstruction = () => {
-    switch (phase) {
-      case 'instruction':
-        return `Get ready to tense your ${currentMuscleGroup.name.toLowerCase()}`;
-      case 'tense':
-        return currentMuscleGroup.instruction;
-      case 'release':
-        return currentMuscleGroup.release;
-      case 'rest':
-        return "Rest and notice the difference";
-      default:
-        return "";
+  const moveToNextPhase = useCallback(() => {
+    if (phase === 'instruction') {
+      setPhase('tense');
+      setTimeRemaining(PHASE_DURATIONS.tense);
+    } else if (phase === 'tense') {
+      setPhase('release');
+      setTimeRemaining(PHASE_DURATIONS.release);
+    } else if (phase === 'release') {
+      setPhase('rest');
+      setTimeRemaining(PHASE_DURATIONS.rest);
+    } else if (phase === 'rest') {
+      if (currentGroupIndex < muscleGroups.length - 1) {
+        setCurrentGroupIndex(prev => prev + 1);
+        setPhase('instruction');
+        setTimeRemaining(PHASE_DURATIONS.instruction);
+      } else {
+        // Exercise complete
+        setIsActive(false);
+        setIsComplete(true);
+      }
+    }
+  }, [phase, currentGroupIndex]);
+
+  const handlePhaseComplete = () => {
+    if (phase === 'instruction') {
+      moveToNextPhase();
     }
   };
 
-  const getPhaseColor = () => {
-    switch (phase) {
-      case 'instruction':
-        return "text-primary";
-      case 'tense':
-        return "text-red-500";
-      case 'release':
-        return "text-green-500";
-      case 'rest':
-        return "text-gray-500";
-      default:
-        return "text-gray-500";
-    }
+  useEffect(() => {
+    if (!isActive) return;
+
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 100) {
+          moveToNextPhase();
+          return 0;
+        }
+        return prev - 100;
+      });
+    }, 100);
+
+    return () => clearInterval(timer);
+  }, [isActive, moveToNextPhase]);
+
+  const formatTime = (ms: number) => {
+    const seconds = Math.ceil(ms / 1000);
+    return `${seconds}s`;
   };
+
+  const getPhaseProgress = () => {
+    const totalDuration = PHASE_DURATIONS[phase];
+    return ((totalDuration - timeRemaining) / totalDuration) * 100;
+  };
+
+  if (isComplete) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardContent className="text-center p-token-8">
+          <CheckCircle className="w-icon-2xl h-icon-2xl text-secondary mx-auto mb-token-4" />
+          <h3 className="text-xl font-semibold mb-token-4">Exercise Complete!</h3>
+          <p className="text-muted-foreground mb-token-6">
+            How do you feel now compared to when you started?
+          </p>
+          <div className="space-token-4">
+            <div>
+              <label className="text-sm font-medium">Tension level after exercise (1-10):</label>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={intensityAfter}
+                onChange={(e) => setIntensityAfter(parseInt(e.target.value))}
+                className="w-full mt-token-2"
+              />
+              <span className="text-sm text-muted-foreground">{intensityAfter}/10</span>
+            </div>
+            <div className="text-sm text-muted-foreground">
+              <p>Before: {intensityBefore}/10 → After: {intensityAfter}/10</p>
+              {intensityAfter < intensityBefore && (
+                <p className="text-secondary mt-token-1">Great! You've reduced your tension level.</p>
+              )}
+            </div>
+          </div>
+          <Button onClick={handleStart} className="mt-token-6">
+            Practice Again
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Zap className="h-5 w-5" />
+        <CardTitle className="layout-flex layout-items-center gap-token-2">
+          <Zap className="icon-lg" />
           Progressive Muscle Relaxation
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-token-6">
         {!isActive && !isComplete && (
-          <div className="text-center space-y-4">
+          <div className="text-center space-token-4">
             <p className="text-muted-foreground">
               This exercise helps reduce physical tension by systematically tensing and releasing muscle groups.
               Each muscle group will be tensed for 5 seconds, then released.
             </p>
-            <div className="space-y-2">
+            <div className="space-token-2">
               <label className="text-sm font-medium">Current tension level (1-10):</label>
               <input
                 type="range"
@@ -242,42 +204,35 @@ export function MuscleRelaxation() {
           </div>
         )}
 
-        {isActive && !isComplete && (
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Progress</span>
-                <span className="text-sm text-muted-foreground">
-                  {currentGroup + 1}/{muscleGroups.length} muscle groups
-                </span>
-              </div>
-              <Progress value={progress} className="h-2" />
+        {isActive && (
+          <div className="space-token-6">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-token-2">
+                {currentGroup.name} ({currentGroupIndex + 1}/{muscleGroups.length})
+              </h3>
+              <Progress value={progress} className="h-component-xs" />
+              <p className="text-sm text-muted-foreground mt-token-2">
+                Overall Progress: {Math.round(progress)}%
+              </p>
             </div>
 
             <AnimatePresence mode="wait">
               <motion.div
-                key={`${currentGroup}-${phase}`}
+                key={`${currentGroupIndex}-${phase}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="text-center space-y-6"
+                className="text-center space-token-4"
               >
-                <div className="space-y-2">
-                  <h3 className={`text-2xl font-semibold ${currentMuscleGroup.color}`}>
-                    {currentMuscleGroup.name}
-                  </h3>
-                  <p className={`text-lg ${getPhaseColor()}`}>
-                    {getPhaseInstruction()}
-                  </p>
-                  {phase !== 'instruction' && (
-                    <div className="flex items-center justify-center space-x-2">
-                      <span className="text-3xl font-mono">{timeLeft}s</span>
-                    </div>
-                  )}
+                <div className="text-lg font-medium mb-token-4">
+                  {phase === 'instruction' && currentGroup.instruction}
+                  {phase === 'tense' && `Hold the tension... (${formatTime(timeRemaining)})`}
+                  {phase === 'release' && currentGroup.release}
+                  {phase === 'rest' && 'Take a moment to notice the difference...'}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-token-4">
                   {phase === 'instruction' && (
                     <Button onClick={handlePhaseComplete} size="lg" className="w-full">
                       Ready - Start Tensing
@@ -285,24 +240,24 @@ export function MuscleRelaxation() {
                   )}
                   
                   {phase === 'tense' && (
-                            <div className="p-4 bg-destructive/10 dark:bg-destructive/20 rounded-lg">
-          <p className="text-destructive font-medium">
+                    <div className="p-token-4 bg-destructive/10 dark:bg-destructive/20 rounded-token-lg">
+                      <p className="text-destructive font-medium">
                         Hold the tension... breathe normally
                       </p>
                     </div>
                   )}
                   
                   {phase === 'release' && (
-                            <div className="p-4 bg-secondary/10 dark:bg-secondary/20 rounded-lg">
-          <p className="text-secondary font-medium">
+                    <div className="p-token-4 bg-secondary/10 dark:bg-secondary/20 rounded-token-lg">
+                      <p className="text-secondary font-medium">
                         Release and relax... feel the difference
                       </p>
                     </div>
                   )}
                   
                   {phase === 'rest' && (
-                    <div className="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg">
-                      <p className="text-gray-600 dark:text-gray-400 font-medium">
+                    <div className="p-token-4 bg-muted/50 dark:bg-muted/20 rounded-token-lg">
+                      <p className="text-muted-foreground font-medium">
                         Notice the contrast between tension and relaxation
                       </p>
                     </div>
@@ -311,58 +266,12 @@ export function MuscleRelaxation() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="flex justify-center">
+            <div className="layout-flex layout-justify-center">
               <Button variant="outline" onClick={handleStop}>
                 Stop Exercise
               </Button>
             </div>
           </div>
-        )}
-
-        {isComplete && showRating && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center space-y-4"
-          >
-            <CheckCircle className="h-16 w-16 text-secondary mx-auto" />
-            <h3 className="text-xl font-semibold">Exercise Complete!</h3>
-            <p className="text-muted-foreground">
-              You've completed the full Progressive Muscle Relaxation sequence.
-            </p>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Current tension level (1-10):</label>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value={intensityAfter}
-                onChange={(e) => setIntensityAfter(parseInt(e.target.value))}
-                className="w-full"
-              />
-              <span className="text-sm text-muted-foreground">{intensityAfter}/10</span>
-            </div>
-            <Button onClick={handleRatingSubmit} className="w-full">
-              Save Results
-            </Button>
-          </motion.div>
-        )}
-
-        {isComplete && !showRating && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center space-y-4"
-          >
-            <CheckCircle className="h-16 w-16 text-secondary mx-auto" />
-            <h3 className="text-xl font-semibold">Results Saved!</h3>
-            <p className="text-muted-foreground">
-              Your relaxation session has been logged.
-            </p>
-            <Button onClick={handleStart} className="w-full">
-              Start Another Session
-            </Button>
-          </motion.div>
         )}
       </CardContent>
     </Card>

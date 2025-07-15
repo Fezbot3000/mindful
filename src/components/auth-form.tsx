@@ -23,7 +23,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { sanitizeInput, sanitizeErrorMessage, authRateLimiter, secureLog } from "@/lib/security";
-
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
   password: z.string().min(8, { message: "Password must be at least 8 characters." }),
@@ -152,63 +151,69 @@ export function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <Card>
-        <CardHeader>
-            <CardTitle>{mode === 'login' ? 'Welcome Back' : 'Create an Account'}</CardTitle>
-            <CardDescription>
-                {mode === 'login' ? 'Log in to continue to Mindful Track.' : 'Enter your details to get started.'}
-            </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="m@example.com" {...form.register("email")} />
-                    {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" {...form.register("password")} />
-                     {form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}
-                </div>
-                {mode === 'signup' && (
-                    <div className="items-top flex space-x-2">
-                         <Checkbox id="consent" {...form.register("consent")} />
-                        <div className="grid gap-1.5 leading-none">
-                            <label htmlFor="consent" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                I agree that my data is stored securely and for my personal use only.
-                            </label>
-                        </div>
-                    </div>
-                )}
-                <Button type="submit" className="w-full" disabled={loading || !auth}>
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {mode === 'login' ? 'Log In' : 'Sign Up'}
-                </Button>
-            </form>
-            <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                </div>
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold">
+          {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+        </CardTitle>
+        <CardDescription>
+          {mode === 'login' 
+            ? 'Enter your credentials to access your account' 
+            : 'Sign up to start your mindfulness journey'
+          }
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-token-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-token-4">
+          <div className="space-token-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" placeholder="your@email.com" {...form.register("email")} />
+            {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
+          </div>
+          <div className="space-token-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" placeholder="••••••••" {...form.register("password")} />
+            {form.formState.errors.password && <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>}
+          </div>
+          {mode === 'signup' && (
+            <div className="layout-items-top layout-flex space-x-2">
+              <Checkbox id="consent" {...form.register("consent")} />
+              <div className="layout-grid gap-token-1.5 leading-none">
+                <Label htmlFor="consent" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  I agree to the <a href="#" className="text-primary underline">Terms of Service</a> and <a href="#" className="text-primary underline">Privacy Policy</a>
+                </Label>
+                {form.formState.errors.consent && <p className="text-sm text-destructive">{form.formState.errors.consent.message}</p>}
+              </div>
             </div>
-            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading || !auth}>
-                {googleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 
-                <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 23.4 172.9 61.9l-72.2 72.2C322 108.9 287.6 96 248 96c-88.8 0-160.1 71.9-160.1 160.1s71.3 160.1 160.1 160.1c98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
-                }
-                Google
-            </Button>
-        </CardContent>
-        <CardFooter className="text-sm text-center block">
-             {mode === 'login' ? (
-                <p>Don't have an account? <Link href="/signup" className="underline">Sign up</Link></p>
-             ) : (
-                <p>Already have an account? <Link href="/login" className="underline">Log in</Link></p>
-             )}
-             {!auth && <p className="text-destructive mt-2 text-xs">Firebase is not configured. Please check environment variables.</p>}
-        </CardFooter>
+          )}
+          <Button type="submit" className="w-full" disabled={loading || googleLoading}>
+            {loading && <Loader2 className="mr-token-2 icon-sm animate-spin" />}
+            {mode === 'login' ? 'Sign In' : 'Create Account'}
+          </Button>
+        </form>
+        <div className="layout-relative">
+          <div className="layout-absolute inset-0 layout-flex layout-items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="layout-relative layout-flex layout-justify-center text-xs uppercase">
+            <span className="bg-background px-token-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
+        <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={loading || googleLoading}>
+          {googleLoading ? <Loader2 className="mr-token-2 icon-sm animate-spin" /> :
+            <svg className="mr-token-2 icon-sm" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h240c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+          }
+          Continue with Google
+        </Button>
+      </CardContent>
+      <CardFooter className="text-sm text-center layout-block">
+        {mode === 'login' ? (
+          <p>Don't have an account? <a href="/signup" className="text-primary underline">Sign up</a></p>
+        ) : (
+          <p>Already have an account? <a href="/login" className="text-primary underline">Sign in</a></p>
+        )}
+        {!auth && <p className="text-destructive mt-token-2 text-xs">Firebase is not configured. Please check environment variables.</p>}
+      </CardFooter>
     </Card>
   );
 }

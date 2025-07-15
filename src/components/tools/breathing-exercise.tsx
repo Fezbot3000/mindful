@@ -271,7 +271,7 @@ export function BreathingExercise() {
   const stageProgress = ((stage.duration - countdown + 1) / stage.duration) * 100;
   
   return (
-    <div className="flex flex-col items-center justify-center p-4 space-y-6 md:space-y-8 rounded-lg bg-accent/20 relative overflow-hidden min-h-[400px] max-h-[80vh]">
+    <div className="layout-flex layout-flex-col layout-items-center layout-justify-center p-token-4 space-token-6 md:space-token-8 rounded-token-lg bg-accent/20 layout-relative layout-overflow-hidden min-h-[400px] max-h-[80vh]">
        <div className="absolute top-4 right-4 z-20">
             <Button
                 variant="ghost"
@@ -292,7 +292,7 @@ export function BreathingExercise() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ ease: "easeInOut", duration: 0.5 }}
-                className="absolute p-2 text-center text-xs md:text-sm bg-background/80 backdrop-blur-sm rounded-lg shadow-md border z-20 max-w-[90%] top-4 md:top-8"
+                className="layout-absolute p-token-2 text-center text-xs md:text-sm bg-background/80 backdrop-blur-sm rounded-token-lg shadow-md border z-20 max-w-[90%] top-4 md:top-8"
             >
                 {currentPrompt}
             </motion.div>
@@ -301,7 +301,7 @@ export function BreathingExercise() {
 
       <div className="relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80 max-w-[min(80vw,80vh)] max-h-[min(80vw,80vh)]">
         <div 
-             className="absolute inset-0 rounded-full bg-primary/20 transition-transform duration-1000 ease-linear"
+             className="layout-absolute inset-0 rounded-token-full bg-primary/20 transition-transform duration-1000 ease-linear"
              style={{
                 transform: `scale(${isActive ? 1 : 0.5})`,
              }}
@@ -314,7 +314,7 @@ export function BreathingExercise() {
                 transform: `scaleY(${isActive ? stageProgress / 100 : 0})`
              }} 
         />
-        <div className="relative rounded-full bg-primary/60 flex items-center justify-center w-full h-full">
+        <div className="layout-relative rounded-token-full bg-primary/60 layout-flex layout-items-center layout-justify-center w-full h-full">
             <div className="text-center text-primary-foreground">
                 <p className="font-bold text-lg md:text-2xl">
                     {isActive ? stage.name : "Start"}
@@ -330,7 +330,7 @@ export function BreathingExercise() {
          <Button onClick={() => (isActive ? handleStop() : handleStart())} size="lg" className="w-full">
             {isActive ? "Stop" : "Start Exercise"}
          </Button>
-         <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+         <div className="h-component-xs w-full bg-muted rounded-token-full layout-overflow-hidden">
             <div className="h-full bg-primary transition-all duration-1000 ease-linear" style={{ width: `${progress}%`}} />
          </div>
          <p className="text-center text-sm text-muted-foreground">{TOTAL_DURATION_MINUTES} Minute Session</p>
