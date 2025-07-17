@@ -73,8 +73,8 @@ export function InsightsPageClient() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Tracking & Insights"
-        description="Visualize your journey and discover patterns over time."
+        title="Intensity Tracking & Insights"
+        description="Track your emotional intensity patterns and discover how they change over time."
       />
 
       <LogSummary logs={visibleLogs} loading={loading} view={view} />
