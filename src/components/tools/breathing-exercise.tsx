@@ -205,19 +205,16 @@ export function BreathingExercise() {
 
     if (countdown <= 0) {
       const nextStageIndex = (stageIndex + 1) % stages.length;
-      console.log(`🔄 Stage transition: ${stages[stageIndex].name} -> ${stages[nextStageIndex].name}`);
       setStageIndex(nextStageIndex);
       setCountdown(stages[nextStageIndex].duration);
       setStageStartTime(Date.now()); // Reset animation start time for new stage
       setSmoothProgress(0); // Reset smooth progress
-      console.log(`🔄 New stage set - index: ${nextStageIndex}, countdown: ${stages[nextStageIndex].duration}`);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown, totalTime, isActive, stageIndex]);
 
 
   const handleStart = () => {
-    console.log("🚀 Starting breathing exercise");
     const now = Date.now();
     setIsActive(true);
     setStageIndex(0);
@@ -226,7 +223,6 @@ export function BreathingExercise() {
     setStageStartTime(now);
     setSmoothProgress(0);
     setCurrentPrompt(minutePrompts[0]);
-    console.log(`🚀 Initial state - isActive: true, stage: ${stages[0].name}, countdown: ${stages[0].duration}`);
   };
 
   const handleStop = async (completed = false) => {
@@ -311,13 +307,11 @@ export function BreathingExercise() {
   // Calculate water fill percentage based on stage and smooth progress
   const getWaterFillPercentage = () => {
     if (!isActive) {
-      console.log("🔴 Not active, returning 0%");
       return 0;
     }
     
     // Use smooth progress (0 to 1) for fluid animation
     const progressPercent = smoothProgress * 100;
-    console.log(`🔵 Stage: ${stage.name}, Smooth Progress: ${progressPercent.toFixed(1)}%`);
     
     let fillPercentage = 0;
     if (stage.name === "Breathe In") {
@@ -331,7 +325,6 @@ export function BreathingExercise() {
       fillPercentage = 100 - progressPercent;
     }
     
-    console.log(`🟢 Final fill percentage: ${fillPercentage.toFixed(1)}%`);
     return fillPercentage;
   };
   
@@ -382,20 +375,19 @@ export function BreathingExercise() {
                 borderColor: 'hsl(var(--primary) / 0.3)',
               }}
             >
-              {(() => {
+                            {(() => {
                 const fillPercentage = getWaterFillPercentage();
-                console.log(`🎨 Rendering water fill with height: ${fillPercentage}%`);
                 return (
                   /* Water fill element */
                   <div 
-                                          style={{ 
-                        position: 'absolute',
-                        bottom: '0',
-                        left: '0',
-                        right: '0',
-                        height: `${fillPercentage}%`,
-                        background: 'linear-gradient(to top, hsl(var(--primary)), hsl(var(--primary)))',
-                      }}
+                    style={{ 
+                      position: 'absolute',
+                      bottom: '0',
+                      left: '0',
+                      right: '0',
+                      height: `${fillPercentage}%`,
+                      background: 'linear-gradient(to top, hsl(var(--primary)), hsl(var(--primary)))',
+                    }}
                   />
                 );
               })()}
