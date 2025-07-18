@@ -24,6 +24,7 @@
 - **UI Components**: shadcn/ui (Radix UI primitives)
 - **Forms**: React Hook Form + Zod validation
 - **Styling**: Tailwind CSS + CSS Variables
+- **PWA**: Service Worker + Web App Manifest + iOS optimization
 
 ---
 
@@ -42,6 +43,32 @@ User Action → Form Validation → IndexedDB Storage → Context Update → UI 
 ### **State Management Flow**
 ```
 Component → Context Provider → Local Storage/IndexedDB → Global State → Re-render
+```
+
+---
+
+## 📱 **Progressive Web App (PWA) Architecture**
+
+### **PWA Components**
+- **Web App Manifest** (`/public/manifest.json`): App metadata, icons, and display configuration
+- **Service Worker** (`/public/sw.js`): Offline functionality and caching strategies
+- **iOS Optimization**: Safari-specific meta tags and icon sizes
+- **Caching Strategy**: Multi-layered approach for optimal performance
+
+### **Caching Layers**
+1. **Static Cache**: App shell, icons, and core assets
+2. **Dynamic Cache**: Pages and API responses
+3. **Runtime Cache**: Images and user-generated content
+
+### **Offline Support**
+- **Core Features**: All tools (breathing, grounding, etc.) work offline
+- **Data Sync**: IndexedDB provides local persistence
+- **Background Sync**: Automatic sync when connection restored
+- **Fallback Pages**: Cached versions for navigation
+
+### **iOS Installation Flow**
+```
+Safari Visit → Add to Home Screen → App Icon Created → Full-Screen Launch
 ```
 
 ---

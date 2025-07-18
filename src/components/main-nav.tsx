@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
-import { Book, BarChart3, Home, Wrench } from 'lucide-react'
+import { Book, BarChart3, Home, Wrench, Settings } from 'lucide-react'
 
 const navItems = [
   {
@@ -27,6 +27,11 @@ const navItems = [
     title: 'Tools',
     href: '/tools',
     icon: Wrench,
+  },
+  {
+    title: 'Settings',
+    href: '/settings',
+    icon: Settings,
   },
 ]
 
