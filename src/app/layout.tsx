@@ -33,6 +33,12 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   manifest: '/manifest.json',
+  // Essential iOS PWA meta tags
+  appleWebApp: {
+    capable: true,
+    title: 'Mindful',
+    statusBarStyle: 'black-translucent',
+  },
   openGraph: {
     title: 'Mindful Track - Mental Health Toolkit',
     description: 'Evidence-based tools to help you stay grounded and manage stress through breathing exercises, journaling, and mindfulness techniques.',
@@ -54,11 +60,6 @@ export const metadata: Metadata = {
     title: 'Mindful Track - Mental Health Toolkit',
     description: 'Evidence-based tools to help you stay grounded and manage stress.',
     images: ['/logo.svg'],
-  },
-  appleWebApp: {
-    capable: true,
-    title: 'Mindful',
-    statusBarStyle: 'black-translucent',
   },
   robots: {
     index: true,
@@ -104,8 +105,9 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-title" content="Mindful" />
         
-        {/* PWA Icons */}
-        <link rel="apple-touch-icon" href="/logo.svg" />
+        {/* PWA Icons - MUST be PNG for iOS to recognize as PWA */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         
         {/* Standard Icons */}
         <link rel="icon" type="image/svg+xml" href="/logo.svg" />
@@ -173,6 +175,9 @@ export default function RootLayout({
         }} />
       </head>
       <body className="font-body antialiased">
+        {/* iOS PWA Status Bar Fix */}
+        <div className="pwa-status-bar-fix"></div>
+        
         <StructuredData />
         <ErrorBoundary>
           <ThemeProvider>

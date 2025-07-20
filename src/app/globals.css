@@ -205,3 +205,38 @@
   }
 }
 
+/* Critical iOS PWA standalone mode styles */
+@media (display-mode: standalone) {
+  /* Ensure proper rendering in standalone PWA mode */
+  body {
+    /* Fix iOS PWA position: fixed issues */
+    position: relative;
+    height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  /* Improve status bar rendering */
+  html {
+    min-height: calc(100% + env(safe-area-inset-top));
+    background-color: hsl(var(--background));
+  }
+  
+  /* Prevent elastic bounce scrolling in iOS PWAs */
+  body {
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Fix for iOS PWA status bar appearing/disappearing */
+  .pwa-status-bar-fix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background-color: hsl(var(--background));
+    z-index: 9999;
+    pointer-events: none;
+  }
+}
+
