@@ -89,7 +89,7 @@ export function InsightsPageClient() {
           <Button variant="outline" size="icon" onClick={handlePrev}>
             <ChevronLeft className="icon-sm" />
           </Button>
-          <span className="font-semibold text-center" style={{ fontSize: 'var(--text-lg)', width: 'var(--layout-xs)' }}>{title}</span>
+                        <span className="font-semibold text-center text-lg w-80">{title}</span>
           <Button variant="outline" size="icon" onClick={handleNext}>
             <ChevronRight className="icon-sm" />
           </Button>

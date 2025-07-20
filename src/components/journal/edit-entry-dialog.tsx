@@ -158,7 +158,7 @@ export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: Edit
               <div className="space-y-2">
                   <div className="flex justify-between items-center">
                       <Label htmlFor="content">Your thoughts and feelings...</Label>
-                      <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="component-xs">
+                      <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className="h-6 w-6">
                           {isListening ? <MicOff className="text-destructive" /> : <Mic />}
                           <span className="sr-only">Toggle voice recognition for content</span>
                       </Button>

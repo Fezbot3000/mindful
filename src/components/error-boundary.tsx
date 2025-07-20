@@ -48,26 +48,26 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
       }
 
       return (
-        <div className="min-h-screen layout-flex layout-items-center layout-justify-center p-token-4 bg-background">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
-              <div className="layout-flex layout-justify-center mb-token-4">
-                <AlertTriangle className="w-icon-2xl h-icon-2xl text-destructive" />
+              <div className="flex justify-center mb-4">
+                <AlertTriangle className="w-12 h-12 text-destructive" />
               </div>
               <CardTitle className="text-xl">Something went wrong</CardTitle>
             </CardHeader>
-            <CardContent className="space-token-4">
+            <CardContent className="space-y-4">
               <div className="text-sm text-muted-foreground text-center">
                 An unexpected error occurred. You can try refreshing the page or going back to the home page.
               </div>
               
-              <div className="layout-flex layout-flex-col space-token-2">
+              <div className="flex flex-col space-y-2">
                 <Button 
                   onClick={this.handleReset}
                   variant="default"
                   className="w-full"
                 >
-                  <RefreshCw className="mr-token-2 icon-sm" />
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Try Again
                 </Button>
                 
@@ -76,7 +76,7 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
                   variant="outline"
                   className="w-full"
                 >
-                  <Home className="mr-token-2 icon-sm" />
+                  <Home className="mr-2 h-4 w-4" />
                   Go to Dashboard
                 </Button>
                 
@@ -85,16 +85,16 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
                   variant="ghost"
                   className="w-full"
                 >
-                  <RefreshCw className="mr-token-2 icon-sm" />
+                  <RefreshCw className="mr-2 h-4 w-4" />
                   Refresh Page
                 </Button>
               </div>
               
-              <details className="mt-token-4 p-token-3 bg-muted rounded-token-md">
+              <details className="mt-4 p-3 bg-muted rounded-md">
                 <summary className="cursor-pointer text-sm font-medium">
                   Technical Details
                 </summary>
-                <pre className="mt-token-2 text-xs layout-overflow-auto max-h-40">
+                <pre className="mt-2 text-xs overflow-auto max-h-40">
                   {this.state.error?.stack}
                 </pre>
               </details>

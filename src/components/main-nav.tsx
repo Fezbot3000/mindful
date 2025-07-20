@@ -42,14 +42,14 @@ export function MainNav() {
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
-          <ul className="layout-flex w-full min-w-0 layout-flex-col gap-token-1 p-token-2">
+          <ul className="flex w-full min-w-0 flex-col gap-1 p-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               return (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton asChild isActive={isActive}>
-                    <Link href={item.href} className="layout-flex layout-items-center gap-token-3 px-token-3 py-token-2 text-sm font-medium rounded-md transition-colors">
-                      <item.icon className="icon-lg layout-flex-shrink-0" />
+                    <Link href={item.href} className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors">
+                      <item.icon className="h-6 w-6 flex-shrink-0" />
                       <span className="truncate">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
