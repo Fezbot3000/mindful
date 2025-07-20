@@ -208,9 +208,9 @@ export function AuthForm({ mode }: AuthFormProps) {
       </CardContent>
       <CardFooter className="text-sm text-center block">
         {mode === 'login' ? (
-          <p>Don't have an account? <a href="/signup" className="text-primary underline">Sign up</a></p>
+          <p>Don't have an account? <Link href="/signup" className="text-primary underline">Sign up</Link></p>
         ) : (
-          <p>Already have an account? <a href="/login" className="text-primary underline">Sign in</a></p>
+          <p>Already have an account? <Link href="/login" className="text-primary underline">Sign in</Link></p>
         )}
         {!auth && <p className="text-destructive mt-token-2 text-xs">Firebase is not configured. Please check environment variables.</p>}
       </CardFooter>

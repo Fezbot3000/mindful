@@ -61,7 +61,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <ThemeToggle />
                   </div>
                 </header>
-                <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:px-6 sm:py-6 md:gap-8 pb-32 md:pb-8 max-w-full" role="main" id="main-content">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-6 sm:px-6 sm:py-6 md:gap-8 pb-40 md:pb-8 max-w-full" role="main" id="main-content">
                   {children}
                 </main>
               </div>
@@ -70,11 +70,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <Suspense fallback={null}>
             <MobileNav />
           </Suspense>
-          <Suspense fallback={<Button className="fixed bottom-20 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg" size="icon" disabled><Plus className="h-8 w-8" /></Button>}>
+          <Suspense fallback={<Button className="fixed bottom-24 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg" size="icon" disabled><Plus className="h-8 w-8" /></Button>}>
             <QuickLogDialog>
               <Button
                 aria-label="Log Now"
-                className="fixed bottom-20 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg"
+                className="fixed bottom-24 md:bottom-6 right-6 z-20 h-16 w-16 rounded-full shadow-lg"
                 size="icon"
               >
                 <Plus className="h-8 w-8" />

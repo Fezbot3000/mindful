@@ -72,7 +72,13 @@ class ErrorBoundaryClass extends React.Component<ErrorBoundaryProps, ErrorBounda
                 </Button>
                 
                 <Button 
-                  onClick={() => window.location.href = '/dashboard'}
+                  onClick={() => {
+                    // Use Next.js navigation that preserves PWA scope
+                    if (typeof window !== 'undefined' && window.history) {
+                      window.history.pushState(null, '', '/dashboard');
+                      window.location.reload();
+                    }
+                  }}
                   variant="outline"
                   className="w-full"
                 >

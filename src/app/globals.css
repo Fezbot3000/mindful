@@ -240,3 +240,16 @@
   }
 }
 
+/* Mobile navigation spacing fix */
+@media (max-width: 768px) {
+  /* Ensure content doesn't get cut off by mobile nav */
+  :root {
+    --mobile-nav-height: calc(4rem + env(safe-area-inset-bottom)); /* 64px + safe area */
+  }
+  
+  /* Better bottom spacing for mobile content */
+  .mobile-content-spacing {
+    padding-bottom: calc(var(--mobile-nav-height) + 2rem); /* nav height + extra space */
+  }
+}
+
