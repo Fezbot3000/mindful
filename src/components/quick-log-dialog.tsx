@@ -145,7 +145,7 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
                     <Label
                         htmlFor={cat.name}
                         className={cn(
-                            "flex items-center justify-center rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm font-medium",
+                            "flex items-center justify-center rounded-md border-2 border-border bg-popover p-3 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm font-medium",
                             watchedCategory === cat.name && cat.colorClass
                         )}
                     >

@@ -3,7 +3,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from 'next/link';
-import { cn } from "@/lib/utils";
+
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Book, BarChart3, Home, Wrench, Settings } from 'lucide-react'
 
@@ -50,7 +50,7 @@ export function MainNav() {
                   <SidebarMenuButton asChild isActive={isActive}>
                     <Link href={item.href} className="layout-flex layout-items-center gap-token-3 px-token-3 py-token-2 text-sm font-medium rounded-md transition-colors">
                       <item.icon className="icon-lg layout-flex-shrink-0" />
-                      <span className={cn("truncate", isActive && "text-sidebar-primary-foreground")}>{item.title}</span>
+                      <span className="truncate">{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

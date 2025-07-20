@@ -1,5 +1,4 @@
 import { PageHeader } from "@/components/page-header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
@@ -66,49 +65,21 @@ export default function ToolsPage() {
         />
         
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>5-Minute Guided Breathing</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
-                <BreathingExercise />
-              </Suspense>
-            </CardContent>
-          </Card>
+          <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+            <BreathingExercise />
+          </Suspense>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>5-4-3-2-1 Grounding Exercise</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
-                <GroundingExercise />
-              </Suspense>
-            </CardContent>
-          </Card>
+          <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+            <GroundingExercise />
+          </Suspense>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Progressive Muscle Relaxation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
-                <MuscleRelaxation />
-              </Suspense>
-            </CardContent>
-          </Card>
+          <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+            <MuscleRelaxation />
+          </Suspense>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Positive Affirmation Generator</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
-                <AffirmationGenerator />
-              </Suspense>
-            </CardContent>
-          </Card>
+          <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+            <AffirmationGenerator />
+          </Suspense>
         </div>
       </div>
     </>

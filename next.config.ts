@@ -1,14 +1,16 @@
 import type {NextConfig} from 'next';
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const nextConfig: NextConfig = {
-  // GitHub Pages configuration
-  output: 'export',
-  trailingSlash: true,
-  distDir: 'out',
-  
-  // Base path for GitHub Pages (will be set via environment variable)
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  // GitHub Pages configuration (only for production builds)
+  ...(isDevelopment ? {} : {
+    output: 'export',
+    trailingSlash: true,
+    distDir: 'out',
+    basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+    assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  }),
   
   // Basic configuration
   typescript: {

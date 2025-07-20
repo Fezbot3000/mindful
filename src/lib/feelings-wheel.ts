@@ -9,7 +9,7 @@ export const feelingsWheel: EmotionNode[] = [
   {
     id: "angry",
     name: "Angry",
-    color: "text-red-600",
+    color: "text-foreground",
     children: [
       {
         id: "mad",
@@ -48,56 +48,8 @@ export const feelingsWheel: EmotionNode[] = [
         children: [
           { id: "hateful", name: "Hateful" },
           { id: "violent", name: "Violent" },
-          { id: "vengeful", name: "Vengeful" }
-        ]
-      }
-    ]
-  },
-  {
-    id: "fearful",
-    name: "Fearful",
-    color: "text-orange-600",
-    children: [
-      {
-        id: "scared",
-        name: "Scared",
-        children: [
-          { id: "terrified", name: "Terrified" },
-          { id: "frightened", name: "Frightened" },
-          { id: "overwhelmed", name: "Overwhelmed" },
-          { id: "worried", name: "Worried" },
-          { id: "alarmed", name: "Alarmed" }
-        ]
-      },
-      {
-        id: "anxious",
-        name: "Anxious",
-        children: [
-          { id: "nervous", name: "Nervous" },
-          { id: "submissive", name: "Submissive" },
-          { id: "rejected", name: "Rejected" },
-          { id: "humiliated", name: "Humiliated" },
-          { id: "startled", name: "Startled" }
-        ]
-      },
-      {
-        id: "insecure",
-        name: "Insecure",
-        children: [
-          { id: "inadequate", name: "Inadequate" },
-          { id: "insignificant", name: "Insignificant" },
-          { id: "worthless", name: "Worthless" },
-          { id: "inferior", name: "Inferior" }
-        ]
-      },
-      {
-        id: "threatened",
-        name: "Threatened",
-        children: [
-          { id: "exposed", name: "Exposed" },
-          { id: "vulnerable", name: "Vulnerable" },
-          { id: "victimized", name: "Victimized" },
-          { id: "unsafe", name: "Unsafe" }
+          { id: "vindictive", name: "Vindictive" },
+          { id: "malicious", name: "Malicious" }
         ]
       }
     ]
@@ -105,35 +57,46 @@ export const feelingsWheel: EmotionNode[] = [
   {
     id: "disgusted",
     name: "Disgusted",
-    color: "text-cyan-600",
+    color: "text-muted-foreground",
     children: [
       {
-        id: "disapproval",
-        name: "Disapproval",
+        id: "revolted",
+        name: "Revolted",
         children: [
-          { id: "disappointed", name: "Disappointed" },
-          { id: "awful", name: "Awful" },
-          { id: "avoidance", name: "Avoidance" },
-          { id: "displeased", name: "Displeased" }
+          { id: "repugnant", name: "Repugnant" },
+          { id: "nauseated", name: "Nauseated" },
+          { id: "horrified", name: "Horrified" },
+          { id: "detestable", name: "Detestable" }
+        ]
+      },
+      {
+        id: "awful",
+        name: "Awful",
+        children: [
+          { id: "gross", name: "Gross" },
+          { id: "sick", name: "Sick" },
+          { id: "terrible", name: "Terrible" },
+          { id: "repulsed", name: "Repulsed" }
         ]
       },
       {
         id: "judgmental",
         name: "Judgmental",
         children: [
-          { id: "loathing", name: "Loathing" },
-          { id: "repugnant", name: "Repugnant" },
-          { id: "revolted", name: "Revolted" },
-          { id: "detestable", name: "Detestable" }
+          { id: "superior", name: "Superior" },
+          { id: "disdainful", name: "Disdainful" },
+          { id: "contempt", name: "Contempt" },
+          { id: "critical", name: "Critical" }
         ]
       },
       {
-        id: "aversion",
-        name: "Aversion",
+        id: "disappointed",
+        name: "Disappointed",
         children: [
-          { id: "hesitant", name: "Hesitant" },
-          { id: "repelled", name: "Repelled" },
-          { id: "sickened", name: "Sickened" }
+          { id: "betrayed", name: "Betrayed" },
+          { id: "appalled", name: "Appalled" },
+          { id: "disillusioned", name: "Disillusioned" },
+          { id: "repelled", name: "Repelled" }
         ]
       }
     ]
@@ -141,46 +104,93 @@ export const feelingsWheel: EmotionNode[] = [
   {
     id: "surprised",
     name: "Surprised",
-    color: "text-blue-600",
+    color: "text-foreground",
     children: [
       {
-        id: "shocked",
-        name: "Shocked",
+        id: "excited",
+        name: "Excited",
         children: [
-          { id: "stunned", name: "Stunned" },
-          { id: "dismayed", name: "Dismayed" },
-          { id: "disillusioned", name: "Disillusioned" },
-          { id: "perplexed", name: "Perplexed" }
+          { id: "eager", name: "Eager" },
+          { id: "enthusiastic", name: "Enthusiastic" },
+          { id: "energetic", name: "Energetic" },
+          { id: "thrilled", name: "Thrilled" }
+        ]
+      },
+      {
+        id: "amazed",
+        name: "Amazed",
+        children: [
+          { id: "astonished", name: "Astonished" },
+          { id: "awe-struck", name: "Awe-struck" },
+          { id: "wonderstruck", name: "Wonderstruck" },
+          { id: "impressed", name: "Impressed" }
         ]
       },
       {
         id: "confused",
         name: "Confused",
         children: [
+          { id: "perplexed", name: "Perplexed" },
           { id: "puzzled", name: "Puzzled" },
           { id: "bewildered", name: "Bewildered" },
-          { id: "baffled", name: "Baffled" },
-          { id: "uncertain", name: "Uncertain" }
+          { id: "baffled", name: "Baffled" }
         ]
       },
       {
-        id: "delighted",
-        name: "Delighted",
+        id: "startled",
+        name: "Startled",
         children: [
-          { id: "amazed", name: "Amazed" },
-          { id: "astonished", name: "Astonished" },
-          { id: "awe", name: "Awe" },
-          { id: "wonder", name: "Wonder" }
+          { id: "shocked", name: "Shocked" },
+          { id: "jolted", name: "Jolted" },
+          { id: "stunned", name: "Stunned" },
+          { id: "alarmed", name: "Alarmed" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "afraid",
+    name: "Afraid",
+    color: "text-primary",
+    children: [
+      {
+        id: "scared",
+        name: "Scared",
+        children: [
+          { id: "frightened", name: "Frightened" },
+          { id: "panicked", name: "Panicked" },
+          { id: "terrified", name: "Terrified" },
+          { id: "horrified", name: "Horrified" }
         ]
       },
       {
-        id: "excited",
-        name: "Excited",
+        id: "anxious",
+        name: "Anxious",
         children: [
-          { id: "eager", name: "Eager" },
-          { id: "thrilled", name: "Thrilled" },
-          { id: "energized", name: "Energized" },
-          { id: "stimulated", name: "Stimulated" }
+          { id: "worried", name: "Worried" },
+          { id: "nervous", name: "Nervous" },
+          { id: "tense", name: "Tense" },
+          { id: "restless", name: "Restless" }
+        ]
+      },
+      {
+        id: "insecure",
+        name: "Insecure",
+        children: [
+          { id: "vulnerable", name: "Vulnerable" },
+          { id: "inadequate", name: "Inadequate" },
+          { id: "uncertain", name: "Uncertain" },
+          { id: "self-conscious", name: "Self-conscious" }
+        ]
+      },
+      {
+        id: "weak",
+        name: "Weak",
+        children: [
+          { id: "powerless", name: "Powerless" },
+          { id: "helpless", name: "Helpless" },
+          { id: "fragile", name: "Fragile" },
+          { id: "overwhelmed", name: "Overwhelmed" }
         ]
       }
     ]
@@ -188,7 +198,7 @@ export const feelingsWheel: EmotionNode[] = [
   {
     id: "happy",
     name: "Happy",
-    color: "text-yellow-600",
+    color: "text-muted-foreground",
     children: [
       {
         id: "joyful",
@@ -196,48 +206,38 @@ export const feelingsWheel: EmotionNode[] = [
         children: [
           { id: "ecstatic", name: "Ecstatic" },
           { id: "elated", name: "Elated" },
-          { id: "cheerful", name: "Cheerful" },
-          { id: "delighted", name: "Delighted" }
+          { id: "jubilant", name: "Jubilant" },
+          { id: "euphoric", name: "Euphoric" }
+        ]
+      },
+      {
+        id: "optimistic",
+        name: "Optimistic",
+        children: [
+          { id: "hopeful", name: "Hopeful" },
+          { id: "confident", name: "Confident" },
+          { id: "positive", name: "Positive" },
+          { id: "inspired", name: "Inspired" }
         ]
       },
       {
         id: "content",
         name: "Content",
         children: [
+          { id: "peaceful", name: "Peaceful" },
           { id: "satisfied", name: "Satisfied" },
-          { id: "pleased", name: "Pleased" },
           { id: "fulfilled", name: "Fulfilled" },
-          { id: "grateful", name: "Grateful" }
+          { id: "serene", name: "Serene" }
         ]
       },
       {
-        id: "peaceful",
-        name: "Peaceful",
+        id: "playful",
+        name: "Playful",
         children: [
-          { id: "serene", name: "Serene" },
-          { id: "calm", name: "Calm" },
-          { id: "relaxed", name: "Relaxed" },
-          { id: "tranquil", name: "Tranquil" }
-        ]
-      },
-      {
-        id: "confident",
-        name: "Confident",
-        children: [
-          { id: "proud", name: "Proud" },
-          { id: "accomplished", name: "Accomplished" },
-          { id: "empowered", name: "Empowered" },
-          { id: "successful", name: "Successful" }
-        ]
-      },
-      {
-        id: "loving",
-        name: "Loving",
-        children: [
-          { id: "affectionate", name: "Affectionate" },
-          { id: "caring", name: "Caring" },
-          { id: "warm", name: "Warm" },
-          { id: "connected", name: "Connected" }
+          { id: "amused", name: "Amused" },
+          { id: "cheerful", name: "Cheerful" },
+          { id: "delighted", name: "Delighted" },
+          { id: "lighthearted", name: "Lighthearted" }
         ]
       }
     ]
@@ -245,56 +245,46 @@ export const feelingsWheel: EmotionNode[] = [
   {
     id: "sad",
     name: "Sad",
-    color: "text-purple-600",
+    color: "text-primary",
     children: [
-      {
-        id: "lonely",
-        name: "Lonely",
-        children: [
-          { id: "abandoned", name: "Abandoned" },
-          { id: "isolated", name: "Isolated" },
-          { id: "disconnected", name: "Disconnected" },
-          { id: "empty", name: "Empty" }
-        ]
-      },
       {
         id: "depressed",
         name: "Depressed",
         children: [
-          { id: "despair", name: "Despair" },
+          { id: "empty", name: "Empty" },
           { id: "hopeless", name: "Hopeless" },
-          { id: "miserable", name: "Miserable" },
-          { id: "defeated", name: "Defeated" }
+          { id: "despairing", name: "Despairing" },
+          { id: "miserable", name: "Miserable" }
         ]
       },
       {
-        id: "grief",
-        name: "Grief",
+        id: "lonely",
+        name: "Lonely",
         children: [
-          { id: "mourning", name: "Mourning" },
-          { id: "loss", name: "Loss" },
-          { id: "sorrow", name: "Sorrow" },
-          { id: "heartbroken", name: "Heartbroken" }
+          { id: "isolated", name: "Isolated" },
+          { id: "abandoned", name: "Abandoned" },
+          { id: "rejected", name: "Rejected" },
+          { id: "disconnected", name: "Disconnected" }
         ]
       },
       {
-        id: "shame",
-        name: "Shame",
+        id: "ashamed",
+        name: "Ashamed",
         children: [
-          { id: "ashamed", name: "Ashamed" },
-          { id: "guilty", name: "Guilty" },
-          { id: "remorseful", name: "Remorseful" },
+          { id: "humiliated", name: "Humiliated" },
+          { id: "mortified", name: "Mortified" },
+          { id: "embarrassed", name: "Embarrassed" },
           { id: "regretful", name: "Regretful" }
         ]
       },
       {
-        id: "powerless",
-        name: "Powerless",
+        id: "hurt",
+        name: "Hurt",
         children: [
-          { id: "helpless", name: "Helpless" },
-          { id: "weak", name: "Weak" },
-          { id: "resigned", name: "Resigned" },
-          { id: "apathetic", name: "Apathetic" }
+          { id: "wounded", name: "Wounded" },
+          { id: "betrayed", name: "Betrayed" },
+          { id: "heartbroken", name: "Heartbroken" },
+          { id: "crushed", name: "Crushed" }
         ]
       }
     ]

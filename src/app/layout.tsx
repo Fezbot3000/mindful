@@ -1,9 +1,19 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from "@/components/ui/toaster";
 import { StructuredData } from '@/components/structured-data';
 import ErrorBoundary from '@/components/error-boundary';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
+    { media: '(prefers-color-scheme: dark)', color: '#3b82f6' }
+  ],
+};
 
 export const metadata: Metadata = {
   title: 'Mindful Track - Mental Health Toolkit',
@@ -23,10 +33,6 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   manifest: '/manifest.json',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
-    { media: '(prefers-color-scheme: dark)', color: '#3b82f6' }
-  ],
   openGraph: {
     title: 'Mindful Track - Mental Health Toolkit',
     description: 'Evidence-based tools to help you stay grounded and manage stress through breathing exercises, journaling, and mindfulness techniques.',
@@ -36,7 +42,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/icons/icon-512x512.png',
+        url: '/logo.svg',
         width: 512,
         height: 512,
         alt: 'Mindful Track App Icon',
@@ -47,42 +53,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mindful Track - Mental Health Toolkit',
     description: 'Evidence-based tools to help you stay grounded and manage stress.',
-    images: ['/icons/icon-512x512.png'],
+    images: ['/logo.svg'],
   },
   appleWebApp: {
     capable: true,
     title: 'Mindful',
     statusBarStyle: 'black-translucent',
-    startupImage: [
-      {
-        url: '/icons/apple-splash-2048-2732.png',
-        media: '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)',
-      },
-      {
-        url: '/icons/apple-splash-1668-2388.png',
-        media: '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)',
-      },
-      {
-        url: '/icons/apple-splash-1536-2048.png',
-        media: '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)',
-      },
-      {
-        url: '/icons/apple-splash-1242-2688.png',
-        media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)',
-      },
-      {
-        url: '/icons/apple-splash-1125-2436.png',
-        media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
-      },
-      {
-        url: '/icons/apple-splash-828-1792.png',
-        media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)',
-      },
-      {
-        url: '/icons/apple-splash-750-1334.png',
-        media: '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)',
-      },
-    ],
   },
   robots: {
     index: true,
@@ -116,8 +92,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         
         {/* Basic PWA Meta Tags */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <meta name="theme-color" content="#3b82f6" />
         <meta name="background-color" content="#0a0a0a" />
         
         {/* iOS-Specific PWA Meta Tags */}
@@ -131,38 +105,22 @@ export default function RootLayout({
         <meta name="mobile-web-app-title" content="Mindful" />
         
         {/* PWA Icons */}
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-128x128.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="/icons/icon-128x128.png" />
-        <link rel="apple-touch-icon" sizes="76x76" href="/icons/icon-96x96.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="60x60" href="/icons/icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="57x57" href="/icons/icon-72x72.png" />
+        <link rel="apple-touch-icon" href="/logo.svg" />
         
         {/* Standard Icons */}
-        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png" />
+        <link rel="icon" type="image/svg+xml" href="/logo.svg" />
         <link rel="shortcut icon" href="/logo.svg" />
         
         {/* Manifest */}
         <link rel="manifest" href="/manifest.json" />
         
-        {/* iOS Splash Screens */}
-        <link rel="apple-touch-startup-image" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" href="/icons/apple-splash-2048-2732.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" href="/icons/apple-splash-1668-2388.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" href="/icons/apple-splash-1536-2048.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/icons/apple-splash-1242-2688.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/icons/apple-splash-1125-2436.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="/icons/apple-splash-828-1792.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/icons/apple-splash-750-1334.png" />
+
         
         {/* Service Worker Registration */}
         <script dangerouslySetInnerHTML={{
           __html: `
-            // Service Worker Registration for PWA
-            if ('serviceWorker' in navigator) {
+            // Service Worker Registration for PWA (Production only)
+            if ('serviceWorker' in navigator && '${process.env.NODE_ENV}' === 'production') {
               window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/sw.js')
                   .then(function(registration) {
@@ -188,6 +146,16 @@ export default function RootLayout({
                     console.log('[PWA] Service Worker registration failed:', error);
                   });
               });
+            } else if ('${process.env.NODE_ENV}' === 'development') {
+              // Unregister any existing service workers in development
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('[DEV] Service Worker unregistered:', registration.scope);
+                  }
+                });
+              }
             }
             
             // GitHub Pages SPA redirect handling

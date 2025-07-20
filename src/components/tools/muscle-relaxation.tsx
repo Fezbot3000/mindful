@@ -137,13 +137,13 @@ export function MuscleRelaxation() {
   if (isComplete) {
     return (
       <Card className="w-full max-w-2xl mx-auto">
-        <CardContent className="text-center p-token-8">
-          <CheckCircle className="w-icon-2xl h-icon-2xl text-secondary mx-auto mb-token-4" />
-          <h3 className="text-xl font-semibold mb-token-4">Exercise Complete!</h3>
-          <p className="text-muted-foreground mb-token-6">
+                  <CardContent className="text-center p-8">
+          <CheckCircle className="w-16 h-16 text-secondary mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold mb-4">Exercise Complete!</h3>
+                      <p className="text-muted-foreground mb-6">
             How do you feel now compared to when you started?
           </p>
-          <div className="space-token-4">
+          <div className="space-y-4">
             <div>
               <label className="text-sm font-medium">Tension level after exercise (1-10):</label>
               <input
@@ -152,18 +152,18 @@ export function MuscleRelaxation() {
                 max="10"
                 value={intensityAfter}
                 onChange={(e) => setIntensityAfter(parseInt(e.target.value))}
-                className="w-full mt-token-2"
+                className="w-full mt-2"
               />
               <span className="text-sm text-muted-foreground">{intensityAfter}/10</span>
             </div>
             <div className="text-sm text-muted-foreground">
               <p>Before: {intensityBefore}/10 → After: {intensityAfter}/10</p>
               {intensityAfter < intensityBefore && (
-                <p className="text-secondary mt-token-1">Great! You've reduced your tension level.</p>
+                                    <p className="text-secondary mt-1">Great! You've reduced your tension level.</p>
               )}
             </div>
           </div>
-          <Button onClick={handleStart} className="mt-token-6">
+          <Button onClick={handleStart} className="mt-6">
             Practice Again
           </Button>
         </CardContent>
@@ -174,19 +174,19 @@ export function MuscleRelaxation() {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle className="layout-flex layout-items-center gap-token-2">
-          <Zap className="icon-lg" />
+        <CardTitle className="flex items-center gap-2">
+                      <Zap className="h-5 w-5" />
           Progressive Muscle Relaxation
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-token-6">
+      <CardContent className="space-y-6">
         {!isActive && !isComplete && (
-          <div className="text-center space-token-4">
+          <div className="text-center space-y-4">
             <p className="text-muted-foreground">
               This exercise helps reduce physical tension by systematically tensing and releasing muscle groups.
               Each muscle group will be tensed for 5 seconds, then released.
             </p>
-            <div className="space-token-2">
+            <div className="space-y-2">
               <label className="text-sm font-medium">Current tension level (1-10):</label>
               <input
                 type="range"
@@ -205,13 +205,13 @@ export function MuscleRelaxation() {
         )}
 
         {isActive && (
-          <div className="space-token-6">
+          <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-lg font-semibold mb-token-2">
+                              <h3 className="text-lg font-semibold mb-2">
                 {currentGroup.name} ({currentGroupIndex + 1}/{muscleGroups.length})
               </h3>
-              <Progress value={progress} className="h-component-xs" />
-              <p className="text-sm text-muted-foreground mt-token-2">
+                              <Progress value={progress} className="h-2" />
+                              <p className="text-sm text-muted-foreground mt-2">
                 Overall Progress: {Math.round(progress)}%
               </p>
             </div>
@@ -223,16 +223,16 @@ export function MuscleRelaxation() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="text-center space-token-4"
+                className="text-center space-y-4"
               >
-                <div className="text-lg font-medium mb-token-4">
+                <div className="text-lg font-medium mb-4">
                   {phase === 'instruction' && currentGroup.instruction}
                   {phase === 'tense' && `Hold the tension... (${formatTime(timeRemaining)})`}
                   {phase === 'release' && currentGroup.release}
                   {phase === 'rest' && 'Take a moment to notice the difference...'}
                 </div>
 
-                <div className="space-token-4">
+                <div className="space-y-4">
                   {phase === 'instruction' && (
                     <Button onClick={handlePhaseComplete} size="lg" className="w-full">
                       Ready - Start Tensing
@@ -240,7 +240,7 @@ export function MuscleRelaxation() {
                   )}
                   
                   {phase === 'tense' && (
-                    <div className="p-token-4 bg-destructive/10 dark:bg-destructive/20 rounded-token-lg">
+                    <div className="p-4 bg-destructive/10 dark:bg-destructive/20 rounded-lg">
                       <p className="text-destructive font-medium">
                         Hold the tension... breathe normally
                       </p>
@@ -248,7 +248,7 @@ export function MuscleRelaxation() {
                   )}
                   
                   {phase === 'release' && (
-                    <div className="p-token-4 bg-secondary/10 dark:bg-secondary/20 rounded-token-lg">
+                    <div className="p-4 bg-secondary/10 dark:bg-secondary/20 rounded-lg">
                       <p className="text-secondary font-medium">
                         Release and relax... feel the difference
                       </p>
@@ -256,7 +256,7 @@ export function MuscleRelaxation() {
                   )}
                   
                   {phase === 'rest' && (
-                    <div className="p-token-4 bg-muted/50 dark:bg-muted/20 rounded-token-lg">
+                    <div className="p-4 bg-muted/50 dark:bg-muted/20 rounded-lg">
                       <p className="text-muted-foreground font-medium">
                         Notice the contrast between tension and relaxation
                       </p>
@@ -266,7 +266,7 @@ export function MuscleRelaxation() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="layout-flex layout-justify-center">
+            <div className="flex justify-center">
               <Button variant="outline" onClick={handleStop}>
                 Stop Exercise
               </Button>

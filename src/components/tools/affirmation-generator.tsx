@@ -190,7 +190,7 @@ export function AffirmationGenerator() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as keyof typeof affirmationCategories)}
-                              className="w-full p-token-2 border rounded-token-md"
+                              className="w-full p-2 border rounded-md"
             >
               <option value="safety">Safety & Security</option>
               <option value="selfWorth">Self-Worth & Confidence</option>
@@ -212,7 +212,7 @@ export function AffirmationGenerator() {
               transition={{ duration: 0.5 }}
               className="text-center space-y-4"
             >
-              <div className="p-token-6 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 rounded-token-lg">
+              <div className="p-6 bg-gradient-to-r from-primary/10 to-accent/10 dark:from-primary/20 dark:to-accent/20 rounded-lg">
                 <p className={`text-xl font-medium ${getCategoryColor()}`}>
                   "{currentAffirmation}"
                 </p>
@@ -291,7 +291,7 @@ export function AffirmationGenerator() {
                 value={customAffirmation}
                 onChange={(e) => setCustomAffirmation(e.target.value)}
                 placeholder="Enter your personal affirmation..."
-                className="w-full p-token-3 border rounded-token-md"
+                className="w-full p-3 border rounded-md"
                 onKeyPress={(e) => e.key === 'Enter' && addCustomAffirmation()}
               />
               <div className="flex space-x-2">
@@ -310,7 +310,7 @@ export function AffirmationGenerator() {
               <h4 className="font-medium">Your Favorite Affirmations:</h4>
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {favorites.map((fav, index) => (
-                  <div key={index} className="text-sm p-token-2 bg-muted/50 dark:bg-muted/20 rounded-token-md">
+                  <div key={index} className="text-sm p-2 bg-muted/50 dark:bg-muted/20 rounded-md">
                     "{fav}"
                   </div>
                 ))}
