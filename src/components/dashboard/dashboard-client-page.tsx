@@ -26,10 +26,9 @@ const categoryIcons: Record<LogCategory, React.ElementType> = {
     "Intrusive Thought": Sparkles,
     "Compulsion": Repeat,
     "Schema Trigger": TrendingUp,
-    "Accomplished": Sparkles, // Using Sparkles for positive as well
+    "Accomplished": Sparkles,
     "Journal Reflection": BookText,
 };
-
 
 export function DashboardClientPage() {
   const { logs, loading } = useLogs();
@@ -50,7 +49,6 @@ export function DashboardClientPage() {
     }
     fetchRecent();
   }, [logs]);
-
 
   const stats = useMemo(() => {
     const today = startOfToday();
@@ -75,7 +73,6 @@ export function DashboardClientPage() {
     }
 
     const totalLogs = logs.length;
-    
     const avgIntensity = totalLogs > 0 
       ? (logs.reduce((acc, log) => acc + log.intensity, 0) / totalLogs).toFixed(1) 
       : 'N/A';
@@ -86,63 +83,80 @@ export function DashboardClientPage() {
   const isLoading = loading || recentLoading;
 
   return (
-    <div className="space-y-6 max-w-full overflow-hidden">
+    <div className="space-y-4 max-w-full overflow-hidden">
       <PageHeader
         title="Welcome Back"
         description={quote}
       />
 
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 max-w-full overflow-hidden">
-        <Card className="min-w-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium truncate">Logs Today</CardTitle>
-            <Sparkles className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.logsToday}</div>}
-          </CardContent>
-        </Card>
-        <Card className="min-w-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium truncate">Tracking Streak</CardTitle>
-            <Repeat className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.streak} days</div>}
-          </CardContent>
-        </Card>
-         <Card className="min-w-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium truncate">Total Logs</CardTitle>
-            <HeartPulse className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.totalLogs}</div>}
-          </CardContent>
-        </Card>
-        <Card className="min-w-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium truncate">Avg. Intensity</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/4" /> : <div className="text-2xl font-bold">{stats.avgIntensity}</div>}
-          </CardContent>
-        </Card>
+      {/* Compact Stats Section */}
+      <div className="bg-card rounded-lg border p-4">
+        <h3 className="text-sm font-medium text-muted-foreground mb-3">Your Progress</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Today</span>
+            </div>
+            {isLoading ? (
+              <Skeleton className="h-6 w-8" />
+            ) : (
+              <div className="text-xl font-bold">{stats.logsToday}</div>
+            )}
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Repeat className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Streak</span>
+            </div>
+            {isLoading ? (
+              <Skeleton className="h-6 w-16" />
+            ) : (
+              <div className="text-xl font-bold">{stats.streak} days</div>
+            )}
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <HeartPulse className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Total</span>
+            </div>
+            {isLoading ? (
+              <Skeleton className="h-6 w-8" />
+            ) : (
+              <div className="text-xl font-bold">{stats.totalLogs}</div>
+            )}
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Avg. Intensity</span>
+            </div>
+            {isLoading ? (
+              <Skeleton className="h-6 w-8" />
+            ) : (
+              <div className="text-xl font-bold">{stats.avgIntensity}</div>
+            )}
+          </div>
+        </div>
       </div>
-      
-      <Card className="overflow-hidden">
-        <CardHeader>
-          <CardTitle>Recent Logs</CardTitle>
-          <CardDescription>A quick look at your most recent entries.</CardDescription>
-        </CardHeader>
-        <CardContent className="overflow-hidden">
+
+      {/* Recent Logs Section */}
+      <div className="bg-card rounded-lg border overflow-hidden">
+        <div className="p-4 pb-0">
+          <h3 className="font-semibold">Recent Logs</h3>
+          <p className="text-sm text-muted-foreground">Your most recent entries</p>
+        </div>
+        
+        <div className="p-4 pt-3">
           {isLoading ? (
-             <div className="space-y-4">
-                {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
+            <div className="space-y-3">
+              {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
             </div>
           ) : recentLogs.length > 0 ? (
-            <ul className="space-y-4 max-w-full">
+            <div className="space-y-2">
               {recentLogs.map(log => {
                 const Icon = categoryIcons[log.category] || Sparkles;
                 return (
@@ -153,28 +167,35 @@ export function DashboardClientPage() {
                       setRecentLogs(prev => prev.map(l => l.id === log.id ? updatedLog : l));
                     }}
                   >
-                    <li className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors min-w-0 max-w-full overflow-hidden">
-                      <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
-                        <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                        <div className="min-w-0 flex-1 overflow-hidden">
-                          <p className="font-semibold truncate">{log.category}</p>
-                          <p className="text-sm text-muted-foreground truncate">{log.description || "No description"}</p>
+                    <div className="flex items-center gap-3 p-2 rounded-md hover:bg-accent/50 cursor-pointer transition-colors group">
+                      <Icon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-medium text-sm truncate">{log.category}</span>
+                          <span className="text-lg font-bold text-primary flex-shrink-0">{log.intensity}</span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs text-muted-foreground truncate">
+                            {log.description || "No description"}
+                          </span>
+                          <span className="text-xs text-muted-foreground flex-shrink-0">
+                            {formatDistanceToNow(log.timestamp, { addSuffix: true })}
+                          </span>
                         </div>
                       </div>
-                      <div className="text-right flex-shrink-0 min-w-0">
-                        <div className="font-bold text-primary whitespace-nowrap">{log.intensity}/10</div>
-                        <p className="text-xs text-muted-foreground whitespace-nowrap">{formatDistanceToNow(log.timestamp, { addSuffix: true })}</p>
-                      </div>
-                    </li>
+                    </div>
                   </EditLogDialog>
                 )
-            })}
-            </ul>
+              })}
+            </div>
           ) : (
-            <p className="text-center text-muted-foreground py-8">No recent logs. Use the '+' button to add your first one!</p>
+            <div className="text-center text-muted-foreground py-6 text-sm">
+              No recent logs. Use the '+' button to add your first one!
+            </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

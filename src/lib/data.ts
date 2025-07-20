@@ -61,7 +61,7 @@ const getDb = async (): Promise<IDBPDatabase<MindfulTrackDB>> => {
 };
 
 
-export const addLog = async (logData: { category: LogCategory; intensity: number; description?: string }): Promise<Log> => {
+export const addLog = async (logData: { category: LogCategory; intensity: number; description?: string; emotion?: string; emotionPath?: string }): Promise<Log> => {
   try {
     const db = await getDb();
     
@@ -70,6 +70,8 @@ export const addLog = async (logData: { category: LogCategory; intensity: number
       category: logData.category, // Enum, no sanitization needed
       intensity: Math.max(1, Math.min(10, Math.floor(logData.intensity))), // Ensure valid range
       description: logData.description ? sanitizeInput(logData.description) : undefined,
+      emotion: logData.emotion ? sanitizeInput(logData.emotion) : undefined,
+      emotionPath: logData.emotionPath ? sanitizeInput(logData.emotionPath) : undefined,
     };
     
     const newLog = {
@@ -110,7 +112,7 @@ export const getLogs = async (): Promise<Log[]> => {
   }
 };
 
-export const updateLog = async (id: number, logData: { category: LogCategory; intensity: number; description?: string }): Promise<Log> => {
+export const updateLog = async (id: number, logData: { category: LogCategory; intensity: number; description?: string; emotion?: string; emotionPath?: string }): Promise<Log> => {
   try {
     const db = await getDb();
     
@@ -125,6 +127,8 @@ export const updateLog = async (id: number, logData: { category: LogCategory; in
       category: logData.category,
       intensity: Math.max(1, Math.min(10, Math.floor(logData.intensity))),
       description: logData.description ? sanitizeInput(logData.description) : undefined,
+      emotion: logData.emotion ? sanitizeInput(logData.emotion) : undefined,
+      emotionPath: logData.emotionPath ? sanitizeInput(logData.emotionPath) : undefined,
     };
     
     const updatedLog = {

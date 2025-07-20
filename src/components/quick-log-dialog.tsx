@@ -8,7 +8,6 @@ import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { addLog } from "@/lib/data";
@@ -17,11 +16,18 @@ import { Loader2 } from "lucide-react";
 import { useLogs } from "@/hooks/use-logs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { IntensitySelector } from "@/components/ui/intensity-selector";
+import { FeelingsWheelSelector } from "@/components/ui/feelings-wheel-selector";
+import { EmotionNode } from "@/lib/feelings-wheel";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 const logSchema = z.object({
   category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished", "Journal Reflection"]),
   intensity: z.number().min(1).max(10),
   description: z.string().optional(),
+  emotion: z.string().optional(),
+  emotionPath: z.string().optional(),
 });
 
 type LogFormValues = z.infer<typeof logSchema>;
@@ -44,13 +50,12 @@ const categoryPrompts: Record<LogCategory, string> = {
     "Journal Reflection": "A summary of a deeper reflection you just wrote.",
 };
 
-const intensityLabels: { [key: number]: string } = {
-    1: "Mild", 4: "Moderate", 7: "Intense", 10: "Overwhelming"
-};
-
 export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedEmotion, setSelectedEmotion] = useState<EmotionNode | null>(null);
+  const [emotionPath, setEmotionPath] = useState<EmotionNode[]>([]);
+  const [showFeelingsWheel, setShowFeelingsWheel] = useState(false);
   const { toast } = useToast();
   const { addLog: addLogToState } = useLogs();
   
@@ -60,11 +65,27 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
       category: "Health Fear",
       intensity: 5,
       description: "",
+      emotion: "",
+      emotionPath: "",
     },
   });
 
   const watchedCategory = form.watch("category");
-  const watchedIntensity = form.watch("intensity");
+
+  const handleEmotionSelect = (emotion: EmotionNode, path: EmotionNode[]) => {
+    setSelectedEmotion(emotion);
+    setEmotionPath(path);
+    form.setValue("emotion", emotion.name);
+    form.setValue("emotionPath", path.map(e => e.name).join(" → "));
+    setShowFeelingsWheel(false);
+  };
+
+  const clearEmotion = () => {
+    setSelectedEmotion(null);
+    setEmotionPath([]);
+    form.setValue("emotion", "");
+    form.setValue("emotionPath", "");
+  };
 
   const onSubmit = async (data: LogFormValues) => {
     setLoading(true);
@@ -73,10 +94,15 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
         category: data.category as LogCategory,
         intensity: data.intensity,
         description: data.description,
+        emotion: data.emotion,
+        emotionPath: data.emotionPath,
       });
       addLogToState(newLog);
       toast({ title: "Log Saved!", description: "Great tracking! You're building resilience." });
       form.reset();
+      setSelectedEmotion(null);
+      setEmotionPath([]);
+      setShowFeelingsWheel(false);
       setOpen(false);
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Failed to save log. Please try again." });
@@ -85,10 +111,20 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const resetDialog = () => {
+    form.reset();
+    setSelectedEmotion(null);
+    setEmotionPath([]);
+    setShowFeelingsWheel(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(open) => {
+      setOpen(open);
+      if (!open) resetDialog();
+    }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
         <DialogHeader>
           <DialogTitle>Log Now</DialogTitle>
           <DialogDescription>
@@ -119,22 +155,76 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
               ))}
             </RadioGroup>
           </div>
+
+          <Separator />
+
+          {/* Feelings Wheel Section */}
           <div className="space-y-3">
-            <Label htmlFor="intensity">Intensity ({watchedIntensity})</Label>
-            <Slider
-                id="intensity"
-                min={1}
-                max={10}
-                step={1}
-                defaultValue={[form.getValues("intensity")]}
-                onValueChange={(value) => form.setValue("intensity", value[0])}
-            />
-            <div className="flex justify-between text-xs text-muted-foreground px-1">
-                {Object.entries(intensityLabels).map(([key, label]) => (
-                    <span key={key}>{label}</span>
-                ))}
+            <div className="flex items-center justify-between">
+              <Label>How are you feeling? (Optional)</Label>
+              {selectedEmotion && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearEmotion}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Clear
+                </Button>
+              )}
             </div>
+            
+            {selectedEmotion ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {emotionPath.map((emotion, index) => (
+                    <div key={emotion.id} className="flex items-center gap-1">
+                      {index > 0 && <span className="text-muted-foreground">→</span>}
+                      <Badge variant={index === emotionPath.length - 1 ? "default" : "secondary"}>
+                        {emotion.name}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFeelingsWheel(true)}
+                >
+                  Change Emotion
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowFeelingsWheel(true)}
+                className="w-full"
+              >
+                Select an Emotion
+              </Button>
+            )}
+
+            {showFeelingsWheel && (
+              <div className="border rounded-lg p-4 bg-muted/50">
+                <FeelingsWheelSelector onEmotionSelect={handleEmotionSelect} />
+              </div>
+            )}
           </div>
+
+          <Separator />
+
+          {/* Intensity Section */}
+          <div className="space-y-2">
+            <Label htmlFor="intensity">Intensity</Label>
+            <IntensitySelector
+              value={form.watch("intensity")}
+              onChange={(value) => form.setValue("intensity", value)}
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="description">Optional Description</Label>
             <Textarea 
@@ -143,6 +233,7 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
                 {...form.register("description")} 
             />
           </div>
+          
           <DialogFooter>
             <Button type="submit" disabled={loading} className="w-full">
               {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}

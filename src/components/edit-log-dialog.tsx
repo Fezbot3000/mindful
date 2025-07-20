@@ -7,7 +7,6 @@ import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { updateLog } from "@/lib/data";
@@ -16,11 +15,18 @@ import { Loader2 } from "lucide-react";
 import { useLogs } from "@/hooks/use-logs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { IntensitySelector } from "@/components/ui/intensity-selector";
+import { FeelingsWheelSelector } from "@/components/ui/feelings-wheel-selector";
+import { EmotionNode } from "@/lib/feelings-wheel";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 const logSchema = z.object({
   category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished", "Journal Reflection"]),
   intensity: z.number().min(1).max(10),
   description: z.string().optional(),
+  emotion: z.string().optional(),
+  emotionPath: z.string().optional(),
 });
 
 type LogFormValues = z.infer<typeof logSchema>;
@@ -43,10 +49,6 @@ const categoryPrompts: Record<LogCategory, string> = {
     "Journal Reflection": "A summary of a deeper reflection you just wrote.",
 };
 
-const intensityLabels: { [key: number]: string } = {
-    1: "Mild", 4: "Moderate", 7: "Intense", 10: "Overwhelming"
-};
-
 interface EditLogDialogProps {
   children: React.ReactNode;
   log: Log;
@@ -56,6 +58,9 @@ interface EditLogDialogProps {
 export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedEmotion, setSelectedEmotion] = useState<EmotionNode | null>(null);
+  const [emotionPath, setEmotionPath] = useState<EmotionNode[]>([]);
+  const [showFeelingsWheel, setShowFeelingsWheel] = useState(false);
   const { toast } = useToast();
   const { setLogs } = useLogs();
   
@@ -65,11 +70,47 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
       category: log.category,
       intensity: log.intensity,
       description: log.description || "",
+      emotion: log.emotion || "",
+      emotionPath: log.emotionPath || "",
     },
   });
 
   const watchedCategory = form.watch("category");
-  const watchedIntensity = form.watch("intensity");
+
+  // Initialize emotion state if log has emotion data
+  useState(() => {
+    if (log.emotion && log.emotionPath) {
+      // Create a mock emotion node for display
+      const mockEmotion: EmotionNode = {
+        id: log.emotion.toLowerCase().replace(/\s+/g, '-'),
+        name: log.emotion
+      };
+      setSelectedEmotion(mockEmotion);
+      
+      // Parse emotion path back into array
+      const pathNames = log.emotionPath.split(' → ');
+      const mockPath: EmotionNode[] = pathNames.map(name => ({
+        id: name.toLowerCase().replace(/\s+/g, '-'),
+        name
+      }));
+      setEmotionPath(mockPath);
+    }
+  });
+
+  const handleEmotionSelect = (emotion: EmotionNode, path: EmotionNode[]) => {
+    setSelectedEmotion(emotion);
+    setEmotionPath(path);
+    form.setValue("emotion", emotion.name);
+    form.setValue("emotionPath", path.map(e => e.name).join(" → "));
+    setShowFeelingsWheel(false);
+  };
+
+  const clearEmotion = () => {
+    setSelectedEmotion(null);
+    setEmotionPath([]);
+    form.setValue("emotion", "");
+    form.setValue("emotionPath", "");
+  };
 
   const onSubmit = async (data: LogFormValues) => {
     setLoading(true);
@@ -78,6 +119,8 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
         category: data.category as LogCategory,
         intensity: data.intensity,
         description: data.description,
+        emotion: data.emotion,
+        emotionPath: data.emotionPath,
       });
       
       // Update the logs in the global state
@@ -95,10 +138,45 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
     }
   };
 
+  const resetDialog = () => {
+    // Reset to original log data
+    form.reset({
+      category: log.category,
+      intensity: log.intensity,
+      description: log.description || "",
+      emotion: log.emotion || "",
+      emotionPath: log.emotionPath || "",
+    });
+    
+    setShowFeelingsWheel(false);
+    
+    // Reset emotion state
+    if (log.emotion && log.emotionPath) {
+      const mockEmotion: EmotionNode = {
+        id: log.emotion.toLowerCase().replace(/\s+/g, '-'),
+        name: log.emotion
+      };
+      setSelectedEmotion(mockEmotion);
+      
+      const pathNames = log.emotionPath.split(' → ');
+      const mockPath: EmotionNode[] = pathNames.map(name => ({
+        id: name.toLowerCase().replace(/\s+/g, '-'),
+        name
+      }));
+      setEmotionPath(mockPath);
+    } else {
+      setSelectedEmotion(null);
+      setEmotionPath([]);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(open) => {
+      setOpen(open);
+      if (!open) resetDialog();
+    }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
         <DialogHeader>
           <DialogTitle>Edit Log Entry</DialogTitle>
           <DialogDescription>
@@ -130,21 +208,73 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
             </RadioGroup>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="intensity">Intensity ({watchedIntensity})</Label>
-            <Slider
-                id="intensity"
-                min={1}
-                max={10}
-                step={1}
-                value={[form.getValues("intensity")]}
-                onValueChange={(value) => form.setValue("intensity", value[0])}
-            />
-            <div className="flex justify-between text-xs text-muted-foreground px-1">
-                {Object.entries(intensityLabels).map(([key, label]) => (
-                    <span key={key}>{label}</span>
-                ))}
+          <Separator />
+
+          {/* Feelings Wheel Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>How are you feeling? (Optional)</Label>
+              {selectedEmotion && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearEmotion}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Clear
+                </Button>
+              )}
             </div>
+            
+            {selectedEmotion ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {emotionPath.map((emotion, index) => (
+                    <div key={emotion.id} className="flex items-center gap-1">
+                      {index > 0 && <span className="text-muted-foreground">→</span>}
+                      <Badge variant={index === emotionPath.length - 1 ? "default" : "secondary"}>
+                        {emotion.name}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFeelingsWheel(true)}
+                >
+                  Change Emotion
+                </Button>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowFeelingsWheel(true)}
+                className="w-full"
+              >
+                Select an Emotion
+              </Button>
+            )}
+
+            {showFeelingsWheel && (
+              <div className="border rounded-lg p-4 bg-muted/50">
+                <FeelingsWheelSelector onEmotionSelect={handleEmotionSelect} />
+              </div>
+            )}
+          </div>
+
+          <Separator />
+
+          {/* Intensity Section */}
+          <div className="space-y-2">
+            <Label htmlFor="intensity">Intensity</Label>
+            <IntensitySelector
+              value={form.watch("intensity")}
+              onChange={(value) => form.setValue("intensity", value)}
+            />
           </div>
           
           <div className="space-y-2">

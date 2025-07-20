@@ -6,6 +6,8 @@ export interface Log {
   category: LogCategory;
   intensity: number;
   description?: string;
+  emotion?: string;
+  emotionPath?: string;
   timestamp: Date;
 }
 

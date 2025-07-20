@@ -2,15 +2,15 @@
 
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import { FilePlus } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FilePlus, BookOpen, Activity } from "lucide-react";
 import { useState, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
+import { Badge } from "@/components/ui/badge";
 
 // Lazy load heavy components
 const NewJournalEntryDialog = dynamic(() => import("@/components/journal/new-entry-dialog").then(mod => ({ default: mod.NewJournalEntryDialog })), {
-  loading: () => <Button disabled><FilePlus className="mr-2" />Loading...</Button>,
+  loading: () => <Button disabled><FilePlus className="mr-2 h-4 w-4" />Loading...</Button>,
 });
 
 const JournalList = dynamic(() => import("@/components/journal/journal-list").then(mod => ({ default: mod.JournalList })), {
@@ -23,23 +23,25 @@ const LogList = dynamic(() => import("@/components/journal/log-list").then(mod =
 
 export function JournalPageClient() {
   const [key, setKey] = useState(0);
+  const [activeView, setActiveView] = useState<'journal' | 'logs'>('journal');
 
   const refreshEntries = () => {
     setKey(prevKey => prevKey + 1);
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-6 max-w-full overflow-hidden">
+      {/* Header with action */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <PageHeader
           title="Journal & Logs"
           description="A space for reflection, from quick logs to deep dives."
         />
-        <div className="flex-shrink-0">
-          <Suspense fallback={<Button disabled><FilePlus className="mr-2" />Loading...</Button>}>
+        <div className="flex gap-2 flex-shrink-0">
+          <Suspense fallback={<Button disabled><FilePlus className="mr-2 h-4 w-4" />Loading...</Button>}>
             <NewJournalEntryDialog onEntryAdded={refreshEntries}>
               <Button className="w-full sm:w-auto">
-                <FilePlus className="mr-2" />
+                <FilePlus className="mr-2 h-4 w-4" />
                 New Journal Entry
               </Button>
             </NewJournalEntryDialog>
@@ -47,22 +49,64 @@ export function JournalPageClient() {
         </div>
       </div>
 
-      <Tabs defaultValue="journal" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="journal">Journal Entries</TabsTrigger>
-          <TabsTrigger value="logs">Log History</TabsTrigger>
-        </TabsList>
-        <TabsContent value="journal" className="mt-6">
-          <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
-            <JournalList key={`journal-${key}`} />
-          </Suspense>
-        </TabsContent>
-        <TabsContent value="logs" className="mt-6">
-          <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
-            <LogList key={`logs-${key}`} />
-          </Suspense>
-        </TabsContent>
-      </Tabs>
+      {/* Clean navigation */}
+      <div className="bg-card rounded-lg border p-2">
+        <div className="flex gap-2">
+          <Button
+            variant={activeView === 'journal' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setActiveView('journal')}
+            className="flex-1 justify-start h-12 px-4"
+          >
+            <BookOpen className="mr-3 h-4 w-4" />
+            Journal Entries
+            <Badge variant="secondary" className="ml-auto text-xs px-2 py-1">
+              Deep reflection
+            </Badge>
+          </Button>
+          <Button
+            variant={activeView === 'logs' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setActiveView('logs')}
+            className="flex-1 justify-start h-12 px-4"
+          >
+            <Activity className="mr-3 h-4 w-4" />
+            Quick Logs
+            <Badge variant="secondary" className="ml-auto text-xs px-2 py-1">
+              Daily tracking
+            </Badge>
+          </Button>
+        </div>
+      </div>
+
+      {/* Content area */}
+      <div className="min-h-[400px]">
+        {activeView === 'journal' ? (
+          <div className="space-y-5">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Your Journal Entries</h3>
+              <p className="text-sm text-muted-foreground">
+                Detailed reflections and deeper thoughts
+              </p>
+            </div>
+            <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+              <JournalList key={`journal-${key}`} />
+            </Suspense>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Your Quick Logs</h3>
+              <p className="text-sm text-muted-foreground">
+                Daily mood and activity tracking
+              </p>
+            </div>
+            <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+              <LogList key={`logs-${key}`} />
+            </Suspense>
+          </div>
+        )}
+      </div>
     </div>
   );
 } 

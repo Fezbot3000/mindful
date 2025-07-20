@@ -15,7 +15,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ScrollArea } from "../ui/scroll-area";
-import { Slider } from "@/components/ui/slider";
+import { IntensitySelector } from "../ui/intensity-selector";
 import { Badge } from "../ui/badge";
 import { useLogs } from "@/hooks/use-logs";
 
@@ -173,26 +173,17 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
               </div>
 
                <div className="space-y-3 pt-2">
-                <Label htmlFor="intensity">How intense is this feeling? ({watchedIntensity})</Label>
+                <Label htmlFor="intensity">How intense is this feeling?</Label>
                 <Controller
                   name="intensity"
                   control={form.control}
                   render={({ field }) => (
-                    <Slider
-                      id="intensity"
-                      min={0}
-                      max={10}
-                      step={1}
-                      defaultValue={[field.value ?? 5]}
-                      onValueChange={(value) => field.onChange(value[0])}
+                    <IntensitySelector
+                      value={field.value ?? 5}
+                      onChange={(value) => field.onChange(value)}
                     />
                   )}
                 />
-                 <div className="flex justify-between text-xs text-muted-foreground px-1">
-                    {Object.entries(intensityLabels).map(([key, label]) => (
-                        <span key={key}>{label}</span>
-                    ))}
-                </div>
               </div>
               
               <Accordion type="multiple" className="w-full">
