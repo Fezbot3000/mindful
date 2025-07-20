@@ -94,7 +94,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       
       // Reset rate limiter on successful auth
       authRateLimiter.reset(userIdentifier);
-      router.push("/dashboard/");
+      router.push("/dashboard");
     } catch (error: any) {
       secureLog('error', 'Authentication failed', { 
         email: sanitizedData.email, 
@@ -137,7 +137,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       
       // Reset rate limiter on successful auth
       authRateLimiter.reset(userIdentifier);
-      router.push("/dashboard/");
+      router.push("/dashboard");
     } catch (error: any) {
       secureLog('error', 'Google sign-in failed', { 
         error: error.code || error.message 

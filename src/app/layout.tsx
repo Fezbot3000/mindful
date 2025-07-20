@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  manifest: '/manifest.json',
+  manifest: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/manifest.json`,
   // Essential iOS PWA meta tags
   appleWebApp: {
     capable: true,
@@ -114,7 +114,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/logo.svg" />
         
         {/* Manifest */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href={(process.env.NEXT_PUBLIC_BASE_PATH || '') + '/manifest.json'} />
         
 
         

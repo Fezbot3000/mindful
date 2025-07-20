@@ -7,14 +7,14 @@ const DYNAMIC_CACHE = 'mindful-dynamic-v1';
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
-  '/',
-  '/dashboard',
-  '/journal',
-  '/insights',
-  '/tools',
-  '/settings',
-  '/manifest.json',
-  '/logo.svg',
+  '/mindful/',
+  '/mindful/dashboard',
+  '/mindful/journal',
+  '/mindful/insights',
+  '/mindful/tools',
+  '/mindful/settings',
+  '/mindful/manifest.json',
+  '/mindful/logo.svg',
   // Core CSS and JS will be added dynamically by Next.js
 ];
 

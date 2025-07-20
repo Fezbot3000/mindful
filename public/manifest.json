@@ -2,12 +2,12 @@
   "name": "Mindful Track - Mental Health Toolkit",
   "short_name": "Mindful",
   "description": "Evidence-based tools to help you stay grounded and manage stress through breathing exercises, journaling, and mindfulness techniques.",
-  "start_url": "/dashboard",
+  "start_url": "/mindful/dashboard",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#3b82f6",
   "background_color": "#0a0a0a",
-  "scope": "/",
+  "scope": "/mindful/",
   "lang": "en",
   "categories": ["health", "wellness", "lifestyle", "medical"],
   "icons": [
@@ -23,7 +23,7 @@
       "name": "Quick Log",
       "short_name": "Log",
       "description": "Quickly log your current mental state",
-      "url": "/dashboard?quick-log=true",
+      "url": "/mindful/dashboard?quick-log=true",
       "icons": [
         {
           "src": "/logo.svg",
@@ -36,7 +36,7 @@
       "name": "Breathing Exercise",
       "short_name": "Breathe",
       "description": "Start a 5-minute breathing exercise",
-      "url": "/tools",
+      "url": "/mindful/tools",
       "icons": [
         {
           "src": "/logo.svg",
