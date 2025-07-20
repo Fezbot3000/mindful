@@ -215,7 +215,7 @@ export function GroundingExercise() {
                       onChange={(e) => setCurrentInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleNextItem()}
                       placeholder={`Something you can ${currentStepData.sense}...`}
-                      className="w-full p-3 border rounded-md text-center"
+                      className="w-full p-3 border rounded-md text-center text-base overflow-visible break-words"
                       autoFocus
                     />
                     <Button onClick={handleNextItem} className="w-full">

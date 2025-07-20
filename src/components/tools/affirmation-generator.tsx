@@ -291,7 +291,7 @@ export function AffirmationGenerator() {
                 value={customAffirmation}
                 onChange={(e) => setCustomAffirmation(e.target.value)}
                 placeholder="Enter your personal affirmation..."
-                className="w-full p-3 border rounded-md"
+                className="w-full p-3 border rounded-md text-base overflow-visible break-words"
                 onKeyPress={(e) => e.key === 'Enter' && addCustomAffirmation()}
               />
               <div className="flex space-x-2">

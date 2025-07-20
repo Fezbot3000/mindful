@@ -251,5 +251,14 @@
   .mobile-content-spacing {
     padding-bottom: calc(var(--mobile-nav-height) + 2rem); /* nav height + extra space */
   }
+  
+  /* Force modal overlays to be on top of everything on mobile */
+  [data-radix-popper-content-wrapper] {
+    z-index: 9999 !important;
+  }
+  
+  [data-state="open"] {
+    z-index: 9999 !important;
+  }
 }
 

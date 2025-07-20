@@ -2,11 +2,12 @@
 
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import { FilePlus, BookOpen, Activity } from "lucide-react";
+import { FilePlus, BookOpen, Activity, ChevronDown } from "lucide-react";
 import { useState, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Lazy load heavy components
 const NewJournalEntryDialog = dynamic(() => import("@/components/journal/new-entry-dialog").then(mod => ({ default: mod.NewJournalEntryDialog })), {
@@ -30,9 +31,9 @@ export function JournalPageClient() {
   }
 
   return (
-    <div className="space-y-6 max-w-full overflow-hidden">
+    <div className="space-y-6 w-full">
       {/* Header with action */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between w-full">
         <PageHeader
           title="Journal & Logs"
           description="A space for reflection, from quick logs to deep dives."
@@ -49,9 +50,49 @@ export function JournalPageClient() {
         </div>
       </div>
 
-      {/* Clean navigation */}
+      {/* Navigation - Dropdown on mobile, tabs on desktop */}
       <div className="bg-card rounded-lg border p-2">
-        <div className="flex gap-2">
+                {/* Mobile dropdown */}
+        <div className="block sm:hidden">
+          <Select value={activeView} onValueChange={(value) => setActiveView(value as 'journal' | 'logs')}>
+            <SelectTrigger className="w-full h-12">
+              <div className="flex items-center gap-3 w-full">
+                {activeView === 'journal' ? (
+                  <>
+                    <BookOpen className="h-4 w-4" />
+                    <span>Journal Entries</span>
+                    <Badge variant="secondary" className="text-xs">Deep reflection</Badge>
+                  </>
+                ) : (
+                  <>
+                    <Activity className="h-4 w-4" />
+                    <span>Quick Logs</span>
+                    <Badge variant="secondary" className="text-xs">Daily tracking</Badge>
+                  </>
+                )}
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="journal">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="h-4 w-4" />
+                  <span>Journal Entries</span>
+                  <Badge variant="secondary" className="text-xs">Deep reflection</Badge>
+                </div>
+              </SelectItem>
+              <SelectItem value="logs">
+                <div className="flex items-center gap-3">
+                  <Activity className="h-4 w-4" />
+                  <span>Quick Logs</span>
+                  <Badge variant="secondary" className="text-xs">Daily tracking</Badge>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Desktop tabs */}
+        <div className="hidden sm:flex gap-2">
           <Button
             variant={activeView === 'journal' ? 'default' : 'ghost'}
             size="sm"
@@ -80,10 +121,10 @@ export function JournalPageClient() {
       </div>
 
       {/* Content area */}
-      <div className="min-h-[400px]">
+      <div className="w-full">
         {activeView === 'journal' ? (
           <div className="space-y-5">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <h3 className="text-lg font-semibold">Your Journal Entries</h3>
               <p className="text-sm text-muted-foreground">
                 Detailed reflections and deeper thoughts
@@ -95,7 +136,7 @@ export function JournalPageClient() {
           </div>
         ) : (
           <div className="space-y-5">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <h3 className="text-lg font-semibold">Your Quick Logs</h3>
               <p className="text-sm text-muted-foreground">
                 Daily mood and activity tracking

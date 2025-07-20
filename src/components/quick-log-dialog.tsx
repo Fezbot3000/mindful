@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -21,6 +21,7 @@ import { FeelingsWheelSelector } from "@/components/ui/feelings-wheel-selector";
 import { EmotionNode } from "@/lib/feelings-wheel";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useTextareaAutosize } from "@/hooks/use-textarea-autosize";
 
 const logSchema = z.object({
   category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished", "Journal Reflection"]),
@@ -71,6 +72,8 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
   });
 
   const watchedCategory = form.watch("category");
+  const watchedDescription = form.watch("description");
+  const autosizeRef = useTextareaAutosize(watchedDescription || "");
 
   const handleEmotionSelect = (emotion: EmotionNode, path: EmotionNode[]) => {
     setSelectedEmotion(emotion);
@@ -124,7 +127,7 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
       if (!open) resetDialog();
     }}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto scrollbar-hide">
+      <DialogContent className="sm:max-w-[500px] overflow-y-auto scrollbar-hide">
         <DialogHeader>
           <DialogTitle>Log Now</DialogTitle>
           <DialogDescription>
@@ -227,10 +230,18 @@ export function QuickLogDialog({ children }: { children: React.ReactNode }) {
 
           <div className="space-y-2">
             <Label htmlFor="description">Optional Description</Label>
-            <Textarea 
-                id="description" 
-                placeholder={categoryPrompts[watchedCategory]} 
-                {...form.register("description")} 
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field }) => (
+                <Textarea 
+                  id="description" 
+                  ref={autosizeRef}
+                  placeholder={categoryPrompts[watchedCategory]} 
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                />
+              )}
             />
           </div>
           
