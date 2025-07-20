@@ -18,7 +18,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-50 flex items-center px-2 pb-safe-area-inset-bottom pl-safe-area-inset-left pr-safe-area-inset-right shadow-lg h-16">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t z-50 flex items-center px-2 pb-safe-area-inset-bottom pl-safe-area-inset-left pr-safe-area-inset-right shadow-lg" style={{ height: 'var(--mobile-nav-height)' }}>
       <nav className="grid grid-cols-5 w-full">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (pathname === "/" && item.href === "/dashboard");
