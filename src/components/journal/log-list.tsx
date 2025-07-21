@@ -123,7 +123,7 @@ export function LogList() {
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                     <Button variant="ghost" size="sm" className="h-8 px-3">
                       <Edit className="h-3 w-3 mr-1" />
                       Edit

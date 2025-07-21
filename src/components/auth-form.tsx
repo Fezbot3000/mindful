@@ -212,7 +212,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         ) : (
           <p>Already have an account? <Link href="/login" className="text-primary underline">Sign in</Link></p>
         )}
-        {!auth && <p className="text-destructive mt-token-2 text-xs">Firebase is not configured. Please check environment variables.</p>}
+        {!auth && <p className="text-destructive mt-2 text-xs">Firebase is not configured. Please check environment variables.</p>}
       </CardFooter>
     </Card>
   );

@@ -126,10 +126,10 @@ export function ErrorBoundary({ children, fallback }: ErrorBoundaryProps) {
 // Simple fallback component for quick errors
 export function SimpleErrorFallback({ error, reset }: { error: Error, reset: () => void }) {
   return (
-    <div className="p-token-4 text-center">
+    <div className="p-4 text-center">
       <p className="text-destructive">An error occurred. Please refresh the page.</p>
-      <Button onClick={reset} className="mt-token-2">
-        <RefreshCw className="mr-token-2 icon-sm" />
+      <Button onClick={reset} className="mt-2">
+        <RefreshCw className="mr-2 h-4 w-4" />
         Try Again
       </Button>
     </div>

@@ -217,7 +217,7 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)' }}>
+      <DialogContent className="grid-rows-[auto,1fr,auto] p-0 max-w-[var(--layout-2xl)]">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle>Edit Log Entry</DialogTitle>
           <DialogDescription>
@@ -275,7 +275,7 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
                   {emotionPath.map((emotion, index) => (
                     <div key={emotion.id} className="flex items-center gap-1">
                       {index > 0 && <span className="text-muted-foreground">→</span>}
-                      <Badge variant={index === emotionPath.length - 1 ? "default" : "secondary"}>
+                      <Badge variant={index === emotionPath.length - 1 ? "default" : "secondary"} className="px-2 py-1">
                         {emotion.name}
                       </Badge>
                     </div>
@@ -339,7 +339,7 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
         </ScrollArea>
         <DialogFooter className="p-6 pt-4 border-t">
           <Button type="submit" form="edit-log-form" disabled={loading} className="w-full">
-            {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Update Log
           </Button>
         </DialogFooter>

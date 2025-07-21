@@ -45,7 +45,7 @@ export function LogSummary({ logs, loading, view }: LogSummaryProps) {
       <CardContent className="grid gap-4 md:grid-cols-3">
         <div className="flex items-start gap-4">
             <div className="p-3 bg-primary/10 rounded-lg">
-                <CalendarDays className="icon-lg text-primary" />
+                <CalendarDays className="h-6 w-6 text-primary" />
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Total Logs</p>
@@ -54,7 +54,7 @@ export function LogSummary({ logs, loading, view }: LogSummaryProps) {
         </div>
         <div className="flex items-start gap-4">
             <div className="p-3 bg-primary/10 rounded-lg">
-                <TrendingUp className="icon-lg text-primary" />
+                <TrendingUp className="h-6 w-6 text-primary" />
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Avg. Intensity</p>
@@ -63,7 +63,7 @@ export function LogSummary({ logs, loading, view }: LogSummaryProps) {
         </div>
         <div className="flex items-start gap-4">
              <div className="p-3 bg-primary/10 rounded-lg">
-                <BarChart className="icon-lg text-primary" />
+                <BarChart className="h-6 w-6 text-primary" />
             </div>
             <div>
                 <p className="text-sm text-muted-foreground">Top Trigger</p>

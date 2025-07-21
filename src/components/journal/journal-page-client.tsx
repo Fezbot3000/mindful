@@ -61,30 +61,30 @@ export function JournalPageClient() {
                   <>
                     <BookOpen className="h-4 w-4" />
                     <span>Journal Entries</span>
-                    <Badge variant="secondary" className="text-xs">Deep reflection</Badge>
+                    <Badge variant="secondary" className="text-xs px-2 py-1">Deep reflection</Badge>
                   </>
                 ) : (
                   <>
                     <Activity className="h-4 w-4" />
                     <span>Quick Logs</span>
-                    <Badge variant="secondary" className="text-xs">Daily tracking</Badge>
+                    <Badge variant="secondary" className="text-xs px-2 py-1">Daily tracking</Badge>
                   </>
                 )}
               </div>
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="journal">
+            <SelectContent className="[&>div>div]:py-3 sm:[&>div>div]:py-1.5">
+              <SelectItem value="journal" className="py-3 sm:py-1.5 min-h-[3rem] sm:min-h-auto">
                 <div className="flex items-center gap-3">
                   <BookOpen className="h-4 w-4" />
                   <span>Journal Entries</span>
-                  <Badge variant="secondary" className="text-xs">Deep reflection</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Deep reflection</Badge>
                 </div>
               </SelectItem>
-              <SelectItem value="logs">
+              <SelectItem value="logs" className="py-3 sm:py-1.5 min-h-[3rem] sm:min-h-auto">
                 <div className="flex items-center gap-3">
                   <Activity className="h-4 w-4" />
                   <span>Quick Logs</span>
-                  <Badge variant="secondary" className="text-xs">Daily tracking</Badge>
+                  <Badge variant="secondary" className="text-xs px-2 py-1">Daily tracking</Badge>
                 </div>
               </SelectItem>
             </SelectContent>

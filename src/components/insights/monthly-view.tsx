@@ -83,7 +83,7 @@ export function MonthlyView({ logs, dateRange, loading }: MonthlyViewProps) {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-             <div className="text-center py-12 flex items-center justify-center" style={{ height: '350px' }}>
+             <div className="text-center py-12 flex items-center justify-center h-[350px]">
                 <p className="text-muted-foreground">No logs recorded for this month.</p>
             </div>
         )}

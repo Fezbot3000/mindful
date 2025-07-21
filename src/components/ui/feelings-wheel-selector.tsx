@@ -136,7 +136,7 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
               <span className="font-medium">{emotion.name}</span>
               {emotion.children && emotion.children.length > 0 && (
                 <div className="flex items-center gap-1">
-                  <Badge variant="secondary" className="text-xs px-1">
+                  <Badge variant="secondary" className="text-xs px-2 py-1">
                     {emotion.children.length}
                   </Badge>
                   <ArrowRight className="h-3 w-3" />

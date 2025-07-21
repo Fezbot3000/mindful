@@ -121,7 +121,7 @@ export function DailyView({ logs, loading }: DailyViewProps) {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="text-center py-12 flex items-center justify-center" style={{ height: '300px' }}>
+            <div className="text-center py-12 flex items-center justify-center h-[300px]">
               <p className="text-muted-foreground">No logs recorded for this day.</p>
             </div>
           )}

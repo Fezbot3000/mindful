@@ -87,11 +87,11 @@ export function InsightsPageClient() {
         </ToggleGroup>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={handlePrev}>
-            <ChevronLeft className="icon-sm" />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
                         <span className="font-semibold text-center text-lg w-80">{title}</span>
           <Button variant="outline" size="icon" onClick={handleNext}>
-            <ChevronRight className="icon-sm" />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>

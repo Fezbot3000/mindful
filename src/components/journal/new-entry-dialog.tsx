@@ -175,7 +175,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)' }}>
+      <DialogContent className="grid-rows-[auto,1fr,auto] p-0 max-w-[var(--layout-2xl)]">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle>New Journal Entry</DialogTitle>
           <DialogDescription>
@@ -236,7 +236,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
                         <Input id="trigger" placeholder="e.g., A physical sensation, a memory..." {...form.register("trigger")} />
                         <div className="flex flex-wrap gap-2 mt-2">
                           {triggerChips.map(chip => (
-                            <Badge key={chip} variant="secondary" className="cursor-pointer" onClick={() => handleChipClick(chip)}>{chip}</Badge>
+                            <Badge key={chip} variant="secondary" className="cursor-pointer px-4 py-2 text-sm" onClick={() => handleChipClick(chip)}>{chip}</Badge>
                           ))}
                         </div>
                       </div>
@@ -299,7 +299,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
         </ScrollArea>
         <DialogFooter className="p-6 pt-4 border-t">
             <Button type="submit" form="journal-form" disabled={loading}>
-                          {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
+                          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Save Entry
             </Button>
         </DialogFooter>
