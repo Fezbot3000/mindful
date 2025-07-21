@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +22,7 @@ import { EmotionNode } from "@/lib/feelings-wheel";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useTextareaAutosize } from "@/hooks/use-textarea-autosize";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 const logSchema = z.object({
   category: z.enum(["Health Fear", "Intrusive Thought", "Compulsion", "Schema Trigger", "Accomplished", "Journal Reflection"]),
@@ -59,6 +61,7 @@ interface EditLogDialogProps {
 export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showConfirmClose, setShowConfirmClose] = useState(false);
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionNode | null>(null);
   const [emotionPath, setEmotionPath] = useState<EmotionNode[]>([]);
   const [showFeelingsWheel, setShowFeelingsWheel] = useState(false);
@@ -78,7 +81,45 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
 
   const watchedCategory = form.watch("category");
   const watchedDescription = form.watch("description");
+  const watchedIntensity = form.watch("intensity");
   const autosizeRef = useTextareaAutosize(watchedDescription || "");
+
+  // Trigger auto-resize when form is initialized with existing data
+  useEffect(() => {
+    if (open) {
+      // Use setTimeout to ensure the form is fully rendered
+      setTimeout(() => {
+        const textarea = autosizeRef.current;
+        if (textarea) {
+          textarea.style.height = 'auto';
+          textarea.style.height = Math.max(textarea.scrollHeight, 80) + 'px';
+        }
+      }, 100);
+    }
+  }, [open, autosizeRef]);
+
+  // Check if form has changes
+  const hasChanges = watchedDescription !== (log.description || "") || 
+                    watchedCategory !== log.category || 
+                    watchedIntensity !== log.intensity ||
+                    selectedEmotion !== null;
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen && hasChanges) {
+      setShowConfirmClose(true);
+    } else {
+      setOpen(newOpen);
+      if (!newOpen) {
+        resetDialog();
+      }
+    }
+  };
+
+  const handleConfirmClose = () => {
+    setShowConfirmClose(false);
+    setOpen(false);
+    resetDialog();
+  };
 
   // Initialize emotion state if log has emotion data
   useState(() => {
@@ -174,19 +215,17 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => {
-      setOpen(open);
-      if (!open) resetDialog();
-    }}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] overflow-y-auto scrollbar-hide">
-        <DialogHeader>
+      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)' }}>
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>Edit Log Entry</DialogTitle>
           <DialogDescription>
             Update your log entry. The original timestamp will be preserved.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-4">
+        <ScrollArea className="overflow-y-auto">
+          <form onSubmit={form.handleSubmit(onSubmit)} id="edit-log-form" className="space-y-6 px-6 pb-6">
           <div className="space-y-2">
             <Label>Category</Label>
             <RadioGroup
@@ -263,7 +302,7 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
             )}
 
             {showFeelingsWheel && (
-              <div className="border rounded-lg p-4 bg-muted/50">
+              <div className="border rounded-lg p-4 bg-muted/50 max-h-[300px] overflow-y-auto">
                 <FeelingsWheelSelector onEmotionSelect={handleEmotionSelect} />
               </div>
             )}
@@ -296,15 +335,24 @@ export function EditLogDialog({ children, log, onLogUpdated }: EditLogDialogProp
               )}
             />
           </div>
-          
-          <DialogFooter>
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
-              Update Log
-            </Button>
-          </DialogFooter>
         </form>
+        </ScrollArea>
+        <DialogFooter className="p-6 pt-4 border-t">
+          <Button type="submit" form="edit-log-form" disabled={loading} className="w-full">
+            {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
+            Update Log
+          </Button>
+        </DialogFooter>
       </DialogContent>
+      <ConfirmDialog
+        open={showConfirmClose}
+        onOpenChange={setShowConfirmClose}
+        onConfirm={handleConfirmClose}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to close?"
+        confirmText="Close"
+        cancelText="Keep Editing"
+      />
     </Dialog>
   );
 } 

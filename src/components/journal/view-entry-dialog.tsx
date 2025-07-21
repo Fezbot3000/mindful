@@ -28,7 +28,7 @@ export function ViewJournalEntryDialog({ children, entry }: ViewJournalEntryDial
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="flex flex-col" style={{ maxWidth: 'var(--layout-2xl)', maxHeight: '90svh' }}>
+      <DialogContent className="flex flex-col" style={{ maxWidth: 'var(--layout-2xl)' }}>
         <DialogHeader>
           <DialogTitle>{entry.title}</DialogTitle>
           <DialogDescription className="flex justify-between items-center">
@@ -38,7 +38,7 @@ export function ViewJournalEntryDialog({ children, entry }: ViewJournalEntryDial
             )}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow">
+        <ScrollArea className="flex-grow max-h-[60vh]">
             <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap font-sans space-y-4 px-6">
                 <p>{entry.content}</p>
 

@@ -83,34 +83,36 @@ export function JournalList() {
     <div className="space-y-4">
       {entries.map((entry) => (
         <div key={entry.id} className="bg-card rounded-lg border overflow-hidden group hover:shadow-sm transition-shadow">
-          <div className="flex items-start justify-between gap-6 p-6">
-            <EditJournalEntryDialog 
-              entry={entry} 
-              onEntryUpdated={(updatedEntry: JournalEntry) => {
-                setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
-              }}
-            >
-              <div className="cursor-pointer hover:bg-accent/30 transition-colors p-2 -m-2 rounded flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-semibold text-lg truncate">{entry.title}</h3>
-                  {entry.intensity && (
-                    <span className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full font-medium flex-shrink-0">
-                      {entry.intensity}/10
-                    </span>
-                  )}
+          <div className="p-6">
+            <div className="flex items-start justify-between gap-6 mb-4">
+              <EditJournalEntryDialog 
+                entry={entry} 
+                onEntryUpdated={(updatedEntry: JournalEntry) => {
+                  setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
+                }}
+              >
+                <div className="cursor-pointer hover:bg-accent/30 transition-colors p-2 -m-2 rounded flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="font-semibold text-lg truncate">{entry.title}</h3>
+                    {entry.intensity && (
+                      <span className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full font-medium flex-shrink-0">
+                        {entry.intensity}/10
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}
+                  </p>
+                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                    {entry.content}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {format(entry.timestamp, "MMMM d, yyyy 'at' h:mm a")}
-                </p>
-                <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                  {entry.content}
-                </p>
-              </div>
-            </EditJournalEntryDialog>
+              </EditJournalEntryDialog>
+            </div>
             
-            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
               <ViewJournalEntryDialog entry={entry}>
-                <Button variant="ghost" size="sm" className="h-9 px-3">
+                <Button variant="ghost" size="sm" className="h-9 px-3 flex-1 sm:flex-none">
                   <BookOpen className="h-4 w-4 mr-2" />
                   Read
                 </Button>
@@ -122,7 +124,7 @@ export function JournalList() {
                   setEntries(prev => prev.map(e => e.id === entry.id ? updatedEntry : e));
                 }}
               >
-                <Button variant="ghost" size="sm" className="h-9 px-3">
+                <Button variant="ghost" size="sm" className="h-9 px-3 flex-1 sm:flex-none">
                   <Edit className="h-4 w-4 mr-2" />
                   Edit
                 </Button>
@@ -130,7 +132,7 @@ export function JournalList() {
               
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-9 w-9 p-0 text-muted-foreground hover:text-destructive">
+                  <Button variant="ghost" size="sm" className="h-9 w-9 p-0 text-muted-foreground hover:text-destructive flex-shrink-0">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </AlertDialogTrigger>

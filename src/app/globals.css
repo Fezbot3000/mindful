@@ -213,6 +213,7 @@
     position: relative;
     height: 100vh;
     overflow-x: hidden;
+    overflow-y: auto;
   }
   
   /* Improve status bar rendering */
@@ -225,6 +226,53 @@
   body {
     touch-action: manipulation;
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure proper scrolling on mobile */
+  #main-content {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  
+  /* Fix mobile scrolling issues */
+  @media (max-width: 768px) {
+    body {
+      height: 100vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    #main-content {
+      height: calc(100vh - 3.5rem); /* Account for header */
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Force scrolling on mobile */
+    main {
+      overflow-y: scroll !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Specific fix for journal page scrolling */
+    .journal-page-content {
+      min-height: auto !important;
+      height: auto !important;
+      overflow-y: visible !important;
+    }
+    
+    .space-y-6 {
+      min-height: auto;
+      height: auto;
+    }
+    
+    /* Ensure journal content can expand */
+    .space-y-4 {
+      min-height: auto;
+      height: auto;
+    }
   }
   
   /* Fix for iOS PWA status bar appearing/disappearing */
@@ -260,5 +308,25 @@
   [data-state="open"] {
     z-index: 9999 !important;
   }
+}
+
+/* Hide scrollbars on textareas */
+textarea {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+textarea::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Hide scrollbars on scroll areas */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 

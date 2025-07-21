@@ -31,7 +31,7 @@ export function JournalPageClient() {
   }
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="space-y-6 w-full journal-page-content">
       {/* Header with action */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between w-full">
         <PageHeader

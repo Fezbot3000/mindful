@@ -16,19 +16,10 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
   const [currentLevel, setCurrentLevel] = useState<EmotionNode[]>(feelingsWheel);
   const [breadcrumbs, setBreadcrumbs] = useState<EmotionNode[]>([]);
 
-  const handleEmotionClick = (emotion: EmotionNode) => {
-    if (emotion.children && emotion.children.length > 0) {
-      // Navigate deeper
-      setBreadcrumbs([...breadcrumbs, emotion]);
-      setCurrentLevel(emotion.children);
-    } else {
-      // Final selection - this is a leaf emotion
-      const fullPath = [...breadcrumbs, emotion];
-      onEmotionSelect(emotion, fullPath);
-    }
-  };
-
-  const handleBackClick = () => {
+  const handleBackClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (breadcrumbs.length === 0) return;
     
     const newBreadcrumbs = breadcrumbs.slice(0, -1);
@@ -42,7 +33,10 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
     }
   };
 
-  const handleBreadcrumbClick = (index: number) => {
+  const handleBreadcrumbClick = (e: React.MouseEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (index === -1) {
       // Root level
       setBreadcrumbs([]);
@@ -52,6 +46,21 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
       setBreadcrumbs(newBreadcrumbs);
       const parent = newBreadcrumbs[newBreadcrumbs.length - 1];
       setCurrentLevel(parent.children || []);
+    }
+  };
+
+  const handleEmotionClick = (e: React.MouseEvent, emotion: EmotionNode) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (emotion.children && emotion.children.length > 0) {
+      // Navigate deeper
+      setBreadcrumbs([...breadcrumbs, emotion]);
+      setCurrentLevel(emotion.children);
+    } else {
+      // Final selection - this is a leaf emotion
+      const fullPath = [...breadcrumbs, emotion];
+      onEmotionSelect(emotion, fullPath);
     }
   };
 
@@ -69,7 +78,7 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleBreadcrumbClick(-1)}
+            onClick={(e) => handleBreadcrumbClick(e, -1)}
             className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
           >
             Start
@@ -80,7 +89,7 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleBreadcrumbClick(index)}
+                onClick={(e) => handleBreadcrumbClick(e, index)}
                 className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
               >
                 {crumb.name}
@@ -121,7 +130,7 @@ export function FeelingsWheelSelector({ onEmotionSelect, className }: FeelingsWh
                 ? "border-dashed" 
                 : "border-solid hover:bg-primary hover:text-primary-foreground"
             )}
-            onClick={() => handleEmotionClick(emotion)}
+            onClick={(e) => handleEmotionClick(e, emotion)}
           >
             <div className="flex items-center justify-between w-full">
               <span className="font-medium">{emotion.name}</span>

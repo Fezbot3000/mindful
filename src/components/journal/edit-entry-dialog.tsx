@@ -17,6 +17,9 @@ import { ScrollArea } from "../ui/scroll-area";
 import { IntensitySelector } from "../ui/intensity-selector";
 import { Badge } from "../ui/badge";
 import { JournalEntry } from "@/types";
+import { useLogs } from "@/hooks/use-logs";
+import { ConfirmDialog } from "../ui/confirm-dialog";
+import { useTextareaAutosize } from "@/hooks/use-textarea-autosize";
 
 const entrySchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -45,7 +48,9 @@ const intensityLabels: { [key: number]: string } = {
 export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: EditJournalEntryDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showConfirmClose, setShowConfirmClose] = useState(false);
   const { toast } = useToast();
+  const { addLog: addLogToState } = useLogs();
   
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
@@ -65,6 +70,26 @@ export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: Edit
   });
 
   const watchedIntensity = form.watch("intensity");
+  const watchedContent = form.watch("content");
+  const watchedTitle = form.watch("title");
+  const contentTextareaRef = useTextareaAutosize(watchedContent || "");
+  const evidenceForRef = useTextareaAutosize(form.watch("evidenceFor") || "");
+  const evidenceAgainstRef = useTextareaAutosize(form.watch("evidenceAgainst") || "");
+  const alternativeViewRef = useTextareaAutosize(form.watch("alternativeView") || "");
+
+  // Trigger auto-resize when form is initialized with existing data
+  useEffect(() => {
+    if (open) {
+      // Use setTimeout to ensure the form is fully rendered
+      setTimeout(() => {
+        const textarea = contentTextareaRef.current;
+        if (textarea) {
+          textarea.style.height = 'auto';
+          textarea.style.height = Math.max(textarea.scrollHeight, 80) + 'px';
+        }
+      }, 100);
+    }
+  }, [open, contentTextareaRef]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
@@ -138,10 +163,37 @@ export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: Edit
     }
   };
 
+  // Check if form has changes
+  const hasChanges = watchedTitle !== entry.title || 
+                    watchedContent !== entry.content || 
+                    watchedIntensity !== (entry.intensity || 5) ||
+                    form.getValues("trigger") !== (entry.trigger || "") ||
+                    form.getValues("evidenceFor") !== (entry.evidenceFor || "") ||
+                    form.getValues("evidenceAgainst") !== (entry.evidenceAgainst || "") ||
+                    form.getValues("alternativeView") !== (entry.alternativeView || "") ||
+                    form.getValues("schemaLink") !== (entry.schemaLink || "");
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen && hasChanges) {
+      setShowConfirmClose(true);
+    } else {
+      setOpen(newOpen);
+      if (!newOpen) {
+        form.reset();
+      }
+    }
+  };
+
+  const handleConfirmClose = () => {
+    setShowConfirmClose(false);
+    setOpen(false);
+    form.reset();
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)', maxHeight: '90svh' }}>
+      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)' }}>
         <DialogHeader className="p-6 pb-4">
           <DialogTitle>Edit Journal Entry</DialogTitle>
           <DialogDescription>
@@ -163,7 +215,19 @@ export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: Edit
                           <span className="sr-only">Toggle voice recognition for content</span>
                       </Button>
                   </div>
-                  <Textarea id="content" rows={6} placeholder="Describe what's on your mind, the situation, or any feelings that are present." {...form.register("content")} />
+                  <Controller
+                    name="content"
+                    control={form.control}
+                    render={({ field }) => (
+                      <Textarea 
+                        id="content" 
+                        placeholder="Describe what's on your mind, the situation, or any feelings that are present." 
+                        value={field.value || ""}
+                        onChange={field.onChange}
+                        ref={contentTextareaRef}
+                      />
+                    )}
+                  />
                   {form.formState.errors.content && <p className="text-sm text-destructive">{form.formState.errors.content.message}</p>}
               </div>
 
@@ -196,15 +260,51 @@ export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: Edit
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="evidenceFor">What's supporting this feeling?</Label>
-                        <Textarea id="evidenceFor" rows={2} placeholder="List the facts, thoughts, or memories that make it feel true." {...form.register("evidenceFor")} />
+                        <Controller
+                          name="evidenceFor"
+                          control={form.control}
+                          render={({ field }) => (
+                            <Textarea 
+                              id="evidenceFor" 
+                              placeholder="List the facts, thoughts, or memories that make it feel true." 
+                              value={field.value || ""}
+                              onChange={field.onChange}
+                              ref={evidenceForRef}
+                            />
+                          )}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="evidenceAgainst">Is there another side to the story?</Label>
-                        <Textarea id="evidenceAgainst" rows={2} placeholder="What facts, thoughts, or past experiences might challenge this feeling?" {...form.register("evidenceAgainst")} />
+                        <Controller
+                          name="evidenceAgainst"
+                          control={form.control}
+                          render={({ field }) => (
+                            <Textarea 
+                              id="evidenceAgainst" 
+                              placeholder="What facts, thoughts, or past experiences might challenge this feeling?" 
+                              value={field.value || ""}
+                              onChange={field.onChange}
+                              ref={evidenceAgainstRef}
+                            />
+                          )}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="alternativeView">What's a more balanced or helpful way to see this?</Label>
-                        <Textarea id="alternativeView" rows={2} placeholder="Considering both sides, what's a more neutral perspective?" {...form.register("alternativeView")} />
+                        <Controller
+                          name="alternativeView"
+                          control={form.control}
+                          render={({ field }) => (
+                            <Textarea 
+                              id="alternativeView" 
+                              placeholder="Considering both sides, what's a more neutral perspective?" 
+                              value={field.value || ""}
+                              onChange={field.onChange}
+                              ref={alternativeViewRef}
+                            />
+                          )}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="schemaLink">Does this connect to a recurring pattern?</Label>
@@ -222,6 +322,15 @@ export function EditJournalEntryDialog({ children, entry, onEntryUpdated }: Edit
             </Button>
         </DialogFooter>
       </DialogContent>
+      <ConfirmDialog
+        open={showConfirmClose}
+        onOpenChange={setShowConfirmClose}
+        onConfirm={handleConfirmClose}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to close without saving?"
+        confirmText="Close"
+        cancelText="Keep Editing"
+      />
     </Dialog>
   );
 } 
