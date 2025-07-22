@@ -18,8 +18,6 @@ import { ScrollArea } from "../ui/scroll-area";
 import { IntensitySelector } from "../ui/intensity-selector";
 import { Badge } from "../ui/badge";
 import { useLogs } from "@/hooks/use-logs";
-import { useTextareaAutosize } from "@/hooks/use-textarea-autosize";
-import { ConfirmDialog } from "../ui/confirm-dialog";
 
 const entrySchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -47,7 +45,6 @@ const intensityLabels: { [key: number]: string } = {
 export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntryDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showConfirmClose, setShowConfirmClose] = useState(false);
   const { toast } = useToast();
   const { addLog: addLogToState } = useLogs();
   
@@ -69,32 +66,6 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   });
 
   const watchedIntensity = form.watch("intensity");
-  const watchedContent = form.watch("content");
-  const watchedTitle = form.watch("title");
-  const contentTextareaRef = useTextareaAutosize(watchedContent || "");
-  const evidenceForRef = useTextareaAutosize(form.watch("evidenceFor") || "");
-  const evidenceAgainstRef = useTextareaAutosize(form.watch("evidenceAgainst") || "");
-  const alternativeViewRef = useTextareaAutosize(form.watch("alternativeView") || "");
-
-  // Check if form has content
-  const hasContent = watchedTitle || watchedContent || form.getValues("trigger") || form.getValues("evidenceFor") || form.getValues("evidenceAgainst") || form.getValues("alternativeView") || form.getValues("schemaLink");
-
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen && hasContent) {
-      setShowConfirmClose(true);
-    } else {
-      setOpen(newOpen);
-      if (!newOpen) {
-        form.reset();
-      }
-    }
-  };
-
-  const handleConfirmClose = () => {
-    setShowConfirmClose(false);
-    setOpen(false);
-    form.reset();
-  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
@@ -173,9 +144,9 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="grid-rows-[auto,1fr,auto] p-0 max-w-[var(--layout-2xl)]">
+      <DialogContent className="grid-rows-[auto,1fr,auto] p-0" style={{ maxWidth: 'var(--layout-2xl)', maxHeight: '90svh' }}>
         <DialogHeader className="p-6 pb-4">
           <DialogTitle>New Journal Entry</DialogTitle>
           <DialogDescription>
@@ -197,19 +168,7 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
                           <span className="sr-only">Toggle voice recognition for content</span>
                       </Button>
                   </div>
-                  <Controller
-                    name="content"
-                    control={form.control}
-                    render={({ field }) => (
-                      <Textarea 
-                        id="content" 
-                        placeholder="Describe what's on your mind, the situation, or any feelings that are present." 
-                        value={field.value || ""}
-                        onChange={field.onChange}
-                        ref={contentTextareaRef}
-                      />
-                    )}
-                  />
+                  <Textarea id="content" rows={6} placeholder="Describe what's on your mind, the situation, or any feelings that are present." {...form.register("content")} />
                   {form.formState.errors.content && <p className="text-sm text-destructive">{form.formState.errors.content.message}</p>}
               </div>
 
@@ -236,57 +195,21 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
                         <Input id="trigger" placeholder="e.g., A physical sensation, a memory..." {...form.register("trigger")} />
                         <div className="flex flex-wrap gap-2 mt-2">
                           {triggerChips.map(chip => (
-                            <Badge key={chip} variant="secondary" className="cursor-pointer px-4 py-2 text-sm" onClick={() => handleChipClick(chip)}>{chip}</Badge>
+                            <Badge key={chip} variant="secondary" className="cursor-pointer" onClick={() => handleChipClick(chip)}>{chip}</Badge>
                           ))}
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="evidenceFor">What's supporting this feeling?</Label>
-                        <Controller
-                          name="evidenceFor"
-                          control={form.control}
-                          render={({ field }) => (
-                            <Textarea 
-                              id="evidenceFor" 
-                              placeholder="List the facts, thoughts, or memories that make it feel true." 
-                              value={field.value || ""}
-                              onChange={field.onChange}
-                              ref={evidenceForRef}
-                            />
-                          )}
-                        />
+                        <Textarea id="evidenceFor" rows={2} placeholder="List the facts, thoughts, or memories that make it feel true." {...form.register("evidenceFor")} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="evidenceAgainst">Is there another side to the story?</Label>
-                        <Controller
-                          name="evidenceAgainst"
-                          control={form.control}
-                          render={({ field }) => (
-                            <Textarea 
-                              id="evidenceAgainst" 
-                              placeholder="What facts, thoughts, or past experiences might challenge this feeling?" 
-                              value={field.value || ""}
-                              onChange={field.onChange}
-                              ref={evidenceAgainstRef}
-                            />
-                          )}
-                        />
+                        <Textarea id="evidenceAgainst" rows={2} placeholder="What facts, thoughts, or past experiences might challenge this feeling?" {...form.register("evidenceAgainst")} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="alternativeView">What's a more balanced or helpful way to see this?</Label>
-                        <Controller
-                          name="alternativeView"
-                          control={form.control}
-                          render={({ field }) => (
-                            <Textarea 
-                              id="alternativeView" 
-                              placeholder="Considering both sides, what's a more neutral perspective?" 
-                              value={field.value || ""}
-                              onChange={field.onChange}
-                              ref={alternativeViewRef}
-                            />
-                          )}
-                        />
+                        <Textarea id="alternativeView" rows={2} placeholder="Considering both sides, what's a more neutral perspective?" {...form.register("alternativeView")} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="schemaLink">Does this connect to a recurring pattern?</Label>
@@ -299,20 +222,11 @@ export function NewJournalEntryDialog({ children, onEntryAdded }: NewJournalEntr
         </ScrollArea>
         <DialogFooter className="p-6 pt-4 border-t">
             <Button type="submit" form="journal-form" disabled={loading}>
-                          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                          {loading && <Loader2 className="mr-2 icon-sm animate-spin" />}
             Save Entry
             </Button>
         </DialogFooter>
       </DialogContent>
-      <ConfirmDialog
-        open={showConfirmClose}
-        onOpenChange={setShowConfirmClose}
-        onConfirm={handleConfirmClose}
-        title="Unsaved Changes"
-        description="You have unsaved changes. Are you sure you want to close without saving?"
-        confirmText="Close"
-        cancelText="Keep Editing"
-      />
     </Dialog>
   );
 }
