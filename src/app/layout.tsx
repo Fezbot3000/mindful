@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/logo.svg',
+        url: '/favicon-512x512.png',
         width: 512,
         height: 512,
         alt: 'Mindful Track App Icon',
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mindful Track - Mental Health Toolkit',
     description: 'Evidence-based tools to help you stay grounded and manage stress.',
-    images: ['/logo.svg'],
+    images: ['/favicon-512x512.png'],
   },
   robots: {
     index: true,
@@ -108,10 +108,14 @@ export default function RootLayout({
         {/* PWA Icons - MUST be PNG for iOS to recognize as PWA */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/apple-touch-icon.png" />
         
         {/* Standard Icons */}
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
         <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-        <link rel="shortcut icon" href="/logo.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         
         {/* Manifest */}
         <link rel="manifest" href={(process.env.NEXT_PUBLIC_BASE_PATH || '') + '/manifest.json'} />

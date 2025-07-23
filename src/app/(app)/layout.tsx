@@ -37,7 +37,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Sidebar className="hidden md:flex" role="navigation" aria-label="Main navigation">
               <SidebarHeader className="p-4">
                 <Link href="/dashboard" className="flex items-center gap-2 font-semibold" aria-label="Mindful Track - Go to dashboard">
-                  <Image src="/logo.svg" alt="Mindful Track Logo" width={24} height={24} />
+                  <Image src="/favicon-32x32.png" alt="Mindful Track Logo" width={24} height={24} />
                   <span className="group-data-[collapsible=icon]:hidden">Mindful Track</span>
                 </Link>
               </SidebarHeader>

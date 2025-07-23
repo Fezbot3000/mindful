@@ -15,7 +15,7 @@ export default function AuthLayout({
       <div className="w-full max-w-sm">
         <div className="mb-6 flex justify-center">
           <Link href="/" className="flex items-center gap-2 text-foreground">
-            <Image src="/logo.svg" alt="Mindful Track Logo" width={32} height={32} />
+            <Image src="/favicon-32x32.png" alt="Mindful Track Logo" width={32} height={32} />
             <span className="text-2xl font-bold">Mindful Track</span>
           </Link>
         </div>
